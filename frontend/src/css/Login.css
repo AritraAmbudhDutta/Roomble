@@ -117,9 +117,8 @@ body{
 }
 
 .login-login-button:hover {
-    background: linear-gradient(135deg, #d53737, #ff4f4f);
-    box-shadow: 0 10px 30px rgba(213, 55, 55, 0.4); /* Glow on hover */
-    transform: translateY(-3px);  /* Slight lift effect */
+    box-shadow: 0 10px 30px rgba(213, 55, 55, 0.4);
+    transform: translateY(-3px);
 }
 
 .login-login-button:active {

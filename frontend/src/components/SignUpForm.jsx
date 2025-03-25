@@ -3,9 +3,11 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../config";
+import "../css/SignUpTenant.css";
 
 function SignUpForm({ setID }) {
   const navigate = useNavigate();
+  const [step, setStep] = useState(1);
   const [formInput, setFormInput] = useState({
     name: "",
     email: "",
@@ -29,41 +31,37 @@ function SignUpForm({ setID }) {
     setFormInput((prev) => ({ ...prev, [name]: value }));
   };
 
+  const nextStep = () => {
+    setStep((prevStep) => prevStep + 1);
+  };
+
+  const prevStep = () => {
+    setStep((prevStep) => prevStep - 1);
+  };
+
   const validateFormInput = async (event) => {
     event.preventDefault();
-    let inputError = {
-      confirmPassword: "",
-    };
-    if (formInput.password.length < 6) {
-      setFormError({
-        ...inputError,
-        password: "Password should be atleast 6 characters",
-      });
-      // setFormInput({...formInput, successMsg: "",})
-      return;
+    if (step === 1) {
+      // Validation for step 1
+      let inputError = {};
+      if (formInput.password.length < 6) {
+        setFormError({
+          ...inputError,
+          password: "Password should be at least 6 characters",
+        });
+        return;
+      }
+      if (formInput.password !== formInput.confirmPassword) {
+        setFormError({
+          ...inputError,
+          confirmPassword: "Password and Confirm password do not match!",
+        });
+        return;
+      }
+      nextStep();
+    } else {
+      await sendDataToAPI();
     }
-
-    if (formInput.password.length > 10) {
-      setFormError({
-        ...inputError,
-        password: "Password should not be more than 10 characters",
-      });
-      // setFormInput({...formInput, successMsg: "",})
-      return;
-    }
-    if (formInput.password !== formInput.confirmPassword) {
-      setFormError({
-        ...inputError,
-        confirmPassword: "Password and Confirm password do not match!",
-      });
-      // setFormInput({...formInput, successMsg: "",})
-      return;
-    }
-    // setFormError(inputError);
-    // setFormInput((prevState) => ({
-    //   ...prevState, successMsg:"Validation Successful",
-    // }));
-    await sendDataToAPI();
   };
 
   const sendDataToAPI = async () => {
@@ -113,11 +111,12 @@ function SignUpForm({ setID }) {
 
   return (
     <div className="signup-tenant-box">
-      <h2 className="signup-tenant-title">Signup as a Tenant</h2>
+      <form className={`signup-tenant-form step-${step}`} onSubmit={validateFormInput}>
+        {/*Step 1: Basic Details*/}
+        {step === 1 && (
+          <div className="signup-tenant-step">
+            <h2 className="signup-tenant-title">Signup as a Tenant</h2>
 
-      <form className="signup-tenant-form" onSubmit={validateFormInput}>
-        <div className="signup-tenant-scroll-div">
-          <div>
             <label>Full Name</label>
             <input
               type="text"
@@ -129,9 +128,7 @@ function SignUpForm({ setID }) {
                 handleUserInput(target.name, target.value)
               }
             />
-          </div>
 
-          <div>
             <label>Email Address</label>
             <input
               type="email"
@@ -143,9 +140,7 @@ function SignUpForm({ setID }) {
               }
               required
             />
-          </div>
 
-          <div>
             <label>Password</label>
             <input
               type="password"
@@ -158,10 +153,9 @@ function SignUpForm({ setID }) {
               }}
               required
             />
-            <p className="signup-tenant-error-password">{formError.password}</p>
-          </div>
 
-          <div>
+            <p className="signup-tenant-error-password">{formError.password}</p>
+
             <label>Confirm Password</label>
             <input
               type="password"
@@ -174,16 +168,19 @@ function SignUpForm({ setID }) {
               }}
               required
             />
-            <p className="signup-tenant-error-confirm-password">
-              {formError.confirmPassword}
-            </p>
-            <p className="signup-tenant-success-message">
-              {formInput.successMsg}
-            </p>
 
-            <p className="signup-tenant-question">
-              A few questions about you :
-            </p>
+            <p className="signup-tenant-error-confirm-password"> {formError.confirmPassword} </p>
+            <p className="signup-tenant-success-message"> {formInput.successMsg} </p>
+            
+            <button type="button" onClick={nextStep} className="signup-tenant-button"> Next </button>
+          </div>
+        )}
+
+        {/* Step 2: Additional Questions */}
+        {step === 2 && (
+          <div className="signup-tenant-step">
+            <h2 className="signup-tenant-title">A Few Questions About You</h2>
+
             <label>
               Where would you like to look for a property?
               <br />
@@ -201,31 +198,29 @@ function SignUpForm({ setID }) {
               <option value="Selected">Select City</option>
               <option value="Mumbai">Mumbai</option>
             </select>
-          </div>
-          <select
-            type="text"
-            className="signup-tenant-input-box"
-            name="locality"
-            onChange={({ target }) => {
-              handleUserInput(target.name, target.value);
-            }}
-            required
-          >
-            <option value="Selected">Select Locality</option>
-            <option value="Andheri">Andheri</option>
-            <option value="Bandra">Bandra</option>
-            <option value="Juhu">Juhu</option>
-            <option value="Malad">Malad</option>
-            <option value="Kandivali">Kandivali</option>
-            <option value="Borivali">Borivali</option>
-            <option value="Dahisar">Dahisar</option>
-            <option value="Mira Road">Mira Road</option>
-            <option value="Thane">Thane</option>
-            <option value="Goregaon">Goregaon</option>
-          </select>
-          <div className="signup-tenant-options">
-            <label>
-              Do you smoke/drink?
+            <select
+              type="text"
+              className="signup-tenant-input-box"
+              name="locality"
+              onChange={({ target }) => {
+                handleUserInput(target.name, target.value);
+              }}
+              required
+            >
+              <option value="Selected">Select Locality</option>
+              <option value="Andheri">Andheri</option>
+              <option value="Bandra">Bandra</option>
+              <option value="Juhu">Juhu</option>
+              <option value="Malad">Malad</option>
+              <option value="Kandivali">Kandivali</option>
+              <option value="Borivali">Borivali</option>
+              <option value="Dahisar">Dahisar</option>
+              <option value="Mira Road">Mira Road</option>
+              <option value="Thane">Thane</option>
+              <option value="Goregaon">Goregaon</option>
+            </select>
+
+            <label> Do you smoke/drink?
               <label htmlFor="smoke-yes">
                 <input
                   type="radio"
@@ -255,8 +250,7 @@ function SignUpForm({ setID }) {
               </label>
             </label>
 
-            <label>
-              Do you plan on keeping pets?
+            <label> Do you plan on keeping pets?
               <label htmlFor="pets-yes">
                 <input
                   type="radio"
@@ -286,8 +280,7 @@ function SignUpForm({ setID }) {
               </label>
             </label>
 
-            <label>
-              Are you a Vegetarian?
+            <label> Are you a Vegetarian?
               <label htmlFor="veg-yes">
                 <input
                   type="radio"
@@ -317,8 +310,7 @@ function SignUpForm({ setID }) {
               </label>
             </label>
 
-            <label>
-              Do you need a flatmate?
+            <label> Do you need a flatmate?
               <label htmlFor="flatmate-yes">
                 <input
                   type="radio"
@@ -348,8 +340,7 @@ function SignUpForm({ setID }) {
               </label>
             </label>
 
-            <label>
-              What's your gender?
+            <label> What's your gender?
               <label htmlFor="gender-male">
                 <input
                   type="radio"
@@ -378,9 +369,13 @@ function SignUpForm({ setID }) {
                 Female
               </label>
             </label>
+
+            <div className="signup-navigation-buttons">
+              <button type="button" onClick={prevStep} className="signup-tenant-button"> ← Back </button>
+              <button type="submit" className="signup-tenant-button">Sign up</button>
+            </div>
           </div>
-        </div>
-        <button className="signup-tenant-signup-button">Sign up</button>
+        )}
       </form>
 
       <p className="signup-tenant-footer-text-signup">
