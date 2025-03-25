@@ -5,6 +5,7 @@ const Landlord_routes_auth = require(`./routes/Landlord_auth`)//contains Landlor
 const Tenant_routes_auth = require('./routes/Tenant_auth')//COntains tenant authentication
 dotenv.config(); // Load environment variables
 const ForgotPassword_routes = require(`./routes/ForgotPassword`);
+const SetLatLong = require(`./routes/SetLat_Long.js`);
 const Searching_Routes = require(`./routes/Searching_Routes`)
 const BookMark_Routes = require(`./routes/Bookmark`);
 const View_profiles = require(`./routes/view_profiles`);
@@ -69,7 +70,9 @@ app.use(express.json()); // Allows Express to parse JSON request bodies
 const Landlord = require('./models/Landlord');
 const Tenant = require('./models/Tenant'); // Added Tenant model
 
+//http://127.0.0.1:3000/api/SetLatLong/SetLong_Lat
 // Routes
+app.use(`/api/SetLatLong`, SetLatLong);
 app.use(`/api/updates`, updates);
 app.use(`/api/Listing_Delisting`, enlist_delist);
 app.use(`/api/view_profiles`, View_profiles);
