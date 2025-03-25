@@ -1,16 +1,43 @@
 import React, { useState, useEffect, useContext } from "react";
 import "../css/FlatMateCard.css";
 import { Basecontext } from "../context/base/Basecontext";
+import Swal from "sweetalert2";
 
-const FlatmateCard = ({ id, name, locality, city, gender, smoke, eatNonVeg, pets, compatibilityScore, image, isBookmarked }) => {
+const FlatmateCard = ({ 
+  id, 
+  name, 
+  locality, 
+  city, 
+  gender, 
+  smoke, 
+  eatNonVeg, 
+  pets, 
+  compatibilityScore, 
+  image, 
+  isBookmarked 
+}) => {
   const [bookmarked, setBookmarked] = useState(isBookmarked);
   const { user } = useContext(Basecontext); // Context to get user token
 
   useEffect(() => {
     setBookmarked(isBookmarked);
   }, [isBookmarked]);
-  // const id = {id};
+
   const toggleBookmark = async () => {
+    // Show confirmation popup before toggling bookmark
+    const confirmPopup = await Swal.fire({
+      title: "Toggle Bookmark?",
+      text: `Are you sure you want to ${bookmarked ? "remove" : "add"} this bookmark?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#8b1e2f",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    });
+
+    if (!confirmPopup.isConfirmed) return;
+
     const newBookmarkState = !bookmarked;
     const token = localStorage.getItem("authtoken");
     console.log(id);
@@ -19,30 +46,30 @@ const FlatmateCard = ({ id, name, locality, city, gender, smoke, eatNonVeg, pets
       thing: "flatmate",
       id,
     };
-  
+
     console.log("Request Body:", requestBody);
-  
+
     if (!token) {
       alert("Authentication token is missing!");
       return;
     }
-  
+
     try {
       const response = await fetch("http://127.0.0.1:3000/api/Bookmarking_Routes/edit_bookmarks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          authtoken: token, 
+          authtoken: token,
         },
         body: JSON.stringify(requestBody),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(data.message || "Failed to update bookmark");
       }
-  
+
       setBookmarked(newBookmarkState);
     } catch (error) {
       console.error("Error updating bookmark:", error);
@@ -53,7 +80,7 @@ const FlatmateCard = ({ id, name, locality, city, gender, smoke, eatNonVeg, pets
   const handleView = () => {
     window.location.href = `/tenant/${id}`;
   };
-  
+
   const score = Math.round(parseFloat(compatibilityScore) * 100) || 0;
 
   return (
@@ -62,7 +89,6 @@ const FlatmateCard = ({ id, name, locality, city, gender, smoke, eatNonVeg, pets
       <div className="card-header">
         <img src={image} alt={name} className="profile-pic" />
         <span className="flatmate-name">{name}</span>
-
         {/* Compatibility Score */}
         <span className="compatibility-score">
           <span className="star-icon">⭐</span> {score}%
@@ -90,7 +116,6 @@ const FlatmateCard = ({ id, name, locality, city, gender, smoke, eatNonVeg, pets
             </svg>
           )}
         </button>
-
         <button className="view-btn" onClick={handleView}>View</button>
       </div>
     </div>

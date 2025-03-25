@@ -1,37 +1,53 @@
 .bookmarked-page {
     padding: 30px;
-    max-width: 100%;
     margin: auto;
-}
-
-.page-title {
+  }
+  
+  .page-title {
     font-size: 32px;
     font-weight: 800;
     color: #1a1a1a;
-    font-family: 'Open Sans Condensed', sans-serif;
-    text-align: left;
-    position: relative;
-    text-transform: capitalize;
-    padding-bottom: 5px;
-    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
-}
-
-.page-title::after {
-    content: "";
-    width: 80px;
-    height: 4px;
-    background-color: #8b1e2f;
-    position: absolute;
-    left: 0;
-    bottom: -5px;
-    border-radius: 2px;
-}
-
-.flatmates-grid {
-    margin-top: 30px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    margin-bottom: 20px;
+  }
+  
+  .delete-zone {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #ffe6e6;
+    border: 2px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .trash-icon {
+    width: 30px;
+    height: 30px;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+  }
+  
+  .trash-active {
+    opacity: 1;
+  }
+  
+  .flatmates-grid {
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
-    justify-content: space-between;
-    width: 100%;
-}
+    justify-content: flex-start;
+  }
+  
+  .draggable-card {
+    flex: 0 1 calc(33.33% - 20px);
+  }
+  
+  .no-items {
+    text-align: center;
+    color: #666;
+    font-size: 18px;
+  }
+  
