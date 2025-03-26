@@ -83,7 +83,7 @@ function SearchArea({
           <div key={bhk} className="BHK-checkbox">
             <input
               type="checkbox"
-              checked={BHK.includes(bhk)}
+              // checked={BHK.includes(bhk)}
               onChange={() => handleBHKChange(bhk)}
             />
             <label>{bhk !== 4 ? bhk + " BHK" : "more"}</label>

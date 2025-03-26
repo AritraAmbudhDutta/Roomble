@@ -3,10 +3,11 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/OTPPage/OTPPageTenant.css"; // Import the CSS specific to this component
 import logo from "../../../public/logo.png";
+import config from "../../config.json";
 export default function OTPPageTenant({ id }) {
   const navigate = useNavigate();
   console.log(`id is ${id}`);
-  const respURL = `http://127.0.0.1:3000/api/Tenant/auth/verifyTenant/${id}`;
+  const respURL = `${config.backend}/api/Tenant/auth/verifyTenant/${id}`;
   //   console.log(respURL);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [message, setMessage] = useState("");

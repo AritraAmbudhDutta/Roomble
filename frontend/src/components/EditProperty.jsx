@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useContext } from 'react';
 import { Basecontext } from '../context/base/Basecontext';
 import { useNavigate } from 'react-router-dom';
+import config from '../config.json';
 
 function EditProperty(property) {
 
@@ -73,7 +74,7 @@ function EditProperty(property) {
         console.log(images);
 
         try {
-            const response = await fetch(`http://localhost:3000/api/updates/updateProperty`, {
+            const response = await fetch(`${config.backend}/api/updates/updateProperty`, {
                 method: "POST",
                 headers: {
                     "authtoken": localStorage.getItem("authtoken"),
@@ -95,7 +96,7 @@ function EditProperty(property) {
     useEffect(() => {
         const fetchProperty = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/property/get_property`, {
+                const response = await fetch(`${config.backend}/api/property/get_property`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

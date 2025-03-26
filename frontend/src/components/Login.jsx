@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../css/Login.css";
 import logo from "/logo.png";
+import config from "../config.json";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -38,7 +39,7 @@ const Login = () => {
     try {
 
       const response = await fetch(
-        `http://127.0.0.1:3000/api/${userType}/auth/${userType}_login`,
+        `${config.backend}/api/${userType}/auth/${userType}_login`,
         {
           method: "POST",
           headers: {

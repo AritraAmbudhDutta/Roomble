@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import "../css/FlatMateCard.css";
 import { Basecontext } from "../context/base/Basecontext";
 import Swal from "sweetalert2";
+import {config} from "../config.json";
 
 const FlatmateCard = ({ 
   id, 
@@ -55,7 +56,7 @@ const FlatmateCard = ({
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:3000/api/Bookmarking_Routes/edit_bookmarks", {
+      const response = await fetch(`${config.backend}/api/Bookmarking_Routes/edit_bookmarks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

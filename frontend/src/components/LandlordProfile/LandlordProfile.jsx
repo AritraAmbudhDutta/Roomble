@@ -4,6 +4,7 @@ import PropertyCard from "../LandlordDashboard/PropertyCard.jsx";
 import logo from "../../../public/property-img.png";
 import pfp from "../../../public/sampleUser_Img.png";
 import { useNavigate } from "react-router-dom";
+import config from "../../config.json";
 const LandlordProfile = () => {
   const [respData, setRespData] = useState(null);
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ const LandlordProfile = () => {
       try {
         console.log(token);
         const response = await fetch(
-          "http://127.0.0.1:3000/api/view_profiles/Self_profile",
+          `${config.backend}/api/view_profiles/Self_profile`,
           {
             method: "POST",
             headers: {
