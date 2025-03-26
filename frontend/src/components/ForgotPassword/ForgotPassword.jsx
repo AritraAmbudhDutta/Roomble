@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import "../../css/ForgotPassword/ForgotPassword.css"; // Import the CSS specific to this component
 import logo from "../../../public/logo.png";
 import { Basecontext } from '../../context/base/Basecontext';
+import {config} from "../../config.json";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ const ForgotPassword = () => {
         const accounttype = isLandlord ? "landlord" : "tenant";
 
         try {
-            const response = await fetch("http://127.0.0.1:3000/api/forgotPassword/enteremail", {
+            const response = await fetch(`${config.backend}/api/forgotPassword/enteremail`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
