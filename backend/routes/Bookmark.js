@@ -13,7 +13,7 @@ const calculateRecommendationScore = (tenant, flatmate, townData) => {
   const alpha = 0.7; // Weight for locality importance
 
   const distance = townData.distances[flatmate.locality] || 100; // Default 100 if unknown
-  const localitySimilarity = 1 / (1 + distance);
+  const localitySimilarity = 1 / (1 + Math.cbrt(distance)); // Normalize to [0,1]
 
   let booleanMatches = 0;
   if (flatmate.gender === tenant.gender) booleanMatches++;
