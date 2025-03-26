@@ -2,6 +2,7 @@ import React from "react";
 import PropertyCard from "../components/LandlordDashboard/PropertyCard.jsx";
 import samplePropertyImg from "../../public/1111111.jpg"; // Sample image
 import "../css/BookmarkedProperties.css";
+import config from "../config.json";
 
 const BookmarkedProperties = () => {
   const properties = [

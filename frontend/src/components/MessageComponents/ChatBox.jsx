@@ -13,6 +13,7 @@ import { useContext } from 'react'
 import { Basecontext } from '../../context/base/Basecontext'
 import useDidMountEffect from "../../useDidMountEffect";
 import { socket } from "../../socket";
+import config from "../../config.json";
 
 function ChatBox({currentConvId,setCurrentConvId,currentMessages,setCurrentMessages}) {
 
@@ -32,7 +33,7 @@ function ChatBox({currentConvId,setCurrentConvId,currentMessages,setCurrentMessa
     
         
                     // Fetch other username and status
-                    const res = await fetch('http://localhost:3000/messages/getUserNameStatus', {
+                    const res = await fetch(`${config.backend}/messages/getUserNameStatus`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -69,7 +70,7 @@ function ChatBox({currentConvId,setCurrentConvId,currentMessages,setCurrentMessa
 
     
                 // Fetch other username and status
-                const res = await fetch('http://localhost:3000/messages/getUserNameStatus', {
+                const res = await fetch(`${config.backend}/messages/getUserNameStatus`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -102,7 +103,7 @@ function ChatBox({currentConvId,setCurrentConvId,currentMessages,setCurrentMessa
         if(message){
             const sendMsg = async () => {
                 try {
-                    const res = await fetch('http://localhost:3000/messages/sendMessage', {
+                    const res = await fetch(`${config.backend}/messages/sendMessage`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

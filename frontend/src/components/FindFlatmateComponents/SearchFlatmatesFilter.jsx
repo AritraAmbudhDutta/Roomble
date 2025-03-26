@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../css/FindPropertyStyles/SearchArea.css";
 import SearchIcon from "@mui/icons-material/Search";
+import config from "../../config.json";
 
 function SearchFlatmatesFilter({ setFlatmates }) {
   const [search, setSearch] = useState("");
@@ -39,7 +40,7 @@ function SearchFlatmatesFilter({ setFlatmates }) {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/Search_Routes/SearchFlatmates?${queryParams.toString()}`,
+        `${config.backend}/api/Search_Routes/SearchFlatmates?${queryParams.toString()}`,
         {
           method: "GET",
           headers: {
@@ -74,6 +75,10 @@ function SearchFlatmatesFilter({ setFlatmates }) {
     });
     setFlatmates([]);
   };
+
+  useEffect(()=>{
+    handleApplyChanges();
+  },[])
 
   return (
     <div className="search-prop-container">

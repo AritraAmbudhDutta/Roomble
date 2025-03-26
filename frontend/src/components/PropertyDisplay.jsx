@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import the CSS for styling
 import { Backdrop, Box, Fade, Modal, Rating, TextareaAutosize, Typography } from "@mui/material";
-
+import config from "../config.json";
 const PropertyDisplay = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const state = useContext(Basecontext);
@@ -42,7 +42,7 @@ const PropertyDisplay = () => {
   }, [user])
   
   const fetchReviews = async () => {
-    const res = await fetch('http://localhost:3000/api/reviewProperty/getreviews', {
+    const res = await fetch(`${config.backend}/api/reviewProperty/getreviews`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -58,7 +58,7 @@ const PropertyDisplay = () => {
   useEffect(() => {
     const fetchProperty = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/property/get_property`, {
+        const response = await fetch(`${config.backend}/api/property/get_property`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -108,7 +108,7 @@ const PropertyDisplay = () => {
   }
 
   const handleDelist = async () => {
-    const res = await fetch("http://localhost:3000/api/Listing_Delisting/List_Delist_Prop", {
+    const res = await fetch(`${config.backend}/api/Listing_Delisting/List_Delist_Prop`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -137,7 +137,7 @@ const PropertyDisplay = () => {
   }
 
   const handleClick = async () => {
-    const res = await fetch("http://localhost:3000/api/reviewProperty/addreview", {
+    const res = await fetch(`${config.backend}/api/reviewProperty/addreview`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

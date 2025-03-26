@@ -4,6 +4,7 @@ import "../../css/PropertyCardTenant.css";
 import { Link, useNavigate } from "react-router-dom";
 import useDidMountEffect from "../../useDidMountEffect";
 import { toast } from "react-toastify";
+import config from "../../config.json";
 
 const PropertyCardTenant = ({ image, price, title, location, bhk, onView, onBookMark, id, available }) => {
   const [bookmarked, setBookmarked] = useState(false);
@@ -19,7 +20,7 @@ const PropertyCardTenant = ({ image, price, title, location, bhk, onView, onBook
   useEffect(() => {
     const fetchBookmarkStatus = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/BookMarking_Routes/check_bookmark', {
+        const response = await fetch(`${config.backend}/api/BookMarking_Routes/check_bookmark`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -43,7 +44,7 @@ const PropertyCardTenant = ({ image, price, title, location, bhk, onView, onBook
   useEffect(() => {
     if (!loading) { // Only send requests after loading is complete
       const action = bookmarked ? "bookmark" : "unmark";
-      fetch("http://localhost:3000/api/BookMarking_Routes/edit_bookmarks", {
+      fetch(`${config.backend}/api/BookMarking_Routes/edit_bookmarks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

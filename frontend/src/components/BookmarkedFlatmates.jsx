@@ -59,7 +59,7 @@ const BookmarkedFlatmates = () => {
     console.log("Calling backend delete for:", bookmarkId, thing);
     try {
       const response = await fetch(
-        "http://127.0.0.1:3000/api/BookMarking_Routes/edit_bookmarks",
+        `${config.backend}/api/BookMarking_Routes/edit_bookmarks`,
         {
           method: "POST", // Ensure this matches your API's expected method
           headers: {

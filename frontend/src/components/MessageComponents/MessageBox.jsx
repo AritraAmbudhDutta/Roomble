@@ -4,7 +4,7 @@ import MessageCard from './MessageCard.jsx';
 import '../../css/MessageBoxStyle/MessageBox.css';
 import { Basecontext } from '../../context/base/Basecontext';
 import { socket } from '../../socket.js';
-
+import config from "../../config.json";
 function MessageBox() {
 
     const state = useContext(Basecontext);
@@ -18,7 +18,7 @@ function MessageBox() {
         setCurrentUserId(user._id);
         const fetchConversations = async () => {
             try {
-                const res = await fetch('http://localhost:3000/messages/getConversations', {
+                const res = await fetch(`${config.backend}/messages/getConversations`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -43,7 +43,7 @@ function MessageBox() {
             const fetchConversations = async () => {
                 try {
     
-                    const res = await fetch('http://localhost:3000/messages/getConversations', {
+                    const res = await fetch(`${config.backend}/messages/getConversations`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",

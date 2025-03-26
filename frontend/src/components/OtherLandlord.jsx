@@ -4,6 +4,7 @@ import PropertyCard from "./LandlordDashboard/PropertyCard.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { Rating } from "@mui/material";
 import { toast } from "react-toastify";
+import config from "../config.json";
 
 const OtherLandlord = () => {
   const [respData, setRespData] = useState({
@@ -32,7 +33,7 @@ const OtherLandlord = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:3000/api/view_profiles/other_users",
+          `${config.backend}/api/view_profiles/other_users`,
           {
             method: "POST",
             headers: {
@@ -56,7 +57,7 @@ const OtherLandlord = () => {
 
     const fetchReviews = async () => {
       try{
-        const response = await fetch("http://localhost:3000/api/reviews/reviewee", {
+        const response = await fetch(`${config.backend}/api/reviews/reviewee`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -81,7 +82,7 @@ const OtherLandlord = () => {
 
   const messageclick = async () => {
     try{
-      const response = await fetch('http://localhost:3000/messages/createConversation', {
+      const response = await fetch(`${config.backend}/messages/createConversation`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -6,6 +6,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
+import config from "../config.json"; 
 
 function FindProperty() {
       const [city, setCity] = useState("");
@@ -44,7 +45,7 @@ function FindProperty() {
                 notify("Please select a locality!");
                 return;
             }
-            const response = await axios.get("http://localhost:3000/api/Search_Routes/SearchProperties", {
+            const response = await axios.get(`${config.backend}/api/Search_Routes/SearchProperties`, {
 
                 params: {  
                     town: locality,

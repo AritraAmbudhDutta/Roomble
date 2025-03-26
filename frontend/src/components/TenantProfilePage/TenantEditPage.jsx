@@ -4,6 +4,7 @@ import logo from "../../../public/sampleUser_img.png";
 import { useContext } from "react";
 import { Basecontext } from "../../context/base/Basecontext";
 import { useNavigate } from "react-router-dom";
+import config from "../../config.json";
 const TenantEditPage = () => {
   const navigate = useNavigate();
   const state = useContext(Basecontext);
@@ -60,7 +61,7 @@ const TenantEditPage = () => {
     }
     try {
       const response = await fetch(
-        "http://127.0.0.1:3000/api/updates/updateProfile",
+        `${config.backend}/api/updates/updateProfile`,
         {
           method: "PUT",
           body: formDataCopy,

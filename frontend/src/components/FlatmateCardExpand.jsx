@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useDidMountEffect from '../useDidMountEffect';
 import { Rating } from '@mui/material';
+import config from '../config.json';
 
 const FlatmateCardExpand = () => {
     const [isBookmarked, setIsBookmarked] = useState(false);
@@ -28,7 +29,7 @@ const FlatmateCardExpand = () => {
         smoke: null,
         veg: null, 
         pets: null,
-        Images: "http://127.0.0.1:3000/Pictures/Default.png", 
+        Images: `${config.backend}/Pictures/Default.png`, 
     });
 
     useEffect(() => {
