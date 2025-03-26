@@ -5,7 +5,8 @@
 
 .search-flatmate-div{
     flex:1.1;
-    height: 100%;    
+    height: 100%; 
+    /* position: fixed;    */
 }
 
 .Flatmate-card-div{
@@ -61,6 +62,8 @@
     width: 100%;
     align-items: start;
     justify-content: center; /* Keeps it centered */
+    height: 100%;
+    overflow-y: auto;
 }
 
 .flatmate-cards-container > *:nth-child(odd) {
