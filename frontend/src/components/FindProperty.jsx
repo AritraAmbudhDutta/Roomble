@@ -11,7 +11,7 @@ import config from "../config.json";
 function FindProperty() {
       const [city, setCity] = useState("");
       const [locality, setLocality] = useState("");
-      const [BHK, setBHK] = useState([4]);
+      const [BHK, setBHK] = useState([]);
       const [values, setValues] = useState([1000, 100000]); // Initial values [lower, upper]
       const [area, setArea] = useState([500, 10000]); // Initial values [lower, upper]
       const [properties, setProperties] = useState([]);
@@ -71,7 +71,7 @@ function FindProperty() {
       const handleClearChanges = () => {
         setCity("");
         setLocality("");
-        setBHK([4]);
+        setBHK([]);
         setValues([1000, 100000]);
         setArea([500, 10000]);
         setProperties([]);

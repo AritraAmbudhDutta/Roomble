@@ -1,22 +1,45 @@
 import React, { useEffect, useState } from "react";
 import "../../css/PropertyCard.css";
 import "../../css/PropertyCardTenant.css";
-import { Link, useNavigate } from "react-router-dom";
-import useDidMountEffect from "../../useDidMountEffect";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import config from "../../config.json";
+import Swal from "sweetalert2";
 
-const PropertyCardTenant = ({ image, price, title, location, bhk, onView, onBookMark, id, available }) => {
+const PropertyCardTenant = ({
+  image,
+  price,
+  title,
+  location,
+  bhk,
+  onView,
+  onBookMark,
+  id,
+  available,
+}) => {
   const [bookmarked, setBookmarked] = useState(false);
-  const [loading, setLoading] = useState(true); // Add a loading state
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // Loading state to block multiple requests
 
-  const toggleBookmark = () => {
-    if (!loading) { // Prevent toggling while loading
+  // Toggle bookmark with confirmation popup
+  const toggleBookmark = async () => {
+    if (loading) return; // Prevent toggling while loading
+    const actionText = bookmarked ? "remove the bookmark" : "bookmark this property";
+    const confirmPopup = await Swal.fire({
+      title: "Confirm Action",
+      text: `Are you sure you want to ${actionText}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, confirm it!",
+      cancelButtonText: "Cancel",
+    });
+    if (confirmPopup.isConfirmed) {
       setBookmarked(!bookmarked);
     }
   };
 
+  // Fetch bookmark status on mount
   useEffect(() => {
     const fetchBookmarkStatus = async () => {
       try {
@@ -24,7 +47,7 @@ const PropertyCardTenant = ({ image, price, title, location, bhk, onView, onBook
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'authtoken': localStorage.getItem('authtoken')
+            authtoken: localStorage.getItem('authtoken')
           },
           body: JSON.stringify({ id: id, thing: "property" })
         });
@@ -35,14 +58,15 @@ const PropertyCardTenant = ({ image, price, title, location, bhk, onView, onBook
       } catch (error) {
         console.error("Failed to fetch bookmark status:", error);
       } finally {
-        setLoading(false); // Set loading to false after the request completes
+        setLoading(false); // Set loading to false after request completes
       }
     };
     fetchBookmarkStatus();
   }, [id]);
 
+  // Update bookmark status when bookmarked state changes
   useEffect(() => {
-    if (!loading) { // Only send requests after loading is complete
+    if (!loading) { // Only send requests after initial loading
       const action = bookmarked ? "bookmark" : "unmark";
       fetch(`${config.backend}/api/BookMarking_Routes/edit_bookmarks`, {
         method: "POST",
@@ -73,7 +97,11 @@ const PropertyCardTenant = ({ image, price, title, location, bhk, onView, onBook
 
       {/* Buttons Section */}
       <div className="buttons">
-        <button className={`bookmark-btn`} onClick={toggleBookmark} disabled={loading}>
+        <button
+          className="bookmark-btn"
+          onClick={toggleBookmark}
+          disabled={loading}
+        >
           {bookmarked ? (
             <svg className="bookmark-svg" width="40" height="40" viewBox="0 0 30 30" fill="#8b1e2f">
               <path d="M6 3c-1.1 0-2 .9-2 2v16l8-5 8 5V5c0-1.1-.9-2-2-2H6z"></path>
@@ -84,7 +112,9 @@ const PropertyCardTenant = ({ image, price, title, location, bhk, onView, onBook
             </svg>
           )}
         </button>
-        <Link className={`view-button ${available ? "" : "delisted"}`} target="_blank" to={`/property/${id}`}>View</Link>
+        <Link className={`view-button ${available ? "" : "delisted"}`} target="_blank" to={`/property/${id}`}>
+          View
+        </Link>
       </div>
     </div>
   );
