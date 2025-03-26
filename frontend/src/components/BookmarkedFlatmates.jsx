@@ -4,6 +4,7 @@ import "../css/BookmarkedFlatmates.css";
 import { Basecontext } from "../context/base/Basecontext";
 import { toast } from "react-toastify";
 import PropertyCardTenant from "./FindPropertyComponents/PropertyCardTenant.jsx";
+import "../config.json";
 
 // Import from the maintained fork of react-beautiful-dnd
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
@@ -21,7 +22,7 @@ const BookmarkedFlatmates = () => {
       const token = localStorage.getItem("authtoken");
       try {
         const response = await fetch(
-          "http://127.0.0.1:3000/api/BookMarking_Routes/get_bookmarks",
+          `${config.backend}/api/BookMarking_Routes/get_bookmarks`,
           {
             method: "GET",
             headers: {
