@@ -82,6 +82,7 @@ const SECRET_KEY = process.env.SECRET_KEY;
 router.get("/SearchFlatmates", authMiddleware, async (req, res) => {
     try {
         const tenant_id = req.user.id;
+        console.log(tenant_id);
 
         if (!tenant_id) {
             return res.status(400).json({ success: false, message: "Tenant ID is required" });

@@ -3,9 +3,16 @@ import "../css/LandlordProfileStyles/LandlordProfile.css";
 import PropertyCard from "./LandlordDashboard/PropertyCard.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { Rating } from "@mui/material";
+import { toast } from "react-toastify";
 
 const OtherLandlord = () => {
-  const [respData, setRespData] = useState(null);
+  const [respData, setRespData] = useState({
+    name: "",
+    email: "",
+    message: "",
+    Properties: [],
+    Images: "",
+  });
   const navigate = useNavigate();
   const params = useParams();
   const [reviews, setReviews] = useState([{
@@ -15,6 +22,8 @@ const OtherLandlord = () => {
     comment: ''
   }]);
 
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+
   const handleView = () => {
     navigate("/prop-display ");
   };
@@ -22,7 +31,6 @@ const OtherLandlord = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(token);
         const response = await fetch(
           "http://127.0.0.1:3000/api/view_profiles/other_users",
           {
@@ -34,25 +42,37 @@ const OtherLandlord = () => {
           }
         );
         const data = await response.json();
-        setRespData(data);
+        if (data.success) {
+          setRespData(data.data);
+        } else {
+          setSomethingwentwrong(true);
+        }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        setSomethingwentwrong(true);
       }
     };
 
     fetchData();
 
     const fetchReviews = async () => {
-      const response = await fetch("http://localhost:3000/api/reviews/reviewee", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ reviewee: params.id })
-      });
-      const data = await response.json();
-      if (data.success) {
-        setReviews(data.reviews);
+      try{
+        const response = await fetch("http://localhost:3000/api/reviews/reviewee", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ reviewee: params.id })
+        });
+        const data = await response.json();
+        if (data.success) {
+          setReviews(data.reviews);
+        }
+        else{
+          setSomethingwentwrong(true);
+        }
+      }
+      catch(error){
+        setSomethingwentwrong(true);
       }
     }
     fetchReviews();
@@ -60,19 +80,24 @@ const OtherLandlord = () => {
   }, []);
 
   const messageclick = async () => {
-    const response = await fetch('http://localhost:3000/messages/createConversation', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'authtoken': localStorage.getItem('authtoken')
-      },
-      body: JSON.stringify({ user2: params.id })
-    });
-    const data = await response.json();
-    if (data.success) {
-      navigate('/chat/' + data.conversation_id);
-    } else {
-      console.log("Failed to create conversation");
+    try{
+      const response = await fetch('http://localhost:3000/messages/createConversation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'authtoken': localStorage.getItem('authtoken')
+        },
+        body: JSON.stringify({ user2: params.id })
+      });
+      const data = await response.json();
+      if (data.success) {
+        navigate('/chat/' + data.conversation_id);
+      } else {
+        setSomethingwentwrong(true);
+      }
+    }
+    catch(error){
+      setSomethingwentwrong(true);
     }
   };
 
@@ -88,11 +113,17 @@ const OtherLandlord = () => {
     }
   };
 
+  useEffect(()=>{
+    if(somethingwentwrong){
+      toast.error('Something went wrong. Please try again later.');
+      navigate(-1)
+    }
+  }, [somethingwentwrong]);
+
   if (!respData) {
     return <div className="landlord-profile-loading">Loading...</div>;
   }
 
-  console.log(respData.Images);
   return (
     <>
       <div className="landlord-profile-container">

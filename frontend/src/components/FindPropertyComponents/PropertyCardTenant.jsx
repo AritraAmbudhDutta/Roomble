@@ -5,69 +5,62 @@ import { Link, useNavigate } from "react-router-dom";
 import useDidMountEffect from "../../useDidMountEffect";
 import { toast } from "react-toastify";
 
-
 const PropertyCardTenant = ({ image, price, title, location, bhk, onView, onBookMark, id, available }) => {
   const [bookmarked, setBookmarked] = useState(false);
+  const [loading, setLoading] = useState(true); // Add a loading state
   const navigate = useNavigate();
 
-
-
   const toggleBookmark = () => {
-    setBookmarked(!bookmarked);
+    if (!loading) { // Prevent toggling while loading
+      setBookmarked(!bookmarked);
+    }
   };
 
-  const handleView = () => {
-    navigate("/property/" + id);
-  };
-
-  useEffect(()=>{
-    const fetchbookmarkstatus = async()=>{
-        const response = await fetch('http://localhost:3000/api/BookMarking_Routes/check_bookmark',{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'authtoken': localStorage.getItem('authtoken')
-            },
-            body: JSON.stringify({ id: id, thing: "property" })
+  useEffect(() => {
+    const fetchBookmarkStatus = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/BookMarking_Routes/check_bookmark', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'authtoken': localStorage.getItem('authtoken')
+          },
+          body: JSON.stringify({ id: id, thing: "property" })
         });
         const data = await response.json();
-        if(data.success){
-            setBookmarked(data.bookmarked);
+        if (data.success) {
+          setBookmarked(data.bookmarked);
         }
-    }
-    fetchbookmarkstatus();
-  },[])
+      } catch (error) {
+        console.error("Failed to fetch bookmark status:", error);
+      } finally {
+        setLoading(false); // Set loading to false after the request completes
+      }
+    };
+    fetchBookmarkStatus();
+  }, [id]);
 
-  useDidMountEffect(() => {
-    if (bookmarked) {
+  useEffect(() => {
+    if (!loading) { // Only send requests after loading is complete
+      const action = bookmarked ? "bookmark" : "unmark";
       fetch("http://localhost:3000/api/BookMarking_Routes/edit_bookmarks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           authtoken: localStorage.getItem("authtoken"),
         },
-        body: JSON.stringify({ id: id, thing: "property", action: "bookmark" }),
-      })
-
-    } else {
-      fetch("http://localhost:3000/api/BookMarking_Routes/edit_bookmarks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authtoken: localStorage.getItem("authtoken"),
-        },
-        body: JSON.stringify({ id: id, thing: "property", action: "unmark" }),
-      })
+        body: JSON.stringify({ id: id, thing: "property", action }),
+      }).catch((error) => {
+        console.error("Failed to update bookmark status:", error);
+      });
     }
-  }, [bookmarked])
-
-  
+  }, [bookmarked, loading, id]);
 
   return (
-    <div className={`property-card ${available?"":"delisted"}`}>
+    <div className={`property-card ${available ? "" : "delisted"}`}>
       {/* Image Section */}
       <div className="image-container">
-        <img src={image} alt={title} className={`imagprop ${available?"":"delisted"}`}/>
+        <img src={image} alt={title} className={`imagprop ${available ? "" : "delisted"}`} />
       </div>
 
       {/* Details Section */}
@@ -79,7 +72,7 @@ const PropertyCardTenant = ({ image, price, title, location, bhk, onView, onBook
 
       {/* Buttons Section */}
       <div className="buttons">
-        <button className={`bookmark-btn`} onClick={toggleBookmark}>
+        <button className={`bookmark-btn`} onClick={toggleBookmark} disabled={loading}>
           {bookmarked ? (
             <svg className="bookmark-svg" width="40" height="40" viewBox="0 0 30 30" fill="#8b1e2f">
               <path d="M6 3c-1.1 0-2 .9-2 2v16l8-5 8 5V5c0-1.1-.9-2-2-2H6z"></path>
@@ -90,7 +83,7 @@ const PropertyCardTenant = ({ image, price, title, location, bhk, onView, onBook
             </svg>
           )}
         </button>
-        <Link className={`view-button ${available?"":"delisted"}` } target="_blank" to={`/property/${id}`}>View</Link>
+        <Link className={`view-button ${available ? "" : "delisted"}`} target="_blank" to={`/property/${id}`}>View</Link>
       </div>
     </div>
   );
