@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../css/FindPropertyStyles/SearchArea.css";
 import SearchIcon from "@mui/icons-material/Search";
 import config from "../../config.json";
@@ -75,6 +75,10 @@ function SearchFlatmatesFilter({ setFlatmates }) {
     });
     setFlatmates([]);
   };
+
+  useEffect(()=>{
+    handleApplyChanges();
+  },[])
 
   return (
     <div className="search-prop-container">
