@@ -8,7 +8,7 @@
   }
   
   .otp-page-image {
-    width: 29%;
+    width: 69%;
     height: auto;
     /* display: flex;
     justify-content: center;
@@ -17,8 +17,8 @@
   }
   
   .otp-page-image img {
-    max-width: 80%;
-    max-height: 80%;
+    max-width: 100%;
+    max-height: 100%;
   }
   
   .otp-page-form-container {
