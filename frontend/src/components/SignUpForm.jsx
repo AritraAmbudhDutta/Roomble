@@ -1,8 +1,5 @@
-import { responsiveFontSizes } from "@mui/material";
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import config from "../config";
 import "../css/SignUpTenant.css";
 
 function SignUpForm({ setID }) {
@@ -15,17 +12,16 @@ function SignUpForm({ setID }) {
     confirmPassword: "",
     locality: "",
     city: "",
-    smoke: null,
-    pets: null,
-    veg: null,
-    flatmate: null,
-    gender: null,
+    smoke: "",
+    pets: "",
+    veg: "",
+    flatmate: "",
+    gender: "",
     successMsg: "",
   });
-  const [formError, setFormError] = useState({
-    password: "",
-    confirmPassword: "",
-  });
+
+  // Separate error states for both pages
+  const [formError, setFormError] = useState({});
 
   const handleUserInput = (name, value) => {
     setFormInput((prev) => ({ ...prev, [name]: value }));
@@ -39,28 +35,76 @@ function SignUpForm({ setID }) {
     setStep((prevStep) => prevStep - 1);
   };
 
+  const validateEmail = (email) => {
+    // simple regex to validate email format
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  const validateStepOne = () => {
+    let errors = {};
+    if (!formInput.name.trim()) {
+      errors.name = "Name is required.";
+    }
+    if (!formInput.email.trim()) {
+      errors.email = "Email is required.";
+    } else if (!validateEmail(formInput.email)) {
+      errors.email = "Please enter a valid email (e.g., abc@bcd.com).";
+    }
+    if (!formInput.password) {
+      errors.password = "Password is required.";
+    } else if (formInput.password.length < 6) {
+      errors.password = "Password should be at least 6 characters.";
+    } else if (formInput.password.length > 10) {
+      errors.password = "Password should be at most 10 characters.";
+    }
+    if (!formInput.confirmPassword) {
+      errors.confirmPassword = "Confirm password is required.";
+    } else if (formInput.password !== formInput.confirmPassword) {
+      errors.confirmPassword = "Password and Confirm password do not match.";
+    }
+    setFormError(errors);
+    // If errors object is empty, validation passed
+    return Object.keys(errors).length === 0;
+  };
+
+  const validateStepTwo = () => {
+    let errors = {};
+    if (!formInput.city) {
+      errors.city = "City selection is required.";
+    }
+    if (!formInput.locality) {
+      errors.locality = "Locality selection is required.";
+    }
+    if (!formInput.smoke) {
+      errors.smoke = "Please specify if you smoke/drink.";
+    }
+    if (!formInput.pets) {
+      errors.pets = "Please specify if you plan on keeping pets.";
+    }
+    if (!formInput.veg) {
+      errors.veg = "Please specify if you are vegetarian.";
+    }
+    if (!formInput.flatmate) {
+      errors.flatmate = "Please specify if you need a flatmate.";
+    }
+    if (!formInput.gender) {
+      errors.gender = "Please select your gender.";
+    }
+    setFormError(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const validateFormInput = async (event) => {
     event.preventDefault();
     if (step === 1) {
-      // Validation for step 1
-      let inputError = {};
-      if (formInput.password.length < 6) {
-        setFormError({
-          ...inputError,
-          password: "Password should be at least 6 characters",
-        });
-        return;
+      if (validateStepOne()) {
+        nextStep();
       }
-      if (formInput.password !== formInput.confirmPassword) {
-        setFormError({
-          ...inputError,
-          confirmPassword: "Password and Confirm password do not match!",
-        });
-        return;
-      }
-      nextStep();
     } else {
-      await sendDataToAPI();
+      if (validateStepTwo()) {
+        await sendDataToAPI();
+      }
     }
   };
 
@@ -93,11 +137,8 @@ function SignUpForm({ setID }) {
         setFormInput((prev) => ({ ...prev, successMsg: responseData.message }));
         setID(responseData.message);
         navigate("/otp-page-tenant");
-        // navigate("/otp-page", { id: successMsg })
       } else {
         setFormInput((prev) => ({ ...prev, successMsg: responseData.message }));
-        // setID(responseData.message);
-        // navigate("/otp-page", { id: successMsg })
       }
     } catch (error) {
       console.error("Error sending data:", error);
@@ -105,14 +146,16 @@ function SignUpForm({ setID }) {
         ...prev,
         successMsg: "Couldn't fetch data.",
       }));
-      // setID(null);
     }
   };
 
   return (
     <div className="signup-tenant-box">
-      <form className={`signup-tenant-form step-${step}`} onSubmit={validateFormInput}>
-        {/*Step 1: Basic Details*/}
+      <form
+        className={`signup-tenant-form step-${step}`}
+        onSubmit={validateFormInput}
+      >
+        {/* Step 1: Basic Details */}
         {step === 1 && (
           <div className="signup-tenant-step">
             <h2 className="signup-tenant-title">Signup as a Tenant</h2>
@@ -122,39 +165,44 @@ function SignUpForm({ setID }) {
               type="text"
               className="signup-tenant-input-box"
               placeholder="Enter your full name"
-              required
               name="name"
-              onChange={({ target }) =>
-                handleUserInput(target.name, target.value)
-              }
+              value={formInput.name}
+              onChange={({ target }) => handleUserInput(target.name, target.value)}
+              required
             />
+            {formError.name && (
+              <p className="signup-tenant-error">{formError.name}</p>
+            )}
 
             <label>Email Address</label>
             <input
               type="email"
               className="signup-tenant-input-box"
-              placeholder="Enter your email address"
+              placeholder="abc@bcd.com"
               name="email"
-              onChange={({ target }) =>
-                handleUserInput(target.name, target.value)
-              }
+              value={formInput.email}
+              onChange={({ target }) => handleUserInput(target.name, target.value)}
               required
             />
+            {formError.email && (
+              <p className="signup-tenant-error">{formError.email}</p>
+            )}
 
             <label>Password</label>
             <input
               type="password"
               className="signup-tenant-input-box"
-              placeholder="Enter your password"
+              placeholder="Enter password between 6 and 10 characters"
               name="password"
               value={formInput.password}
-              onChange={({ target }) => {
-                handleUserInput(target.name, target.value);
-              }}
+              onChange={({ target }) => handleUserInput(target.name, target.value)}
               required
+              minLength="6"
+              maxLength="10"
             />
-
-            <p className="signup-tenant-error-password">{formError.password}</p>
+            {formError.password && (
+              <p className="signup-tenant-error">{formError.password}</p>
+            )}
 
             <label>Confirm Password</label>
             <input
@@ -163,16 +211,23 @@ function SignUpForm({ setID }) {
               placeholder="Re-enter the same password"
               name="confirmPassword"
               value={formInput.confirmPassword}
-              onChange={({ target }) => {
-                handleUserInput(target.name, target.value);
-              }}
+              onChange={({ target }) =>
+                handleUserInput(target.name, target.value)
+              }
               required
+              minLength="6"
+              maxLength="10"
             />
+            {formError.confirmPassword && (
+              <p className="signup-tenant-error">{formError.confirmPassword}</p>
+            )}
 
-            <p className="signup-tenant-error-confirm-password"> {formError.confirmPassword} </p>
-            <p className="signup-tenant-success-message"> {formInput.successMsg} </p>
-            
-            <button type="button" onClick={nextStep} className="signup-tenant-button"> Next </button>
+            <p className="signup-tenant-success-message">
+              {formInput.successMsg}
+            </p>
+            <button type="submit" className="signup-tenant-button">
+              Next
+            </button>
           </div>
         )}
 
@@ -187,27 +242,27 @@ function SignUpForm({ setID }) {
               (For better recommendations)
             </label>
             <select
-              type="text"
               className="signup-tenant-input-box"
               name="city"
-              onChange={({ target }) => {
-                handleUserInput(target.name, target.value);
-              }}
+              value={formInput.city}
+              onChange={({ target }) => handleUserInput(target.name, target.value)}
               required
             >
-              <option value="Selected">Select City</option>
+              <option value="">Select City</option>
               <option value="Mumbai">Mumbai</option>
             </select>
+            {formError.city && (
+              <p className="signup-tenant-error">{formError.city}</p>
+            )}
+
             <select
-              type="text"
               className="signup-tenant-input-box"
               name="locality"
-              onChange={({ target }) => {
-                handleUserInput(target.name, target.value);
-              }}
+              value={formInput.locality}
+              onChange={({ target }) => handleUserInput(target.name, target.value)}
               required
             >
-              <option value="Selected">Select Locality</option>
+              <option value="">Select Locality</option>
               <option value="Andheri">Andheri</option>
               <option value="Bandra">Bandra</option>
               <option value="Juhu">Juhu</option>
@@ -219,8 +274,12 @@ function SignUpForm({ setID }) {
               <option value="Thane">Thane</option>
               <option value="Goregaon">Goregaon</option>
             </select>
+            {formError.locality && (
+              <p className="signup-tenant-error">{formError.locality}</p>
+            )}
 
-            <label> Do you smoke/drink?
+            <label>
+              Do you smoke/drink?
               <label htmlFor="smoke-yes">
                 <input
                   type="radio"
@@ -228,10 +287,11 @@ function SignUpForm({ setID }) {
                   name="smoke"
                   className="signup-tenant-radio"
                   value="yes"
+                  checked={formInput.smoke === "yes"}
+                  onChange={({ target }) =>
+                    handleUserInput(target.name, target.value)
+                  }
                   required
-                  onChange={({ target }) => {
-                    handleUserInput(target.name, target.value);
-                  }}
                 />{" "}
                 Yes
               </label>
@@ -242,15 +302,20 @@ function SignUpForm({ setID }) {
                   name="smoke"
                   className="signup-tenant-radio"
                   value="no"
-                  onChange={({ target }) => {
-                    handleUserInput(target.name, target.value);
-                  }}
+                  checked={formInput.smoke === "no"}
+                  onChange={({ target }) =>
+                    handleUserInput(target.name, target.value)
+                  }
                 />{" "}
                 No
               </label>
             </label>
+            {formError.smoke && (
+              <p className="signup-tenant-error">{formError.smoke}</p>
+            )}
 
-            <label> Do you plan on keeping pets?
+            <label>
+              Do you plan on keeping pets?
               <label htmlFor="pets-yes">
                 <input
                   type="radio"
@@ -258,10 +323,11 @@ function SignUpForm({ setID }) {
                   name="pets"
                   className="signup-tenant-radio"
                   value="yes"
+                  checked={formInput.pets === "yes"}
+                  onChange={({ target }) =>
+                    handleUserInput(target.name, target.value)
+                  }
                   required
-                  onChange={({ target }) => {
-                    handleUserInput(target.name, target.value);
-                  }}
                 />{" "}
                 Yes
               </label>
@@ -272,15 +338,20 @@ function SignUpForm({ setID }) {
                   name="pets"
                   className="signup-tenant-radio"
                   value="no"
-                  onChange={({ target }) => {
-                    handleUserInput(target.name, target.value);
-                  }}
+                  checked={formInput.pets === "no"}
+                  onChange={({ target }) =>
+                    handleUserInput(target.name, target.value)
+                  }
                 />{" "}
                 No
               </label>
             </label>
+            {formError.pets && (
+              <p className="signup-tenant-error">{formError.pets}</p>
+            )}
 
-            <label> Are you a Vegetarian?
+            <label>
+              Are you a Vegetarian?
               <label htmlFor="veg-yes">
                 <input
                   type="radio"
@@ -288,10 +359,11 @@ function SignUpForm({ setID }) {
                   name="veg"
                   className="signup-tenant-radio"
                   value="yes"
+                  checked={formInput.veg === "yes"}
+                  onChange={({ target }) =>
+                    handleUserInput(target.name, target.value)
+                  }
                   required
-                  onChange={({ target }) => {
-                    handleUserInput(target.name, target.value);
-                  }}
                 />{" "}
                 Yes
               </label>
@@ -302,15 +374,20 @@ function SignUpForm({ setID }) {
                   name="veg"
                   className="signup-tenant-radio"
                   value="no"
-                  onChange={({ target }) => {
-                    handleUserInput(target.name, target.value);
-                  }}
+                  checked={formInput.veg === "no"}
+                  onChange={({ target }) =>
+                    handleUserInput(target.name, target.value)
+                  }
                 />{" "}
                 No
               </label>
             </label>
+            {formError.veg && (
+              <p className="signup-tenant-error">{formError.veg}</p>
+            )}
 
-            <label> Do you need a flatmate?
+            <label>
+              Do you need a flatmate?
               <label htmlFor="flatmate-yes">
                 <input
                   type="radio"
@@ -318,10 +395,11 @@ function SignUpForm({ setID }) {
                   name="flatmate"
                   className="signup-tenant-radio"
                   value="yes"
+                  checked={formInput.flatmate === "yes"}
+                  onChange={({ target }) =>
+                    handleUserInput(target.name, target.value)
+                  }
                   required
-                  onChange={({ target }) => {
-                    handleUserInput(target.name, target.value);
-                  }}
                 />{" "}
                 Yes
               </label>
@@ -332,15 +410,20 @@ function SignUpForm({ setID }) {
                   name="flatmate"
                   className="signup-tenant-radio"
                   value="no"
-                  onChange={({ target }) => {
-                    handleUserInput(target.name, target.value);
-                  }}
+                  checked={formInput.flatmate === "no"}
+                  onChange={({ target }) =>
+                    handleUserInput(target.name, target.value)
+                  }
                 />{" "}
                 No
               </label>
             </label>
+            {formError.flatmate && (
+              <p className="signup-tenant-error">{formError.flatmate}</p>
+            )}
 
-            <label> What's your gender?
+            <label>
+              What's your gender?
               <label htmlFor="gender-male">
                 <input
                   type="radio"
@@ -348,10 +431,11 @@ function SignUpForm({ setID }) {
                   name="gender"
                   className="signup-tenant-radio"
                   value="male"
+                  checked={formInput.gender === "male"}
+                  onChange={({ target }) =>
+                    handleUserInput(target.name, target.value)
+                  }
                   required
-                  onChange={({ target }) => {
-                    handleUserInput(target.name, target.value);
-                  }}
                 />{" "}
                 Male
               </label>
@@ -362,17 +446,29 @@ function SignUpForm({ setID }) {
                   name="gender"
                   className="signup-tenant-radio"
                   value="female"
-                  onChange={({ target }) => {
-                    handleUserInput(target.name, target.value);
-                  }}
+                  checked={formInput.gender === "female"}
+                  onChange={({ target }) =>
+                    handleUserInput(target.name, target.value)
+                  }
                 />{" "}
                 Female
               </label>
             </label>
+            {formError.gender && (
+              <p className="signup-tenant-error">{formError.gender}</p>
+            )}
 
             <div className="signup-navigation-buttons">
-              <button type="button" onClick={prevStep} className="signup-tenant-button"> ← Back </button>
-              <button type="submit" className="signup-tenant-button">Sign up</button>
+              <button
+                type="button"
+                onClick={prevStep}
+                className="signup-tenant-button"
+              >
+                ← Back
+              </button>
+              <button type="submit" className="signup-tenant-button">
+                Sign up
+              </button>
             </div>
           </div>
         )}
@@ -384,4 +480,5 @@ function SignUpForm({ setID }) {
     </div>
   );
 }
+
 export default SignUpForm;
