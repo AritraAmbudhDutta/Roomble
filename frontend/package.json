@@ -22,6 +22,7 @@
     "bootstrap": "^5.3.3",
     "emoji-picker-react": "^4.12.0",
     "font-awesome": "^4.7.0",
+    "framer-motion": "^12.6.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.483.0",
     "mongoose": "^8.9.6",
