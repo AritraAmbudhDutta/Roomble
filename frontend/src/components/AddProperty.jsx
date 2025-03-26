@@ -3,6 +3,7 @@ import DragAndDrop from './AddPropertyComponents/DragAndDrop';
 import "../css/AddPropertyStyles/AddProperty.css";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
+import FadeInAnimation from '../components/animations/FadeInAnimation';
 
 function AddProperty() {
     const initialFormState = {
@@ -99,26 +100,30 @@ function AddProperty() {
                 <h4 style={{ color: "#7D141D", fontSize: "20px", fontWeight: "bold" }}>Add Property</h4>
                 <div className="input-top">
                     <div className={"form-item upload-container"}>
+                    <FadeInAnimation>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                             <h4 style={{ color: "#7D141D" }}>Upload Photos *</h4>
                             {errors.photos && <p className="addProp-form-error">{errors.photos}</p>}
                         </div>
 
                         <DragAndDrop images={images} setImages={setImages} updateFormData={updateFormData} />
-
+                        </FadeInAnimation>
                     </div>
                     <div className={"form-item description-container"}>
+                        <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>Description</h4>
                         <textarea
                             value={formData.description}
                             onChange={(e) => updateFormData("description", e.target.value)}
                             placeholder="Enter Description"
                         />
+                        </FadeInAnimation>
                     </div>
                 </div>
             </div>
             <div className="add-prop-middle">
                 <div className={"form-item bhk-container"}>
+                <FadeInAnimation>
                     <h4 style={{ color: "#7D141D" }}>BHK *</h4>
                     <input
                         value={formData.bhk}
@@ -126,8 +131,10 @@ function AddProperty() {
                         placeholder="Enter BHK"
                     />
                     {errors.bhk && <p className="addProp-form-error">{errors.bhk}</p>}
+                    </FadeInAnimation>
                 </div>
                 <div className={"form-item Area-container"}>
+                <FadeInAnimation>
                     <h4 style={{ color: "#7D141D" }}>Area(sqft) *</h4>
                     <input
                         value={formData.area}
@@ -135,8 +142,10 @@ function AddProperty() {
                         placeholder="Enter Area"
                     />
                     {errors.area && <p className="addProp-form-error">{errors.area}</p>}
+                    </FadeInAnimation>
                 </div>
                 <div className={"form-item Rent-container"}>
+                <FadeInAnimation>
                     <h4 style={{ color: "#7D141D" }}>Rent(Per Month) *</h4>
                     <input
                         value={formData.rent}
@@ -144,8 +153,10 @@ function AddProperty() {
                         placeholder="Enter Rent"
                     />
                     {errors.rent && <p className="addProp-form-error">{errors.rent}</p>}
+                    </FadeInAnimation>
                 </div>
                 <div className={"form-item City-container"}>
+                <FadeInAnimation>
                     <h4 style={{ color: "#7D141D" }}>City *</h4>
                     <select
                         value={formData.city}
@@ -155,8 +166,10 @@ function AddProperty() {
                         <option value="Mumbai">Mumbai</option>
                     </select>
                     {errors.city && <p className="addProp-form-error">{errors.city}</p>}
+                    </FadeInAnimation>
                 </div>
                 <div className={"form-item Location-container"}>
+                <FadeInAnimation>
                     <h4 style={{ color: "#7D141D" }}>Location *</h4>
                     <select
                         value={formData.location}
@@ -175,10 +188,12 @@ function AddProperty() {
                         <option value="Goregaon">Goregaon</option>
                     </select>
                     {errors.location && <p className="addProp-form-error">{errors.location}</p>}
+                    </FadeInAnimation>
                 </div>
             </div>
             <div className="add-prop-bottom">
                 <div className={"form-item Address-container"}>
+                <FadeInAnimation>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                         <h4 style={{ color: "#7D141D" }}>Address *</h4>
                         {errors.address && <p className="addProp-form-error">{errors.address}</p>}
@@ -188,15 +203,17 @@ function AddProperty() {
                         onChange={(e) => updateFormData("address", e.target.value)}
                         placeholder="Enter Address"
                     />
-
+                </FadeInAnimation>
                 </div>
                 <div className={"form-item Amenities-container"}>
+                <FadeInAnimation>
                     <h4 style={{ color: "#7D141D" }}>Amenities</h4>
                     <textarea
                         value={formData.amenities}
                         onChange={(e) => updateFormData("amenities", e.target.value)}
                         placeholder="Enter Amenities"
                     />
+                    </FadeInAnimation>
                 </div>
                 <button className="Form-Submit-btn" onClick={handleSubmit}>Submit</button>
             </div>
