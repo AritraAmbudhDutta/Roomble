@@ -56,7 +56,7 @@ function SignupformLandlord({ setID }) {
     await sendDataToAPI();
   };
   const sendDataToAPI = async () => {
-    const apiURL = "http://127.0.0.1:3000/api/Landlord/auth/Landlord_register";
+    const apiURL = `${config.backend}/api/Landlord/auth/Landlord_register`;
 
     const requestData = {
       name: formInput.name,

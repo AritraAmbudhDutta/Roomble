@@ -4,6 +4,7 @@ import '../css/Review.css'
 import { Rating } from '@mui/material'
 import { Basecontext } from "../context/base/Basecontext";
 import { toast } from 'react-toastify';
+import config from '../config.json'
 
 
 export const Review = () => {
@@ -18,7 +19,7 @@ export const Review = () => {
     useEffect(()=>{
         // Fetch user details from backend
         const fetchUser = async()=>{
-            const response = await fetch('http://localhost:3000/api/view_profiles/user',{
+            const response = await fetch(`${config.backend}/api/view_profiles/user`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -40,7 +41,7 @@ export const Review = () => {
 
     const handleClick = async()=>{
         // Send review to backend
-        const response = await fetch('http://localhost:3000/api/reviews/',{
+        const response = await fetch(`${config.backend}/api/reviews/`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

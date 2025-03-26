@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/SignUpTenant.css";
+import config from "../config.json";
 
 function SignUpForm({ setID }) {
   const navigate = useNavigate();
@@ -109,7 +110,7 @@ function SignUpForm({ setID }) {
   };
 
   const sendDataToAPI = async () => {
-    const apiURL = "http://127.0.0.1:3000/api/Tenant/auth/Tenant_register";
+    const apiURL = `${config.backend}/api/Tenant/auth/Tenant_register`;
 
     const requestData = {
       name: formInput.name,

@@ -3,6 +3,7 @@ import '../css/MessageBoxStyle/Messages.css';
 import MessageBox from './MessageComponents/MessageBox';
 import ChatBox from './MessageComponents/ChatBox';
 import { useParams } from 'react-router-dom';
+import config from '../config.json';
 
 function Messages() {
   const [currentConvId, setCurrentConvId] = useState(null);
@@ -23,7 +24,7 @@ function Messages() {
 
   useEffect(()=>{
     setCurrentConvId(id);
-    fetch('http://localhost:3000/messages/getConversation',{
+    fetch(`${config.backend}/messages/getConversation`,{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
