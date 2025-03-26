@@ -4,7 +4,8 @@ import "../css/BookmarkedFlatmates.css";
 import { Basecontext } from "../context/base/Basecontext";
 import { toast } from "react-toastify";
 import PropertyCardTenant from "./FindPropertyComponents/PropertyCardTenant.jsx";
-import "../config.json";
+//import config
+import config from "../config";
 
 // Import from the maintained fork of react-beautiful-dnd
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
