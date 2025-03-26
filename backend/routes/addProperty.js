@@ -32,7 +32,7 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
             })
         }
 
-        amenities = amenities.split(',');
+        let amenities = amenities.split(',');
 
         let landlord = await Landlord.findById(landlordId);
         if(!landlord){
