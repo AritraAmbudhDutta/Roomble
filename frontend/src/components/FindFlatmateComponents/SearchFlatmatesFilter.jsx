@@ -111,7 +111,7 @@ function SearchFlatmatesFilter({ setFlatmates }) {
 
       {/* Filters */}
       <div className="filter-options">
-        {["smokeDrink", "pets", "eatNonVeg"].map((key) => (
+        {["SmokeDrink", "Pets", "EatNonVeg"].map((key) => (
           <div key={key} className="filter-row">
             <span className="filter-label">
               {key.replace(/([A-Z])/g, " $1").trim()}?
