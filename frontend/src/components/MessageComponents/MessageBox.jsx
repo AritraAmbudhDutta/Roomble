@@ -4,7 +4,7 @@ import MessageCard from './MessageCard.jsx';
 import '../../css/MessageBoxStyle/MessageBox.css';
 import { Basecontext } from '../../context/base/Basecontext';
 import { socket } from '../../socket.js';
-import {config} from "../../config.json";
+import config from "../../config.json";
 function MessageBox() {
 
     const state = useContext(Basecontext);

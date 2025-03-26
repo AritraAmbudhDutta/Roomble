@@ -4,6 +4,7 @@ import "../css/AddPropertyStyles/AddProperty.css";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import FadeInAnimation from '../components/animations/FadeInAnimation';
+import config from "../config.json";
 
 function AddProperty() {
     const initialFormState = {
@@ -69,7 +70,7 @@ function AddProperty() {
             if (!token) {
                 return navigate("/login");
             }
-            const response = await fetch("http://127.0.0.1:3000/api/listproperty/listProperty", {
+            const response = await fetch(`${config.backend}/api/listproperty/listProperty`, {
                 method: "POST",
                 headers: {
                     authtoken: token,

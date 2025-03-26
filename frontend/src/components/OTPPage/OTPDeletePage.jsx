@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../../css/OTPPage/OTPPageTenant.css";
 import logo from "../../../public/logo.png";
-
+import config from "../../config.json";
 export default function OTPPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,7 +49,7 @@ export default function OTPPage() {
       }
 
       const response = await fetch(
-        "http://127.0.0.1:3000/api/Deleting_routes/enterOTPtoDelete",
+        `${config.backend}/api/Deleting_routes/enterOTPtoDelete`,
         {
           method: "POST",
           headers: {

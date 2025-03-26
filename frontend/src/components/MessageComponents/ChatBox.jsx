@@ -13,7 +13,7 @@ import { useContext } from 'react'
 import { Basecontext } from '../../context/base/Basecontext'
 import useDidMountEffect from "../../useDidMountEffect";
 import { socket } from "../../socket";
-import {config} from "../../config.json";
+import config from "../../config.json";
 
 function ChatBox({currentConvId,setCurrentConvId,currentMessages,setCurrentMessages}) {
 

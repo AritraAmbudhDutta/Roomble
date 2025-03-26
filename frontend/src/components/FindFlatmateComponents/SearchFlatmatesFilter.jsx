@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../../css/FindPropertyStyles/SearchArea.css";
 import SearchIcon from "@mui/icons-material/Search";
-import {config} from "../../config.json";
+import config from "../../config.json";
 
 function SearchFlatmatesFilter({ setFlatmates }) {
   const [search, setSearch] = useState("");

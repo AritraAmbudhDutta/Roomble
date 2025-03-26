@@ -5,7 +5,7 @@ import "../../css/ForgotPassword/OTPPageForgot.css"; // Import the CSS specific 
 import logo from "../../../public/logo.png";
 import { Basecontext } from '../../context/base/Basecontext'
 import { jwtDecode } from "jwt-decode";
-import {config} from "../../config.json";
+import config from "../../config.json";
 
 export default function OTPPageForgot() {
   const navigate = useNavigate();

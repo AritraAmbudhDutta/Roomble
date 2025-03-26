@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import "../../css/ForgotPassword/SetNewPassword.css";
 import logo from "../../../public/logo.png";
-import { config } from "../../config.json";
+import config from "../../config.json";
 const SetNewPassword = () => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");

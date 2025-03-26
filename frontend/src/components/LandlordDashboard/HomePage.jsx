@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import PropertyCard from "./PropertyCard";
 import "../../css/LandlordDashboard.css";
-import {config} from "../../config.json";
+import config from "../../config.json";
 
 const HomePage = () => {
   const [Properties, setProperties] = useState([]);

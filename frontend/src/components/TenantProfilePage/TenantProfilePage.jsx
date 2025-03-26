@@ -7,6 +7,7 @@ import "../../css/TenantProfilePageStyles/TenantProfilePage.css"; // Import the 
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { Basecontext } from "../../context/base/Basecontext";
+import config from "../../config.json";
 
 export default function TenantProfilePage() {
   const navigate = useNavigate();

@@ -4,7 +4,7 @@ import logo from "../../../public/sampleUser_img.png";
 import { useContext } from "react";
 import { Basecontext } from "../../context/base/Basecontext";
 import { useNavigate } from "react-router-dom";
-import {config} from "../../config.json";
+import config from "../../config.json";
 const LandlordEditProfile = () => {
   const navigate = useNavigate();
   const state = useContext(Basecontext);

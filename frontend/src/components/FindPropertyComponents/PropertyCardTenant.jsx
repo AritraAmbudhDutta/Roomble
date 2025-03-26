@@ -4,7 +4,7 @@ import "../../css/PropertyCardTenant.css";
 import { Link, useNavigate } from "react-router-dom";
 import useDidMountEffect from "../../useDidMountEffect";
 import { toast } from "react-toastify";
-import {config} from "../../config.json";
+import config from "../../config.json";
 
 const PropertyCardTenant = ({ image, price, title, location, bhk, onView, onBookMark, id, available }) => {
   const [bookmarked, setBookmarked] = useState(false);
