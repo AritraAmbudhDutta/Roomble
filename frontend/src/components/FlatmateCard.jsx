@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import "../css/FlatMateCard.css";
 import { Basecontext } from "../context/base/Basecontext";
 import Swal from "sweetalert2";
-import {config} from "../config.json";
+import config from "../config.json";
 
 const FlatmateCard = ({ 
   id, 
