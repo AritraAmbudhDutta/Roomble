@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import PropertyCard from "./PropertyCard";
 import "../../css/LandlordDashboard.css";
+import {config} from "../../config.json";
 
 const HomePage = () => {
   const [Properties, setProperties] = useState([]);
@@ -15,7 +16,7 @@ const HomePage = () => {
       const token = localStorage.getItem("authtoken");
       try {
         const response = await fetch(
-          `http://127.0.0.1:3000/api/view_profiles/Self_profile`,
+          `${config.backend}/api/view_profiles/Self_profile`,
           {
             method: "POST",
             headers: {

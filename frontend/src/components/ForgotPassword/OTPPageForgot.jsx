@@ -5,6 +5,7 @@ import "../../css/ForgotPassword/OTPPageForgot.css"; // Import the CSS specific 
 import logo from "../../../public/logo.png";
 import { Basecontext } from '../../context/base/Basecontext'
 import { jwtDecode } from "jwt-decode";
+import {config} from "../../config.json";
 
 export default function OTPPageForgot() {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ export default function OTPPageForgot() {
   const queryParams = new URLSearchParams(location.search);
   const accounttype = queryParams.get("accounttype") || "tenant";  // Default to tenant if missing
 
-  const respURL = `http://127.0.0.1:3000/api/forgotPassword/enterOTP/`;
+  const respURL = `${config.backend}/api/forgotPassword/enterOTP/`;
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(null);

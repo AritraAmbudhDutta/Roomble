@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import "../../css/ForgotPassword/SetNewPassword.css";
 import logo from "../../../public/logo.png";
-
+import { config } from "../../config.json";
 const SetNewPassword = () => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -39,7 +39,7 @@ const SetNewPassword = () => {
             console.log("Email:", email);
             console.log("Account Type:", accounttype);
 
-            const response = await fetch(`http://127.0.0.1:3000/api/forgotPassword/ForgotPassword`, {
+            const response = await fetch(`${config.backend}/api/forgotPassword/ForgotPassword`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
