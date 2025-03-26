@@ -190,7 +190,7 @@ router.post(`/edit_bookmarks`, authMiddleware, async (req, res) => {
 
         return res.status(200).json({
           success: true,
-          message: "Successfully unmarked the user",
+          message: "Successfully unmarked the property",
         });
       } else {
         return res.status(404).json({
