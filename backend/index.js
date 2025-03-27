@@ -19,6 +19,7 @@ const fileUpload = require('express-fileupload');
 const updates = require(`./routes/update.js`);
 const propertyReview = require(`./routes/reviewProperty`);
 const cors = require(`cors`);
+const Interested = require(`./routes/Interested`);
 const path = require(`path`);
 const mongoconnect = require('./mongodb'); // Ensures MongoDB connects
 const { MongoClient } = require("mongodb");
@@ -72,6 +73,7 @@ const Tenant = require('./models/Tenant'); // Added Tenant model
 
 //http://127.0.0.1:3000/api/SetLatLong/SetLong_Lat
 // Routes
+app.use(`api/Interested`, Interested);
 app.use(`/api/SetLatLong`, SetLatLong);
 app.use(`/api/updates`, updates);
 app.use(`/api/Listing_Delisting`, enlist_delist);

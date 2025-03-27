@@ -32,7 +32,7 @@ router.post("/updateProfile", authMiddleware, async (req, res) => {
         const { accounttype, remove, ...updatedFields } = req.body; let user;
 
         
-        console.log(updatedFields);
+        // console.log(updatedFields);
         if (accounttype === "tenant") {
             user = await Tenant.findById(userId);
         } else if (accounttype === "landlord") {

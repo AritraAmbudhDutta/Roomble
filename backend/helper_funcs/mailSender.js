@@ -19,8 +19,10 @@ async function Sendmail(Recipient_email, Subject, body) {
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.log("Error:", error);
+            return false
         } else {
             console.log("Email sent: " + info.response);
+            return true
         }
     });
 }
