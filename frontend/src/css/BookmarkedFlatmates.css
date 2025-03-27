@@ -141,3 +141,45 @@ body{
     opacity: 1;
   }
 }
+
+/* Add these to your BookmarkedFlatmates.css */
+/* Delete Zone Styles */
+/* Delete Zone - Fixed Position */
+.delete-zone {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100; /* Base z-index */
+  transition: opacity 0.2s ease;
+}
+
+/* Hidden State */
+.delete-zone.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Visible State */
+.delete-zone.visible {
+  opacity: 1;
+}
+
+/* Active State (when card is dragged over) */
+.delete-zone.active {
+  z-index: 1001; /* Above dragged card */
+}
+
+/* Trash Icon */
+.trash-icon {
+  width: 40px;
+  height: 40px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+/* Dragged Card */
+.draggable-card.dragging {
+  z-index: -5; /* Below trash icon when active */
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}

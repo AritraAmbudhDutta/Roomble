@@ -78,6 +78,7 @@ function SearchFlatmatesFilter({ setFlatmates }) {
       gender: null,
     });
     setFlatmates([]);
+    handleApplyChanges();
   };
 
   useEffect(()=>{
