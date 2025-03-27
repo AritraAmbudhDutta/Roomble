@@ -254,7 +254,7 @@ const PropertyDisplay = () => {
           </div>
           <div className="property-display-section">
             <h3>Availability</h3>
-            <p>{property.available ? "Available for renting" : "Already rented"}</p>
+            <p>{property.available ? "Available for renting" : "Not Available"}</p>
           </div>
           {/* <div className="property-display-section">
           <h3>Landlord</h3>
