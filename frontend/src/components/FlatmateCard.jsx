@@ -15,17 +15,29 @@ const FlatmateCard = ({
   pets, 
   compatibilityScore, 
   image, 
-  isBookmarked 
+  isBookmarked,
+  onBookmarkToggle,
+  help
 }) => {
   const [bookmarked, setBookmarked] = useState(isBookmarked);
-  const { user } = useContext(Basecontext); // Context to get user token
+  const { user } = useContext(Basecontext);
 
   useEffect(() => {
     setBookmarked(isBookmarked);
   }, [isBookmarked]);
 
+  const handleBookmarkClick = async () => {
+    if (help) {
+      // If help is true, use the parent's onBookmarkToggle
+      await onBookmarkToggle();
+      setBookmarked(!bookmarked);
+    } else {
+      // If help is false, use the local toggleBookmark
+      await toggleBookmark();
+    }
+  };
+
   const toggleBookmark = async () => {
-    // Show confirmation popup before toggling bookmark
     const confirmPopup = await Swal.fire({
       title: "Toggle Bookmark?",
       text: `Are you sure you want to ${bookmarked ? "remove" : "add"} this bookmark?`,
@@ -41,14 +53,11 @@ const FlatmateCard = ({
 
     const newBookmarkState = !bookmarked;
     const token = localStorage.getItem("authtoken");
-    console.log(id);
     const requestBody = {
       action: newBookmarkState ? "bookmark" : "unmark",
       thing: "flatmate",
       id,
     };
-
-    console.log("Request Body:", requestBody);
 
     if (!token) {
       alert("Authentication token is missing!");
@@ -86,17 +95,14 @@ const FlatmateCard = ({
 
   return (
     <div className="flatmate-card">
-      {/* Card Header */}
       <div className="card-header">
         <img src={image} alt={name} className="profile-pic" />
         <span className="flatmate-name">{name}</span>
-        {/* Compatibility Score */}
         <span className="compatibility-score">
           <span className="star-icon">⭐</span> {score}%
         </span>
       </div>
 
-      {/* Card Body */}
       <div className="card-body">
         <p className="location-title">Preferred Location</p>
         <p className="location-text">
@@ -104,9 +110,11 @@ const FlatmateCard = ({
         </p>
       </div>
 
-      {/* Card Footer */}
       <div className="card-footer">
-        <button className="bookmark-btn" onClick={toggleBookmark}>
+        <button 
+          className="bookmark-btn" 
+          onClick={handleBookmarkClick} // Fixed: removed the () to prevent immediate invocation
+        >
           {bookmarked ? (
             <svg width="40" height="40" viewBox="0 0 30 30" fill="#8b1e2f">
               <path d="M6 3c-1.1 0-2 .9-2 2v16l8-5 8 5V5c0-1.1-.9-2-2-2H6z"></path>

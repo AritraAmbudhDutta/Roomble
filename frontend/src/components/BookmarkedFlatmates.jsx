@@ -265,6 +265,7 @@ const BookmarkedFlatmates = () => {
                               onBookmarkToggle={() =>
                                 handleBookmarkClick(flatmate._id, "flatmate")
                               }
+                              help={true}
                             />
                           </div>
                         )}
