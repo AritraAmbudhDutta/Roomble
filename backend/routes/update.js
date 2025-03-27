@@ -82,7 +82,15 @@ router.put("/updateProfile", authMiddleware, async (req, res) => {
 
         //Not expecting email or password in updatedFields 
         Object.keys(updatedFields).forEach((key) => {
-            if (user[key] !== undefined) {
+            // if (user[key] !== undefined) {
+            //     user[key] = updatedFields[key];
+            // }
+
+            //update all except email and password
+            if (key === `email` || key === `password`) {
+                return;
+            }
+            if(updatedFields[key] !== undefined){
                 user[key] = updatedFields[key];
             }
         });
@@ -127,7 +135,7 @@ router.post("/updateProperty/", authMiddleware, async (req, res) => {
         const landlordId = req.user.id;
         const propertyId = req.body.id;
 
-        const requiredFields = ["city", "town", "address", "area", "bhk", "description", "price", "amenities"];
+        const requiredFields = ["city", "town", "address", "area", "bhk", "description", "price", "amenities", "lat", "lng"];
 
         const missingFields = requiredFields.filter(field => (propertyData[field] === undefined));
 
@@ -163,6 +171,8 @@ router.post("/updateProperty/", authMiddleware, async (req, res) => {
         property.bhk = req.body.bhk;
         property.price = req.body.price;
         property.amenities = req.body.amenities;
+        property.lat = req.body.lat;
+        property.lng = req.body.lng;
 
         // console.log(req.files);
         if (req.files && req.files.image) {

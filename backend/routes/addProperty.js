@@ -21,7 +21,7 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
         const landlordId = req.user.id;
         const propertyData = req.body;
 
-        const requiredFields = ["city","town","address","area","bhk","description","price","amenities"];
+        const requiredFields = ["city","town","address","area","bhk","description","price","amenities", "lat","lng"];
 
         const missingFields = requiredFields.filter(field => (propertyData[field] === undefined));
 
@@ -105,9 +105,9 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
             }
         }
 
-        if(req.body.latitude !== undefined && req.body.longitude !== undefined){
-            newProperty.Latitude = req.body.latitude;
-            newProperty.Longitude = req.body.longitude;
+        if(req.body.lat !== undefined && req.body.lng !== undefined){
+            newProperty.lat = req.body.lat;
+            newProperty.lng = req.body.lng;
         }
 
         try{

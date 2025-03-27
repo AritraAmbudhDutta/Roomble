@@ -185,6 +185,11 @@ const PropertyDisplay = () => {
     setOpen(false);
   }
 
+  const viewonmaps = () => {
+    //open google maps with the lat and lng on new tab
+    window.open(`https://www.google.com/maps/search/?api=1&query=${property.lat},${property.lng}`);
+  }
+
 
 
 
@@ -261,11 +266,13 @@ const PropertyDisplay = () => {
             <div className="property-display-buttons">
               <button className="landlord-profile-edit-button" onClick={handleEdit}>Edit</button>
               <button className="landlord-profile-edit-button" onClick={handleDelist}>{property.available ? "Delist" : "List"}</button>
+              <button className="landlord-profile-edit-button" onClick={viewonmaps}>View on Maps</button>
             </div>
           ) :
             <div className="property-display-buttons">
               <button className="landlord-profile-edit-button" onClick={handleReview}>Review</button>
               <button className="landlord-profile-edit-button" onClick={redirectto("landlord", property.landlord)}>Contact Owner</button>
+              <button className="landlord-profile-edit-button" onClick={viewonmaps}>View on Maps</button>
             </div>}
         </div>
       </div>
