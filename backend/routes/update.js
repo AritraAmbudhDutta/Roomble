@@ -25,11 +25,13 @@ const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
 //update profile route 
 //Send accountype and all the fields except for password in the request say like locality,smoking -> yes or no , etc.
 //Upload picture in req.files.image max size 2mb
-router.put("/updateProfile", authMiddleware, async (req, res) => {
+router.post("/updateProfile", authMiddleware, async (req, res) => {
     try {
         const userId = req.user.id;
         //if you want to remove profile pic, then pass , remove : "profilepic"
         const { accounttype, remove, ...updatedFields } = req.body; let user;
+
+        console.log(updatedFields);
 
         if (accounttype === "tenant") {
             user = await Tenant.findById(userId);

@@ -19,7 +19,7 @@ const TenantEditPage = () => {
   const [formData, setFormData] = useState({
     name: state.user.name,
     email: state.user.email,
-    gender: state.user.gender,
+    gender: state.user.gender, // true for Male, false for Female
     city: state.user.city,
     locality: state.user.locality,
     smoke: state.user.smoke,
@@ -42,7 +42,7 @@ const TenantEditPage = () => {
     setFormData({
       name: state.user.name,
       email: state.user.email,
-      gender: state.user.gender === "Male" ? "Male" : "Female",
+      gender: state.user.gender, // Map backend boolean to formData
       city: state.user.city,
       locality: state.user.locality,
       smoke: state.user.smoke,
@@ -56,7 +56,11 @@ const TenantEditPage = () => {
   }, [user]);
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({
+        ...formData,
+        [name]: name === "gender" ? value === "true" : value, // Convert gender to boolean
+    });
   };
 
   // Show popup when user clicks on the email field
@@ -82,11 +86,12 @@ const TenantEditPage = () => {
     if (file) {
       formDataCopy.append("image", file);
     }
+    formDataCopy.append("gender", formData.gender); // Append gender as true/false
     try {
       const response = await fetch(
         `${config.backend}/api/updates/updateProfile`,
         {
-          method: "PUT",
+          method: "POST",
           body: formDataCopy,
           headers: {
             authtoken: token,
@@ -162,12 +167,13 @@ const TenantEditPage = () => {
           />
 
           <label>Gender</label>
-          <select name="gender" onChange={handleInputChange}>
-            <option value={undefined} selected>
-              gender
-            </option>
-            <option value="Female">Female</option>
-            <option value="Male">Male</option>
+          <select
+            name="gender"
+            value={formData.gender}
+            onChange={handleInputChange}
+          >
+            <option value="true">Male</option>
+            <option value="false">Female</option>
           </select>
           <div className="tenant-edit-choices">
             <div className="tenant-edit-choices-smoke">
