@@ -19,7 +19,7 @@ const TenantEditPage = () => {
   const [formData, setFormData] = useState({
     name: state.user.name,
     email: state.user.email,
-    gender: state.user.gender, // true for Male, false for Female
+    gender: state.user.gender?"Male":"Female",
     city: state.user.city,
     locality: state.user.locality,
     smoke: state.user.smoke,
@@ -42,7 +42,7 @@ const TenantEditPage = () => {
     setFormData({
       name: state.user.name,
       email: state.user.email,
-      gender: state.user.gender, // Map backend boolean to formData
+      gender: state.user.gender === "Male" ? "Male" : "Female",
       city: state.user.city,
       locality: state.user.locality,
       smoke: state.user.smoke,
@@ -56,11 +56,7 @@ const TenantEditPage = () => {
   }, [user]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-        ...formData,
-        [name]: name === "gender" ? value === "true" : value, // Convert gender to boolean
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   // Show popup when user clicks on the email field
@@ -90,7 +86,6 @@ const TenantEditPage = () => {
     if (file) {
       formDataCopy.append("image", file);
     }
-    formDataCopy.append("gender", formData.gender); // Append gender as true/false
     try {
       const response = await fetch(
         `${config.backend}/api/updates/updateProfile`,
@@ -171,13 +166,9 @@ const TenantEditPage = () => {
           />
 
           <label>Gender</label>
-          <select
-            name="gender"
-            value={formData.gender}
-            onChange={handleInputChange}
-          >
-            <option value="true">Male</option>
-            <option value="false">Female</option>
+          <select name="gender" onChange={handleInputChange} value={formData.gender=="Male"?"Male":"Female"}>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
           </select>
           <div className="tenant-edit-choices">
             <div className="tenant-edit-choices-smoke">

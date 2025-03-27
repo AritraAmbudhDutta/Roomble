@@ -31,8 +31,8 @@ router.post("/updateProfile", authMiddleware, async (req, res) => {
         //if you want to remove profile pic, then pass , remove : "profilepic"
         const { accounttype, remove, ...updatedFields } = req.body; let user;
 
+        
         console.log(updatedFields);
-
         if (accounttype === "tenant") {
             user = await Tenant.findById(userId);
         } else if (accounttype === "landlord") {
