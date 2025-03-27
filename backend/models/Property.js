@@ -43,11 +43,11 @@ const PropertySchema = new mongoose.Schema({
     },
     lat : {
         type : Number,
-        default : 19.0824822
+        default : 19.0760
     },
     lng : {
         type : Number,
-        default : 72.7141282
+        default : 72.8777
     },
     reviews: {
         type: Array,
