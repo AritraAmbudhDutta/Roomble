@@ -19,6 +19,8 @@ router.post(`/Tenant_Prop` , authMiddleware , async (req, res) => {
 
         let result = await SendMailer(Actual_Property.landlord.email, "Someone is interested in your property" , `Greetings, ${Actual_Property.landlord.name}. ${Actual_Tenant.name} is interested in your property at ${Actual_Property.address} .`);
 
+        console.log(result);
+
         if(result){
             return res.status(200).json({
                 success : true,

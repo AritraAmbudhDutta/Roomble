@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../../css/FindPropertyStyles/SearchArea.css";
 import SearchIcon from "@mui/icons-material/Search";
 import config from "../../config.json";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 function SearchFlatmatesFilter({ setFlatmates }) {
   const [search, setSearch] = useState("");
@@ -42,7 +42,9 @@ function SearchFlatmatesFilter({ setFlatmates }) {
 
     try {
       const response = await fetch(
-        `${config.backend}/api/Search_Routes/SearchFlatmates?${queryParams.toString()}`,
+        `${
+          config.backend
+        }/api/Search_Routes/SearchFlatmates?${queryParams.toString()}`,
         {
           method: "GET",
           headers: {
@@ -51,9 +53,9 @@ function SearchFlatmatesFilter({ setFlatmates }) {
           },
         }
       );
-
+      toast.success("Fetching Data");
       const data = await response.json();
-            console.log("API Response:", data);
+      console.log("API Response:", data);
       if (data.success) {
         setFlatmates(data.data);
         console.log("Flatmates Found:", data.data);
@@ -80,20 +82,20 @@ function SearchFlatmatesFilter({ setFlatmates }) {
     setFlatmates([]);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     handleApplyChanges();
-  },[])
+  }, []);
 
-    useEffect(()=>{
-      if(somethingwentwrong){
-        toast.error('Something went wrong. Please try again later.');
-        navigate(-1)
-      }
-    }, [somethingwentwrong]);
+  useEffect(() => {
+    if (somethingwentwrong) {
+      toast.error("Something went wrong. Please try again later.");
+      navigate(-1);
+    }
+  }, [somethingwentwrong]);
 
   return (
     <div className="search-prop-container">
-      <h1 style={{ paddingLeft: '20px' ,paddingTop: '20px'}}>  Filters</h1>
+      <h1 style={{ paddingLeft: "20px", paddingTop: "20px" }}> Filters</h1>
 
       <div className="city-search-container">
         <label>City</label>

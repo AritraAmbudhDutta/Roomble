@@ -16,15 +16,15 @@ async function Sendmail(Recipient_email, Subject, body) {
         subject: Subject,
         text: body,
     };
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log("Error:", error);
-            return false
-        } else {
-            console.log("Email sent: " + info.response);
-            return true
-        }
-    });
+    let result = await transporter.sendMail(mailOptions);
+    if(result.accepted){
+        console.log(`Email sent : ${result.response}`);
+        return true;
+    }
+    else{
+        console.log(`Failed to send Email`, result);
+        return false;
+    }
 }
 
 module.exports = Sendmail

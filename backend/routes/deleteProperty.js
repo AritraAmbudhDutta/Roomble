@@ -4,11 +4,14 @@ const Landlord = require("../models/Landlord");
 const Property = require("../models/Property");
 const authMiddleware = require("../middlewares/checkuser");
 const mongoose = require('mongoose');
-router.delete("/deleteProperty/:propertyId", authMiddleware, async (req, res) => {
+router.post("/deleteProperty", authMiddleware, async (req, res) => {
     try {
+        console.log(`mkc`)
         
         const landlordId = req.user.id;
         const propertyId = req.params.propertyId;
+
+        console.log(propertyId)
         // console.log(propertyId);
         if (!mongoose.Types.ObjectId.isValid(propertyId)) {
             // console.log(`!!!!INVALID ID FOUND!!!!!`);

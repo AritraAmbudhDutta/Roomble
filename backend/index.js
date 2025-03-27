@@ -86,7 +86,7 @@ app.use('/api/Tenant/auth', Tenant_routes_auth); // Added Tenant Routes
 app.use('/api/reviews', require('./routes/reviewroutes')); // Added Review Routes
 app.use(`/api/Search_Routes`, Searching_Routes);//Searching routes, add logic for searching properties also here only
 app.use(`/api/BookMarking_Routes`, BookMark_Routes);
-app.use(`/api/DeleteProperty`, deleteProperty);
+// app.use(`/api/DeleteProperty`, deleteProperty);
 app.use(`/api/listproperty`, listProperty);
 app.use(`/api/deleteproperty`, deleteProperty);
 app.use('/messages', messageRoutes(io, onlineUsers));

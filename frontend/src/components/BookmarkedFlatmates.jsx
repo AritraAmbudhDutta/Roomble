@@ -19,10 +19,10 @@ const BookmarkedFlatmates = () => {
   const { user } = useContext(Basecontext);
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
 
-  useEffect(()=>{
-    if(somethingwentwrong){
-      toast.error('Something went wrong. Please try again later.');
-      navigate(-1)
+  useEffect(() => {
+    if (somethingwentwrong) {
+      toast.error("Something went wrong. Please try again later.");
+      navigate(-1);
     }
   }, [somethingwentwrong]);
 
@@ -30,6 +30,7 @@ const BookmarkedFlatmates = () => {
     const fetchBookmarkedData = async () => {
       const token = localStorage.getItem("authtoken");
       try {
+        toast.success("Fetching Data");
         const response = await fetch(
           `${config.backend}/api/BookMarking_Routes/get_bookmarks`,
           {
@@ -59,8 +60,7 @@ const BookmarkedFlatmates = () => {
 
   if (loading)
     return <div className="bookmarked-page">Loading bookmarks...</div>;
-  if (error)
-    return <div className="bookmarked-page">Error: {error}</div>;
+  if (error) return <div className="bookmarked-page">Error: {error}</div>;
 
   // Function to call the backend for deletion.
   // 'thing' can be "flatmate" or "property".
