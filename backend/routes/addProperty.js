@@ -7,6 +7,7 @@ const fs = require(`fs`);
 const moveImage = require(`../helper_funcs/Saveimage`);//async fucntion which helps upload images
 const authMiddleware = require("../middlewares/checkuser");
 require(`dotenv`).config(`../.env`);
+const config = require(`../config`);
 
 const SECRET_KEY = process.env.SECRET_KEY;
 const PORT = process.env.PORT;
@@ -100,7 +101,7 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
                 //Save the image into Pictures/accounttype
                 let UploadPath = path.join(__dirname , `../Pictures` , `property`, `${newProperty.id}` , `${Image_count}${path.extname(image.name).toLowerCase()}`);
                 await moveImage(image, UploadPath);
-                newProperty.Images.push(`http://127.0.0.1:${PORT}/Pictures/property/${newProperty.id}/${Image_count}${path.extname(image.name).toLowerCase()}`);
+                newProperty.Images.push(`${config.backend}/Pictures/property/${newProperty.id}/${Image_count}${path.extname(image.name).toLowerCase()}`);
                 Image_count++;
             }
         }

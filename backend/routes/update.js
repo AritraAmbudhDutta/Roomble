@@ -9,6 +9,7 @@ const moveImage = require(`../helper_funcs/Saveimage`);//async fucntion which he
 const authMiddleware = require("../middlewares/checkuser");
 require(`dotenv`).config(`../.env`);
 const SaveImage = require(`../helper_funcs/Saveimage`);
+const config = require(`../config`);
 
 
 // const { route } = require("./ForgotPassword")
@@ -75,7 +76,7 @@ router.put("/updateProfile", authMiddleware, async (req, res) => {
                 //Save the image into Pictures/accounttype
                 let UploadPath = path.join(__dirname, `../Pictures`, `${accounttype}`, `${user.id}${path.extname(image.name).toLowerCase()}`);
                 await SaveImage(image, UploadPath);
-                user.Images = `http://127.0.0.1:3000/Pictures/${accounttype}/${user.id}${path.extname(image.name).toLowerCase()}`;
+                user.Images = `${config.backend}/Pictures/${accounttype}/${user.id}${path.extname(image.name).toLowerCase()}`;
 
             }
         }
@@ -98,7 +99,7 @@ router.put("/updateProfile", authMiddleware, async (req, res) => {
 
         //Testing of remove is left
         if (remove === `profilepic`) {
-            user.Images = `http://127.0.0.1:3000/Pictures/Default.png`;
+            user.Images = `${config.backend}/Pictures/Default.png`;
         }
 
         //saving the user
@@ -215,7 +216,7 @@ router.post("/updateProperty/", authMiddleware, async (req, res) => {
                     //Save the image into Pictures/accounttype
                     let UploadPath = path.join(__dirname, `../Pictures`, `property`, `${property.id}`, `${Image_count}${path.extname(image.name).toLowerCase()}`);
                     await moveImage(image, UploadPath);
-                    property.Images.push(`http://127.0.0.1:${PORT}/Pictures/property/${property.id}/${Image_count}${path.extname(image.name).toLowerCase()}`);
+                    property.Images.push(`${config.backend}/Pictures/property/${property.id}/${Image_count}${path.extname(image.name).toLowerCase()}`);
                     Image_count++;
                 }
             }
