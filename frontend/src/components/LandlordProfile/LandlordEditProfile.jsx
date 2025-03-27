@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "../../css/LandlordProfileStyles/LandlordEditProfile.css";
 import logo from "../../../public/sampleUser_img.png";
-import { useContext } from "react";
 import { Basecontext } from "../../context/base/Basecontext";
 import { useNavigate } from "react-router-dom";
 import config from "../../config.json";
+import Swal from "sweetalert2";
+
 const LandlordEditProfile = () => {
   const navigate = useNavigate();
   const state = useContext(Basecontext);
@@ -12,6 +13,14 @@ const LandlordEditProfile = () => {
   fetuser();
   const [file, setFile] = useState(null);
   const token = localStorage.getItem("authtoken");
+
+  const [formData, setFormData] = useState({
+    name: state.user.name,
+    email: state.user.email,
+    accounttype: state.user.type,
+    remove: "",
+  });
+
   useEffect(() => {
     setFormData({
       name: state.user.name,
@@ -20,28 +29,34 @@ const LandlordEditProfile = () => {
       remove: "",
     });
   }, [user]);
-  const [formData, setFormData] = useState({
-    name: state.user.name,
-    email: state.user.email,
-    accounttype: state.user.type,
-    remove: "",
-  });
-  // console.log(state);
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  // Popup to inform user that email is not editable
+  const handleEmailClick = (e) => {
+    e.preventDefault();
+    Swal.fire({
+      title: "Not Editable",
+      text: "You cannot edit your email address.",
+      icon: "info",
+      confirmButtonText: "Ok",
+    });
+  };
+
   // NEED TO SEND DATA TO BACKEND FROM HERE
   const handleSubmit = async () => {
-    const formDataCopy = new FormData(); // ✅ Create a FormData object
+    const formDataCopy = new FormData(); // Create a FormData object
 
     // Append text fields to FormData
     Object.keys(formData).forEach((key) => {
       formDataCopy.append(key, formData[key]);
     });
 
-    // Append the file (assuming 'file' is a valid File object)
+    // Append the file (if any)
     if (file) {
-      formDataCopy.append("image", file); // ✅ Correct way to append a file
+      formDataCopy.append("image", file);
     }
     try {
       const response = await fetch(
@@ -50,12 +65,11 @@ const LandlordEditProfile = () => {
           method: "PUT",
           body: formDataCopy,
           headers: {
-            // "Content-Type": "application/json",
-            authtoken: token, // Replace with actual data
+            authtoken: token,
             accounttype: "landlord",
           },
         }
-      ); //67dd4b17afb6c9aafaa20f3c
+      );
       const data = await response.json();
       if (data.success) {
         console.log("Form submitted successfully");
@@ -127,7 +141,7 @@ const LandlordEditProfile = () => {
             type="email"
             value={formData.email}
             name="email"
-            onChange={handleInputChange}
+            onClick={handleEmailClick}
             readOnly
           />
         </div>

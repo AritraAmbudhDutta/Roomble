@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "../../css/TenantProfilePageStyles/TenantEditPage.css";
 import logo from "../../../public/sampleUser_img.png";
-import { useContext } from "react";
 import { Basecontext } from "../../context/base/Basecontext";
 import { useNavigate } from "react-router-dom";
 import config from "../../config.json";
+import Swal from "sweetalert2";
+
 const TenantEditPage = () => {
   const navigate = useNavigate();
   const state = useContext(Basecontext);
@@ -12,22 +13,7 @@ const TenantEditPage = () => {
   fetuser();
   const [file, setFile] = useState(null);
   const token = localStorage.getItem("authtoken");
-  useEffect(() => {
-    setFormData({
-      name: state.user.name,
-      email: state.user.email,
-      gender: state.user.gender === "Male",
-      city: state.user.city,
-      locality: state.user.locality,
-      smoke: state.user.smoke,
-      veg: state.user.veg,
-      pets: state.user.pets,
-      flatmate: state.user.flatmate,
-      description: state.user.description,
-      accounttype: state.user.type,
-      remove: "",
-    });
-  }, [user]);
+
   const [formData, setFormData] = useState({
     name: state.user.name,
     email: state.user.email,
@@ -42,22 +28,50 @@ const TenantEditPage = () => {
     accounttype: state.user.type,
     remove: "",
   });
-  // console.log(state);
+
+  useEffect(() => {
+    setFormData({
+      name: state.user.name,
+      email: state.user.email,
+      gender: state.user.gender === "Male" ? "Male" : "Female",
+      city: state.user.city,
+      locality: state.user.locality,
+      smoke: state.user.smoke,
+      veg: state.user.veg,
+      pets: state.user.pets,
+      flatmate: state.user.flatmate,
+      description: state.user.description,
+      accounttype: state.user.type,
+      remove: "",
+    });
+  }, [user]);
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  // NEED TO SEND DATA TO BACKEND FROM HERE
+
+  // Show popup when user clicks on the email field
+  const handleEmailClick = (e) => {
+    e.preventDefault();
+    Swal.fire({
+      title: "Not Editable",
+      text: "You can't edit your email.",
+      icon: "info",
+      confirmButtonText: "Ok",
+    });
+  };
+
   const handleSubmit = async () => {
-    const formDataCopy = new FormData(); // ✅ Create a FormData object
+    const formDataCopy = new FormData();
 
     // Append text fields to FormData
     Object.keys(formData).forEach((key) => {
       formDataCopy.append(key, formData[key]);
     });
 
-    // Append the file (assuming 'file' is a valid File object)
+    // Append the file (if any)
     if (file) {
-      formDataCopy.append("image", file); // ✅ Correct way to append a file
+      formDataCopy.append("image", file);
     }
     try {
       const response = await fetch(
@@ -66,12 +80,11 @@ const TenantEditPage = () => {
           method: "PUT",
           body: formDataCopy,
           headers: {
-            // "Content-Type": "application/json",
-            authtoken: token, // Replace with actual data
+            authtoken: token,
             accounttype: "tenant",
           },
         }
-      ); //67dd4b17afb6c9aafaa20f3c
+      );
       const data = await response.json();
       if (data.success) {
         console.log("Form submitted successfully");
@@ -133,21 +146,17 @@ const TenantEditPage = () => {
             type="email"
             value={formData.email}
             name="email"
-            onChange={handleInputChange}
+            onClick={handleEmailClick}
             readOnly
           />
 
           <label>Gender</label>
-          <select
-            name="gender"
-            // value={formData.gender === "Male" ? true : false}
-            onChange={handleInputChange}
-          >
+          <select name="gender" onChange={handleInputChange}>
             <option value={undefined} selected>
               gender
             </option>
-            <option value={false}>Female</option>
-            <option value={true}>Male</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
           </select>
           <div className="tenant-edit-choices">
             <div className="tenant-edit-choices-smoke">
@@ -155,13 +164,17 @@ const TenantEditPage = () => {
               <div className="edit-smoke-btn">
                 <button
                   className={formData.smoke ? "active" : ""}
-                  onClick={() => setFormData({ ...formData, smoke: true })}
+                  onClick={() =>
+                    setFormData({ ...formData, smoke: true })
+                  }
                 >
                   YES
                 </button>
                 <button
                   className={!formData.smoke ? "active" : ""}
-                  onClick={() => setFormData({ ...formData, smoke: false })}
+                  onClick={() =>
+                    setFormData({ ...formData, smoke: false })
+                  }
                 >
                   NO
                 </button>
@@ -173,13 +186,17 @@ const TenantEditPage = () => {
               <div className="edit-veg-btn">
                 <button
                   className={formData.veg ? "active" : ""}
-                  onClick={() => setFormData({ ...formData, veg: true })}
+                  onClick={() =>
+                    setFormData({ ...formData, veg: true })
+                  }
                 >
                   VEG
                 </button>
                 <button
                   className={!formData.veg ? "active" : ""}
-                  onClick={() => setFormData({ ...formData, veg: false })}
+                  onClick={() =>
+                    setFormData({ ...formData, veg: false })
+                  }
                 >
                   NON VEG
                 </button>
@@ -191,13 +208,17 @@ const TenantEditPage = () => {
               <div className="edit-flatmate-btn">
                 <button
                   className={formData.flatmate ? "active" : ""}
-                  onClick={() => setFormData({ ...formData, flatmate: true })}
+                  onClick={() =>
+                    setFormData({ ...formData, flatmate: true })
+                  }
                 >
                   Want
                 </button>
                 <button
                   className={!formData.flatmate ? "active" : ""}
-                  onClick={() => setFormData({ ...formData, flatmate: false })}
+                  onClick={() =>
+                    setFormData({ ...formData, flatmate: false })
+                  }
                 >
                   Don't Want
                 </button>
@@ -209,13 +230,17 @@ const TenantEditPage = () => {
               <div className="edit-pets-btn">
                 <button
                   className={formData.pets ? "active" : ""}
-                  onClick={() => setFormData({ ...formData, pets: true })}
+                  onClick={() =>
+                    setFormData({ ...formData, pets: true })
+                  }
                 >
                   YES
                 </button>
                 <button
                   className={!formData.pets ? "active" : ""}
-                  onClick={() => setFormData({ ...formData, pets: false })}
+                  onClick={() =>
+                    setFormData({ ...formData, pets: false })
+                  }
                 >
                   NO
                 </button>
@@ -227,7 +252,6 @@ const TenantEditPage = () => {
         {/* Right Side */}
         <div className="tenant-edit-right">
           <label>City</label>
-
           <select
             name="city"
             value={formData.city}
@@ -237,13 +261,6 @@ const TenantEditPage = () => {
           </select>
 
           <label>Locality</label>
-
-          {/* <input
-            type="text"
-            name="locality"
-            value={formData.locality}
-            onChange={handleInputChange}
-          /> */}
           <select
             name="locality"
             value={formData.locality}
@@ -261,19 +278,6 @@ const TenantEditPage = () => {
             <option value="Thane">Thane</option>
             <option value="Goregaon">Goregaon</option>
           </select>
-
-          {/* <span>Religion</span>
-
-          <select
-            name="religion"
-            value={formData.religion}
-            onChange={handleInputChange}
-          >
-            <option value="Christian">Christian</option>
-            <option value="Hindu">Hindu</option>
-            <option value="Muslim">Muslim</option>
-            <option value="Other">Other</option>
-          </select> */}
 
           <span>My Brief Intro</span>
           <textarea
