@@ -2,10 +2,19 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/SignUpTenant.css";
 import config from "../config.json";
+import {toast} from 'react-toastify';
+import {useEffect} from 'react';
 
 function SignUpForm({ setID }) {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+  useEffect(()=>{
+      if(somethingwentwrong){
+        toast.error('Something went wrong. Please try again later.');
+        navigate(-1)
+      }
+    }, [somethingwentwrong]);
   const [formInput, setFormInput] = useState({
     name: "",
     email: "",
@@ -143,6 +152,7 @@ function SignUpForm({ setID }) {
       }
     } catch (error) {
       console.error("Error sending data:", error);
+      setSomethingwentwrong(true);
       setFormInput((prev) => ({
         ...prev,
         successMsg: "Couldn't fetch data.",

@@ -4,9 +4,17 @@ import MessageBox from './MessageComponents/MessageBox';
 import ChatBox from './MessageComponents/ChatBox';
 import { useParams } from 'react-router-dom';
 import config from '../config.json';
+import { toast } from 'react-toastify';
 
 function Messages() {
   const [currentConvId, setCurrentConvId] = useState(null);
+  const [somethingwentwrong , setSomethingwentwrong] = useState(false); 
+  useEffect(()=>{
+      if(somethingwentwrong){
+        toast.error('Something went wrong. Please try again later.');
+        navigate(-1)
+      }
+    }, [somethingwentwrong]);
   const [currentMessages, setCurrentMessages] = useState({
     members: ["loading", "loading"],
     messages: [
@@ -36,6 +44,8 @@ function Messages() {
     .then(data=>{
       if(data.success){
         setCurrentMessages(data.conversation);
+      }else{
+        setSomethingwentwrong(true);
       }
     })
 

@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import "../../css/OTPPage/OTPPageTenant.css"; // Import the CSS specific to this component
 import logo from "../../../public/logo.png";
 import config from "../../config.json";
+import { useEffect } from "react";
+
 export default function OTPPageTenant({ id }) {
   const navigate = useNavigate();
   console.log(`id is ${id}`);

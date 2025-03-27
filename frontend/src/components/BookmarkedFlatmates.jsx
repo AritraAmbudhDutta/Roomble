@@ -17,6 +17,14 @@ const BookmarkedFlatmates = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useContext(Basecontext);
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+
+  useEffect(()=>{
+    if(somethingwentwrong){
+      toast.error('Something went wrong. Please try again later.');
+      navigate(-1)
+    }
+  }, [somethingwentwrong]);
 
   useEffect(() => {
     const fetchBookmarkedData = async () => {
@@ -41,6 +49,7 @@ const BookmarkedFlatmates = () => {
         setProperties(data.PropertyBookMarks);
       } catch (err) {
         setError(err.message);
+        setSomethingwentwrong(true);
       } finally {
         setLoading(false);
       }

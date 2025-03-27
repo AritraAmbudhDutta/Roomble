@@ -3,9 +3,18 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../config";
+import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 function SignupformLandlord({ setID }) {
   const navigate = useNavigate();
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+  useEffect(()=>{
+      if(somethingwentwrong){
+        toast.error('Something went wrong. Please try again later.');
+        navigate(-1)
+      }
+    }, [somethingwentwrong]);
   const [formInput, setFormInput] = useState({
     name: "",
     email: "",
@@ -85,6 +94,7 @@ function SignupformLandlord({ setID }) {
       }
     } catch (error) {
       console.error("Error sending data:", error);
+      setSomethingwentwrong(true);
       setFormInput((prev) => ({
         ...prev,
         successMsg: "Couldn't fetch data.",
