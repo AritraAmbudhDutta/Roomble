@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import "../css/Login.css";
 import logo from "../../public/logo.png";
 import config from "../config.json";
-import {toast} from 'react-toastify';
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -12,14 +12,14 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [somethingwentwrong, setSomethingwentwrong] = useState(false);  
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
   const navigate = useNavigate();
-  useEffect(()=>{
-      if(somethingwentwrong){
-        toast.error('Something went wrong. Please try again later.');
-        navigate(-1)
-      }
-    }, [somethingwentwrong]);
+  useEffect(() => {
+    if (somethingwentwrong) {
+      toast.error("Something went wrong. Please try again later.");
+      navigate(-1);
+    }
+  }, [somethingwentwrong]);
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedEmail");
@@ -91,7 +91,7 @@ const Login = () => {
       <div className="login-logo-container">
         <img src={logo} alt="Roomble Logo" />
       </div>
-      /{/* Right Section: Login Form */}
+      {/* Right Section: Login Form */}
       <div className="login-login-box">
         <h2 className="login-login-title">Login to your Account</h2>
         <p className="login-subtext">See what is going on with your business</p>
