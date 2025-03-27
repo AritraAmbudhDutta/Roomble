@@ -5,7 +5,7 @@ import { Basecontext } from "../../context/base/Basecontext";
 import { useNavigate } from "react-router-dom";
 import config from "../../config.json";
 import Swal from "sweetalert2";
-import {toast} from 'react-toastify';
+import { toast } from "react-toastify";
 
 const LandlordEditProfile = () => {
   const navigate = useNavigate();
@@ -47,12 +47,12 @@ const LandlordEditProfile = () => {
     });
   };
 
-    useEffect(()=>{
-      if(somethingwentwrong){
-        toast.error('Something went wrong. Please try again later.');
-        navigate(-1)
-      }
-    }, [somethingwentwrong]);
+  useEffect(() => {
+    if (somethingwentwrong) {
+      toast.error("Something went wrong. Please try again later.");
+      navigate(-1);
+    }
+  }, [somethingwentwrong]);
 
   // NEED TO SEND DATA TO BACKEND FROM HERE
   const handleSubmit = async () => {
@@ -71,7 +71,7 @@ const LandlordEditProfile = () => {
       const response = await fetch(
         `${config.backend}/api/updates/updateProfile`,
         {
-          method: "PUT",
+          method: "POST",
           body: formDataCopy,
           headers: {
             authtoken: token,
@@ -87,7 +87,6 @@ const LandlordEditProfile = () => {
       } else {
         console.error("Failed to submit form");
         setSomethingwentwrong(true);
-        
       }
     } catch (error) {
       console.error("Error:", error);
