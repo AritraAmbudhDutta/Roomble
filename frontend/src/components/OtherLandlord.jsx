@@ -8,11 +8,11 @@ import config from "../config.json";
 
 const OtherLandlord = () => {
   const [respData, setRespData] = useState({
-    name: "",
-    email: "",
-    message: "",
+    name: "Loading...",
+    email: "Loading...",
+    message: "Loading...",
     Properties: [],
-    Images: "",
+    Images: `Loading...`,
   });
   const navigate = useNavigate();
   const params = useParams();
@@ -43,8 +43,9 @@ const OtherLandlord = () => {
           }
         );
         const data = await response.json();
+        console.log(data);
         if (data.success) {
-          setRespData(data.data);
+          setRespData(data);
         } else {
           setSomethingwentwrong(true);
         }
@@ -122,9 +123,9 @@ const OtherLandlord = () => {
     }
   }, [somethingwentwrong]);
 
-  if (!respData) {
-    return <div className="landlord-profile-loading">Loading...</div>;
-  }
+  // if (!respData) {
+  //   return <div className="landlord-profile-loading">Loading...</div>;
+  // }
 
   return (
     <>
@@ -133,7 +134,7 @@ const OtherLandlord = () => {
         <div className="landlord-profile-content">
           <div className="landlord-profile-header">
             <img
-              src={respData.Images}
+              src={respData? respData.Images: `${config.backend}/Pictures/Default.png`}
               alt="Profile"
               className="landlord-profile-image"
             />
@@ -143,21 +144,21 @@ const OtherLandlord = () => {
                   <p>
                     <span className="label">Full Name</span>{" "}
                     <span className="separator">:</span>
-                    <span className="value">{respData.name}</span>
+                    <span className="value">{respData?respData.name:"Loading..."}</span>
                   </p>
                 </div>
                 <div className="landlord-profile-email">
                   <p>
                     <span className="label">Email Address</span>{" "}
                     <span className="separator">:</span>
-                    <span className="value">{respData.email}</span>
+                    <span className="value">{respData?respData.email:"Loading..."}</span>
                   </p>
                 </div>
                 <div className="landlord-profile-propCount">
                   <p>
                     <span className="label">Properties Count</span>{" "}
                     <span className="separator">:</span>
-                    <span className="value">{respData.message}</span>
+                    <span className="value">{respData?respData.message:"Loading..."}</span>
                   </p>
                 </div>
 
@@ -187,7 +188,7 @@ const OtherLandlord = () => {
 
           {/* Properties Section (Still Inside the Same Container) */}
           <div className="landlord-profile-properties">
-            {respData.Properties.map(({ _id, town, bhk, price, Images, available }) => (
+            {respData?respData.Properties.map(({ _id, town, bhk, price, Images, available }) => (
               <PropertyCard
                 key={_id}
                 image={Images[0]}
@@ -198,7 +199,7 @@ const OtherLandlord = () => {
                 id={_id}
                 available={available}
               />
-            ))}
+            )):"Loading..."}
           </div>
         </div>
       </div>

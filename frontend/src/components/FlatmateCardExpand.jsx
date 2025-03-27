@@ -34,7 +34,7 @@ const FlatmateCardExpand = () => {
 
     useEffect(() => {
         const fetchbookmarkstatus = async () => {
-            const response = await fetch('http://localhost:3000/api/BookMarking_Routes/check_bookmark', {
+            const response = await fetch(`${config.backend}/api/BookMarking_Routes/check_bookmark`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const FlatmateCardExpand = () => {
 
         const fetchUser = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/view_profiles/other_users', {
+                const response = await fetch(`${config.backend}/api/view_profiles/other_users`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ const FlatmateCardExpand = () => {
 
         const fetchReviews = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/reviews/reviewee', {
+                const response = await fetch(`${config.backend}/api/reviews/reviewee`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -118,7 +118,7 @@ const FlatmateCardExpand = () => {
 
     useDidMountEffect(() => {
         if (isBookmarked) {
-            fetch('http://localhost:3000/api/BookMarking_Routes/edit_bookmarks', {
+            fetch(`${config.backend}/api/BookMarking_Routes/edit_bookmarks`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ const FlatmateCardExpand = () => {
                 body: JSON.stringify({ action: "bookmark", thing: "flatmate", id: params.id })
             });
         } else {
-            fetch('http://localhost:3000/api/BookMarking_Routes/edit_bookmarks', {
+            fetch(`${config.backend}/api/BookMarking_Routes/edit_bookmarks`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ const FlatmateCardExpand = () => {
     };
 
     const handleMessageClick = async () => {
-        const response = await fetch('http://localhost:3000/messages/createConversation', {
+        const response = await fetch(`${config.backend}/messages/createConversation`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

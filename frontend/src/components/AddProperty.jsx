@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DragAndDrop from './AddPropertyComponents/DragAndDrop';
 import "../css/AddPropertyStyles/AddProperty.css";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +6,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import FadeInAnimation from '../components/animations/FadeInAnimation';
 import config from "../config.json";
 import { APIProvider, Map, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
-
 
 function AddProperty() {
     const initialFormState = {
@@ -23,6 +22,7 @@ function AddProperty() {
     const [formData, setFormData] = useState(initialFormState);
     const [images, setImages] = useState([]);
     const [errors, setErrors] = useState({});
+    const [somethingwentwrong, setSomethingwentwrong] = useState(false);
     const navigate = useNavigate();
     const notify = (message) => toast(message);
 
@@ -54,6 +54,12 @@ function AddProperty() {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
+      useEffect(()=>{
+        if(somethingwentwrong){
+          toast.error('Something went wrong. Please try again later.');
+          navigate(-1)
+        }
+      }, [somethingwentwrong]);
 
     const handleSubmit = async () => {
 
@@ -102,10 +108,12 @@ function AddProperty() {
                 setErrors({});
             } else {
                 notify(`Error: ${data.message}`);
+                setSomethingwentwrong(true);
             }
         } catch (error) {
             console.error("Error submitting property:", error);
             notify("An error occurred. Please try again.");
+            setSomethingwentwrong(true);
         }
     };
 

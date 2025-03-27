@@ -4,6 +4,7 @@ import "../../css/OTPPage/OTPPageTenant.css";
 import logo from "../../../public/logo.png";
 import config from "../../config.json";
 import {toast} from 'react-toastify';
+import { useEffect } from "react";
 
 export default function OTPPage() {
   const navigate = useNavigate();
