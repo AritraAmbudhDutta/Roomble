@@ -41,34 +41,18 @@ const PropertySchema = new mongoose.Schema({
         type : [String],
         default : []
     },
-    Latitude : {
+    lat : {
         type : Number,
-        required : false,
-        default : 19.0824822
+        default : 19.0760
     },
-    Longitude : {
+    lng : {
         type : Number,
-        required : false,
-        default : 72.7141282
+        default : 72.8777
     },
-    reviews: [{
-        reviewer: {
-            type: mongoose.Schema.Types.ObjectId,
-            refPath: 'reviews.reviewerType',
-            required: true
-        },
-        rating: {
-            type: Number,
-            min: 1,
-            max: 5,
-            required: true
-        },
-        comment: String,
-        createdAt: {
-            type: Date,
-            default: Date.now
-        }
-    }],
+    reviews: {
+        type: Array,
+        default: []
+    },
     landlord: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Landlord',

@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import FadeInAnimation from '../components/animations/FadeInAnimation';
 import config from "../config.json";
+import { APIProvider, Map, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
+
 
 function AddProperty() {
     const initialFormState = {
@@ -26,6 +28,16 @@ function AddProperty() {
 
     const updateFormData = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const [selectedLocation, setSelectedLocation] = useState({ lat: 19.0760, lng: 72.8777 }); // Default: New Delhi
+
+    // Function to update location on map click
+    const handleMapClick = (event) => {
+        setSelectedLocation({
+            lat: event.detail.latLng.lat,
+            lng: event.detail.latLng.lng,
+        });
     };
 
     const validateForm = () => {
@@ -60,6 +72,8 @@ function AddProperty() {
         formDataToSend.append("town", formData.location); // Match backend field names
         formDataToSend.append("address", formData.address);
         formDataToSend.append("amenities", formData.amenities);
+        formDataToSend.append("lat", selectedLocation.lat);
+        formDataToSend.append("lng", selectedLocation.lng);
 
         images.forEach((image) => {
             formDataToSend.append("image", image.file); // Ensures backend receives images correctly
@@ -101,119 +115,143 @@ function AddProperty() {
                 <h4 style={{ color: "#7D141D", fontSize: "20px", fontWeight: "bold" }}>Add Property</h4>
                 <div className="input-top">
                     <div className={"form-item upload-container"}>
-                    <FadeInAnimation>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                            <h4 style={{ color: "#7D141D" }}>Upload Photos *</h4>
-                            {errors.photos && <p className="addProp-form-error">{errors.photos}</p>}
-                        </div>
+                        <FadeInAnimation>
+                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                <h4 style={{ color: "#7D141D" }}>Upload Photos *</h4>
+                                {errors.photos && <p className="addProp-form-error">{errors.photos}</p>}
+                            </div>
 
-                        <DragAndDrop images={images} setImages={setImages} updateFormData={updateFormData} />
+                            <DragAndDrop images={images} setImages={setImages} updateFormData={updateFormData} />
                         </FadeInAnimation>
                     </div>
                     <div className={"form-item description-container"}>
                         <FadeInAnimation>
-                        <h4 style={{ color: "#7D141D" }}>Description</h4>
-                        <textarea
-                            value={formData.description}
-                            onChange={(e) => updateFormData("description", e.target.value)}
-                            placeholder="Enter Description"
-                        />
+                            <h4 style={{ color: "#7D141D" }}>Description</h4>
+                            <textarea
+                                value={formData.description}
+                                onChange={(e) => updateFormData("description", e.target.value)}
+                                placeholder="Enter Description"
+                            />
                         </FadeInAnimation>
                     </div>
                 </div>
             </div>
             <div className="add-prop-middle">
                 <div className={"form-item bhk-container"}>
-                <FadeInAnimation>
-                    <h4 style={{ color: "#7D141D" }}>BHK *</h4>
-                    <input
-                        value={formData.bhk}
-                        onChange={(e) => updateFormData("bhk", e.target.value)}
-                        placeholder="Enter BHK"
-                    />
-                    {errors.bhk && <p className="addProp-form-error">{errors.bhk}</p>}
+                    <FadeInAnimation>
+                        <h4 style={{ color: "#7D141D" }}>BHK *</h4>
+                        <input
+                            value={formData.bhk}
+                            onChange={(e) => updateFormData("bhk", e.target.value)}
+                            placeholder="Enter BHK"
+                        />
+                        {errors.bhk && <p className="addProp-form-error">{errors.bhk}</p>}
                     </FadeInAnimation>
                 </div>
                 <div className={"form-item Area-container"}>
-                <FadeInAnimation>
-                    <h4 style={{ color: "#7D141D" }}>Area(sqft) *</h4>
-                    <input
-                        value={formData.area}
-                        onChange={(e) => updateFormData("area", e.target.value)}
-                        placeholder="Enter Area"
-                    />
-                    {errors.area && <p className="addProp-form-error">{errors.area}</p>}
+                    <FadeInAnimation>
+                        <h4 style={{ color: "#7D141D" }}>Area(sqft) *</h4>
+                        <input
+                            value={formData.area}
+                            onChange={(e) => updateFormData("area", e.target.value)}
+                            placeholder="Enter Area"
+                        />
+                        {errors.area && <p className="addProp-form-error">{errors.area}</p>}
                     </FadeInAnimation>
                 </div>
                 <div className={"form-item Rent-container"}>
-                <FadeInAnimation>
-                    <h4 style={{ color: "#7D141D" }}>Rent(Per Month) *</h4>
-                    <input
-                        value={formData.rent}
-                        onChange={(e) => updateFormData("rent", e.target.value)}
-                        placeholder="Enter Rent"
-                    />
-                    {errors.rent && <p className="addProp-form-error">{errors.rent}</p>}
+                    <FadeInAnimation>
+                        <h4 style={{ color: "#7D141D" }}>Rent(Per Month) *</h4>
+                        <input
+                            value={formData.rent}
+                            onChange={(e) => updateFormData("rent", e.target.value)}
+                            placeholder="Enter Rent"
+                        />
+                        {errors.rent && <p className="addProp-form-error">{errors.rent}</p>}
                     </FadeInAnimation>
                 </div>
                 <div className={"form-item City-container"}>
-                <FadeInAnimation>
-                    <h4 style={{ color: "#7D141D" }}>City *</h4>
-                    <select
-                        value={formData.city}
-                        onChange={(e) => updateFormData("city", e.target.value)}
-                    >
-                        <option value="">Select City</option>
-                        <option value="Mumbai">Mumbai</option>
-                    </select>
-                    {errors.city && <p className="addProp-form-error">{errors.city}</p>}
+                    <FadeInAnimation>
+                        <h4 style={{ color: "#7D141D" }}>City *</h4>
+                        <select
+                            value={formData.city}
+                            onChange={(e) => updateFormData("city", e.target.value)}
+                        >
+                            <option value="">Select City</option>
+                            <option value="Mumbai">Mumbai</option>
+                        </select>
+                        {errors.city && <p className="addProp-form-error">{errors.city}</p>}
                     </FadeInAnimation>
                 </div>
                 <div className={"form-item Location-container"}>
-                <FadeInAnimation>
-                    <h4 style={{ color: "#7D141D" }}>Location *</h4>
-                    <select
-                        value={formData.location}
-                        onChange={(e) => updateFormData("location", e.target.value)}
-                    >
-                        <option value="">Select Location</option>
-                        <option value="Andheri">Andheri</option>
-                        <option value="Bandra">Bandra</option>
-                        <option value="Juhu">Juhu</option>
-                        <option value="Malad">Malad</option>
-                        <option value="Kandivali">Kandivali</option>
-                        <option value="Borivali">Borivali</option>
-                        <option value="Dahisar">Dahisar</option>
-                        <option value="Mira Road">Mira Road</option>
-                        <option value="Thane">Thane</option>
-                        <option value="Goregaon">Goregaon</option>
-                    </select>
-                    {errors.location && <p className="addProp-form-error">{errors.location}</p>}
+                    <FadeInAnimation>
+                        <h4 style={{ color: "#7D141D" }}>Location *</h4>
+                        <select
+                            value={formData.location}
+                            onChange={(e) => updateFormData("location", e.target.value)}
+                        >
+                            <option value="">Select Location</option>
+                            <option value="Andheri">Andheri</option>
+                            <option value="Bandra">Bandra</option>
+                            <option value="Juhu">Juhu</option>
+                            <option value="Malad">Malad</option>
+                            <option value="Kandivali">Kandivali</option>
+                            <option value="Borivali">Borivali</option>
+                            <option value="Dahisar">Dahisar</option>
+                            <option value="Mira Road">Mira Road</option>
+                            <option value="Thane">Thane</option>
+                            <option value="Goregaon">Goregaon</option>
+                        </select>
+                        {errors.location && <p className="addProp-form-error">{errors.location}</p>}
                     </FadeInAnimation>
                 </div>
             </div>
             <div className="add-prop-bottom">
                 <div className={"form-item Address-container"}>
-                <FadeInAnimation>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <h4 style={{ color: "#7D141D" }}>Address *</h4>
-                        {errors.address && <p className="addProp-form-error">{errors.address}</p>}
-                    </div>
-                    <textarea
-                        value={formData.address}
-                        onChange={(e) => updateFormData("address", e.target.value)}
-                        placeholder="Enter Address"
-                    />
-                </FadeInAnimation>
+                    <FadeInAnimation>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            <h4 style={{ color: "#7D141D" }}>Address *</h4>
+                            {errors.address && <p className="addProp-form-error">{errors.address}</p>}
+                        </div>
+                        <textarea
+                            value={formData.address}
+                            onChange={(e) => updateFormData("address", e.target.value)}
+                            placeholder="Enter Address"
+                        />
+                    </FadeInAnimation>
                 </div>
                 <div className={"form-item Amenities-container"}>
-                <FadeInAnimation>
-                    <h4 style={{ color: "#7D141D" }}>Amenities</h4>
-                    <textarea
-                        value={formData.amenities}
-                        onChange={(e) => updateFormData("amenities", e.target.value)}
-                        placeholder="Enter Amenities"
-                    />
+                    <FadeInAnimation>
+                        <h4 style={{ color: "#7D141D" }}>Amenities</h4>
+                        <textarea
+                            value={formData.amenities}
+                            onChange={(e) => updateFormData("amenities", e.target.value)}
+                            placeholder="Enter Amenities"
+                        />
+                    </FadeInAnimation>
+                </div>
+
+                <div className={"form-item Amenities-container"}>
+                    <FadeInAnimation>
+                        <h4 style={{ color: "#7D141D" }}>Pick the location on Maps</h4>
+                            <APIProvider apiKey={import.meta.env.VITE_MAPS_API}>
+                                <div className="maps_box">
+                                    <Map
+                                        defaultCenter={selectedLocation}
+                                        defaultZoom={10}
+                                        mapId={"a2e98f7c917411dc"}
+                                        onClick={handleMapClick}
+                                    >
+                                        <AdvancedMarker position={selectedLocation} >
+                                        </AdvancedMarker>
+                                    </Map>
+                                </div>
+                                {/* <div className="p-4 bg-white shadow-md rounded-md mt-4">
+                                    <p><strong>Selected Coordinates:</strong></p>
+                                    <p>Latitude: {selectedLocation.lat}</p>
+                                    <p>Longitude: {selectedLocation.lng}</p>
+                                </div> */}
+                            </APIProvider>
                     </FadeInAnimation>
                 </div>
                 <button className="Form-Submit-btn" onClick={handleSubmit}>Submit</button>

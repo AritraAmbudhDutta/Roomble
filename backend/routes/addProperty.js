@@ -7,6 +7,7 @@ const fs = require(`fs`);
 const moveImage = require(`../helper_funcs/Saveimage`);//async fucntion which helps upload images
 const authMiddleware = require("../middlewares/checkuser");
 require(`dotenv`).config(`../.env`);
+const config = require(`../config`);
 
 const SECRET_KEY = process.env.SECRET_KEY;
 const PORT = process.env.PORT;
@@ -21,7 +22,7 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
         const landlordId = req.user.id;
         const propertyData = req.body;
 
-        const requiredFields = ["city","town","address","area","bhk","description","price","amenities"];
+        const requiredFields = ["city","town","address","area","bhk","description","price","amenities", "lat","lng"];
 
         const missingFields = requiredFields.filter(field => (propertyData[field] === undefined));
 
@@ -100,14 +101,14 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
                 //Save the image into Pictures/accounttype
                 let UploadPath = path.join(__dirname , `../Pictures` , `property`, `${newProperty.id}` , `${Image_count}${path.extname(image.name).toLowerCase()}`);
                 await moveImage(image, UploadPath);
-                newProperty.Images.push(`http://127.0.0.1:${PORT}/Pictures/property/${newProperty.id}/${Image_count}${path.extname(image.name).toLowerCase()}`);
+                newProperty.Images.push(`${config.backend}/Pictures/property/${newProperty.id}/${Image_count}${path.extname(image.name).toLowerCase()}`);
                 Image_count++;
             }
         }
 
-        if(req.body.latitude !== undefined && req.body.longitude !== undefined){
-            newProperty.Latitude = req.body.latitude;
-            newProperty.Longitude = req.body.longitude;
+        if(req.body.lat !== undefined && req.body.lng !== undefined){
+            newProperty.lat = req.body.lat;
+            newProperty.lng = req.body.lng;
         }
 
         try{

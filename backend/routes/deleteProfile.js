@@ -9,7 +9,6 @@ const Tenant = require("../models/Tenant");
 const authMiddleware = require("../middlewares/checkuser");
 const { Landlord_OTP, Tenant_OTP } = require("../models/OTP_models");
 const Conversation = require("../models/Conversation");
-const Review = require("../models/Review");
 const Property = require("../models/Property");
 
 //expect email and accounttype
@@ -170,11 +169,9 @@ router.post(`/enterOTPtoDelete`, authMiddleware, async (req, res) => {
         // Delete related data
         if (accounttype === `tenant`) {
           await Conversation.deleteMany({ tenantEmail: userEmail });
-          await Review.deleteMany({ tenantEmail: userEmail });
         } else if (accounttype === `landlord`) {
           await Property.deleteMany({ landlordEmail: userEmail });
           await Conversation.deleteMany({ landlordEmail: userEmail });
-          await Review.deleteMany({ landlordEmail: userEmail });
         }
 
         const deletedUserOTP = await Tenant_OTP.findOneAndDelete({email : userEmail}) || await Landlord_OTP.findOneAndDelete({email : userEmail});

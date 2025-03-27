@@ -9,6 +9,7 @@ const moveImage = require(`../helper_funcs/Saveimage`);//async fucntion which he
 const authMiddleware = require("../middlewares/checkuser");
 require(`dotenv`).config(`../.env`);
 const SaveImage = require(`../helper_funcs/Saveimage`);
+const config = require(`../config`);
 
 
 // const { route } = require("./ForgotPassword")
@@ -75,14 +76,22 @@ router.put("/updateProfile", authMiddleware, async (req, res) => {
                 //Save the image into Pictures/accounttype
                 let UploadPath = path.join(__dirname, `../Pictures`, `${accounttype}`, `${user.id}${path.extname(image.name).toLowerCase()}`);
                 await SaveImage(image, UploadPath);
-                user.Images = `http://127.0.0.1:3000/Pictures/${accounttype}/${user.id}${path.extname(image.name).toLowerCase()}`;
+                user.Images = `${config.backend}/Pictures/${accounttype}/${user.id}${path.extname(image.name).toLowerCase()}`;
 
             }
         }
 
         //Not expecting email or password in updatedFields 
         Object.keys(updatedFields).forEach((key) => {
-            if (user[key] !== undefined) {
+            // if (user[key] !== undefined) {
+            //     user[key] = updatedFields[key];
+            // }
+
+            //update all except email and password
+            if (key === `email` || key === `password`) {
+                return;
+            }
+            if(updatedFields[key] !== undefined){
                 user[key] = updatedFields[key];
             }
         });
@@ -90,7 +99,7 @@ router.put("/updateProfile", authMiddleware, async (req, res) => {
 
         //Testing of remove is left
         if (remove === `profilepic`) {
-            user.Images = `http://127.0.0.1:3000/Pictures/Default.png`;
+            user.Images = `${config.backend}/Pictures/Default.png`;
         }
 
         //saving the user
@@ -127,7 +136,7 @@ router.post("/updateProperty/", authMiddleware, async (req, res) => {
         const landlordId = req.user.id;
         const propertyId = req.body.id;
 
-        const requiredFields = ["city", "town", "address", "area", "bhk", "description", "price", "amenities"];
+        const requiredFields = ["city", "town", "address", "area", "bhk", "description", "price", "amenities", "lat", "lng"];
 
         const missingFields = requiredFields.filter(field => (propertyData[field] === undefined));
 
@@ -163,6 +172,8 @@ router.post("/updateProperty/", authMiddleware, async (req, res) => {
         property.bhk = req.body.bhk;
         property.price = req.body.price;
         property.amenities = req.body.amenities;
+        property.lat = req.body.lat;
+        property.lng = req.body.lng;
 
         // console.log(req.files);
         if (req.files && req.files.image) {
@@ -205,7 +216,7 @@ router.post("/updateProperty/", authMiddleware, async (req, res) => {
                     //Save the image into Pictures/accounttype
                     let UploadPath = path.join(__dirname, `../Pictures`, `property`, `${property.id}`, `${Image_count}${path.extname(image.name).toLowerCase()}`);
                     await moveImage(image, UploadPath);
-                    property.Images.push(`http://127.0.0.1:${PORT}/Pictures/property/${property.id}/${Image_count}${path.extname(image.name).toLowerCase()}`);
+                    property.Images.push(`${config.backend}/Pictures/property/${property.id}/${Image_count}${path.extname(image.name).toLowerCase()}`);
                     Image_count++;
                 }
             }
