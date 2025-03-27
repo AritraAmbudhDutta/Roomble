@@ -12,24 +12,25 @@ const ForgotPassword = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
-    const [isLandlord, setIsLandlord] = useState(false);
-    const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+    const [userType, setUserType] = useState("tenant"); // 'tenant' or 'landlord'
+    const [somethingwentwrong1, setSomethingwentwrong1] = useState(false);
+    const [somethingwentwrong2, setSomethingwentwrong2] = useState(false);
     const navigate = useNavigate();
 
     const state = useContext(Basecontext)
     const {user, setUser, fetuser} = state
     fetuser()
     
-    const handleToggle = () => {
-        setIsLandlord(!isLandlord);
-    };
+    const handleUserTypeChange = (type) => {
+        setUserType(type);
+      };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         setLoading(true);
 
-        const accounttype = isLandlord ? "landlord" : "tenant";
+        const accounttype = userType;
 
         try {
             const response = await fetch(`${config.backend}/api/forgotPassword/enteremail`, {
@@ -54,40 +55,71 @@ const ForgotPassword = () => {
                 navigate("/otp-forgot");
             } else {
                 setError(data.message || "Email not found. Please try again.");
-                setSomethingwentwrong(true);
+                setSomethingwentwrong1(true);
             }
         } catch (err) {
             setLoading(false);
             setError("Network error. Please try again.");
-            setSomethingwentwrong(true);
+            setSomethingwentwrong2(true);
         }
     };
 
       useEffect(()=>{
-        if(somethingwentwrong){
-          toast.error('Something went wrong. Please try again later.');
-          navigate(-1)
+        if(somethingwentwrong1){
+          toast.error('Email not found. Please try again.');
         }
-      }, [somethingwentwrong]);
+        else if(somethingwentwrong2){
+          toast.error('Network error. Please try again.');
+        }
+
+      }, [somethingwentwrong1, somethingwentwrong2]);
     
 
     return (
-        <div className="main-container">
+        <div className="fp-main-container">
             {/* Left Section: Logo */}
-            <div className="logo-container">
+            <div className="fp-logo-container">
                 <img src={logo} alt="Roomble Logo" />
             </div>
 
             {/* Right Section: Forget Password Form */}
-            <div className="login-box">
-                <h2 className="login-title">Forgot Password?</h2>
+            <div className="fp-login-box">
+                <h2 className="fp-title">Forgot Password?</h2>
 
-                <form className="login-form" onSubmit={handleSubmit}>
+                {/* Tenant / Landlord buttons */}
+                <div className="login-user-type-buttons">
+                <button
+                    className={`login-user-btn ${
+                    userType === "tenant" ? "selected" : ""
+                    }`}
+                    onClick={() => handleUserTypeChange("tenant")}
+                >
+                    <img
+                    src={userType === "landlord" ? "/key.png" : "/key_white.png"}
+                    style={{ width: "50px", height: "50px" }}
+                    />
+                    Tenant
+                </button>
+                <button
+                    className={`login-user-btn ${
+                    userType === "landlord" ? "selected" : ""
+                    }`}
+                    onClick={() => handleUserTypeChange("landlord")}
+                >
+                    <img
+                    src={userType === "landlord" ? "/white_house.png" : "/house.jpg"}
+                    style={{ width: "50px", height: "50px" }}
+                    />
+                    Landlord
+                </button>
+                </div>
+
+                <form className="fp-form" onSubmit={handleSubmit}>
                     <label htmlFor="email">Enter your registered email</label>
                     <input
                         type="email"
-                        id="email"
-                        placeholder="mail@abc.com"
+                        id="fp-email"
+                        placeholder="Enter your email address"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
@@ -95,25 +127,16 @@ const ForgotPassword = () => {
 
                     {error && <p className="error-text">{error}</p>}
 
-                    <button type="submit" className="login-button" disabled={loading}>
+                    <button type="submit" className="fp-submit-button" disabled={loading}>
                         {loading ? "Redirecting..." : "Submit"}
                     </button>
                 </form>
 
-                {/* Toggle Switch */}
-                <div className="toggle-container">
-                    <div className={`toggle-switch ${isLandlord ? "landlord-selected" : ""}`} onClick={handleToggle}>
-                        <span className="toggle-text tenant">Tenant</span>
-                        <span className="toggle-slider"></span>
-                        <span className="toggle-text landlord">Landlord</span>
-                    </div>
-                </div>
-
                 {/* Navigation Links */}
-                <p className="register-text">
+                <p className="fp-register-text">
                     Remember your password? <Link to="/login">Login</Link>
                 </p>
-                <p className="register-text">
+                <p className="fp-register-text">
                     Not Registered Yet? <Link to="/signup-tenant">Sign up</Link>
                 </p>
 
