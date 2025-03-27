@@ -5,10 +5,9 @@ import { Basecontext } from "../context/base/Basecontext";
 import { toast } from "react-toastify";
 import PropertyCardTenant from "./FindPropertyComponents/PropertyCardTenant.jsx";
 import config from "../config";
-
-// Import from the maintained fork of react-beautiful-dnd
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const BookmarkedFlatmates = () => {
   const [showFlatmates, setShowFlatmates] = useState(true);
@@ -18,13 +17,16 @@ const BookmarkedFlatmates = () => {
   const [error, setError] = useState(null);
   const { user } = useContext(Basecontext);
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOverDeleteZone, setDragOverDeleteZone] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
       navigate(-1);
     }
-  }, [somethingwentwrong]);
+  }, [somethingwentwrong, navigate]);
 
   useEffect(() => {
     const fetchBookmarkedData = async () => {
@@ -58,15 +60,25 @@ const BookmarkedFlatmates = () => {
     fetchBookmarkedData();
   }, []);
 
-  if (loading)
-    return <div className="bookmarked-page">Loading bookmarks...</div>;
-  if (error) return <div className="bookmarked-page">Error: {error}</div>;
+  const handleDragStart = () => {
+    setIsDragging(true);
+    setDragOverDeleteZone(false);
+  };
 
-  // Function to call the backend for deletion.
-  // 'thing' can be "flatmate" or "property".
+  const handleDragEnd = async (result, handler) => {
+    setIsDragging(false);
+    setDragOverDeleteZone(false);
+    await handler(result);
+  };
+
+  const handleDragUpdate = (update) => {
+    if (update.destination) {
+      setDragOverDeleteZone(update.destination.droppableId === "delete-zone");
+    }
+  };
+
   const handleDelete = async (bookmarkId, thing) => {
     const token = localStorage.getItem("authtoken");
-    console.log("Calling backend delete for:", bookmarkId, thing);
     try {
       const response = await fetch(
         `${config.backend}/api/BookMarking_Routes/edit_bookmarks`,
@@ -84,7 +96,6 @@ const BookmarkedFlatmates = () => {
         }
       );
       const data = await response.json();
-      console.log("Backend response:", data);
       if (data.success) {
         toast.success(data.message);
         return true;
@@ -99,7 +110,6 @@ const BookmarkedFlatmates = () => {
     }
   };
 
-  // Confirmation popup when clicking the bookmark icon (or delete button)
   const handleBookmarkClick = async (bookmarkId, thing) => {
     const confirmPopup = await Swal.fire({
       title: "Remove Bookmark?",
@@ -127,7 +137,6 @@ const BookmarkedFlatmates = () => {
     }
   };
 
-  // Drag handler for flatmates view
   const handleFlatmatesDragEnd = async (result) => {
     if (!result.destination) return;
     const { destination, draggableId } = result;
@@ -157,7 +166,6 @@ const BookmarkedFlatmates = () => {
     }
   };
 
-  // Drag handler for properties view
   const handlePropertiesDragEnd = async (result) => {
     if (!result.destination) return;
     const { destination, draggableId } = result;
@@ -187,10 +195,13 @@ const BookmarkedFlatmates = () => {
     }
   };
 
-  // Toggle between flatmates and properties
   const togglePage = () => {
     setShowFlatmates((prev) => !prev);
   };
+
+  if (loading)
+    return <div className="bookmarked-page">Loading bookmarks...</div>;
+  if (error) return <div className="bookmarked-page">Error: {error}</div>;
 
   return (
     <div className="bookmarked-page">
@@ -199,18 +210,24 @@ const BookmarkedFlatmates = () => {
           ? "Switch to Bookmarked Properties"
           : "Switch to Bookmarked Flatmates"}
       </button>
-      {/* Using a unique key forces remounting for the flip animation */}
       <div
         key={showFlatmates ? "flatmates" : "properties"}
         className="page-container"
       >
         {showFlatmates ? (
           <div className="page-content animate-flip">
-            <DragDropContext onDragEnd={handleFlatmatesDragEnd}>
+            <DragDropContext
+              onDragStart={handleDragStart}
+              onDragEnd={(result) =>
+                handleDragEnd(result, handleFlatmatesDragEnd)
+              }
+            >
               <Droppable droppableId="delete-zone">
                 {(provided, snapshot) => (
                   <div
-                    className="delete-zone"
+                    className={`delete-zone ${
+                      isDragging ? "visible" : "hidden"
+                    }`}
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
@@ -258,6 +275,7 @@ const BookmarkedFlatmates = () => {
                               onBookmarkToggle={() =>
                                 handleBookmarkClick(flatmate._id, "flatmate")
                               }
+                              help={true}
                             />
                           </div>
                         )}
@@ -271,11 +289,18 @@ const BookmarkedFlatmates = () => {
           </div>
         ) : (
           <div className="page-content animate-flip">
-            <DragDropContext onDragEnd={handlePropertiesDragEnd}>
+            <DragDropContext
+              onDragStart={handleDragStart}
+              onDragEnd={(result) =>
+                handleDragEnd(result, handlePropertiesDragEnd)
+              }
+            >
               <Droppable droppableId="delete-zone">
                 {(provided, snapshot) => (
                   <div
-                    className="delete-zone"
+                    className={`delete-zone ${
+                      isDragging ? "visible" : "hidden"
+                    }`}
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >

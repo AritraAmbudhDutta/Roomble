@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../css/Login.css";
-import logo from "../../public/logo.png";
-import config from "../config.json";
+import 'react-toastify/dist/ReactToastify.css';
 import { toast } from "react-toastify";
+import logo from "/logo.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -12,14 +12,8 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
   const navigate = useNavigate();
-  useEffect(() => {
-    if (somethingwentwrong) {
-      toast.error("Something went wrong. Please try again later.");
-      navigate(-1);
-    }
-  }, [somethingwentwrong]);
+
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedEmail");
@@ -44,8 +38,9 @@ const Login = () => {
     setLoading(true);
 
     try {
+
       const response = await fetch(
-        `${config.backend}/api/${userType}/auth/${userType}_login`,
+        `http://127.0.0.1:3000/api/${userType}/auth/${userType}_login`,
         {
           method: "POST",
           headers: {
@@ -70,18 +65,18 @@ const Login = () => {
           localStorage.removeItem("rememberedUserType");
         }
 
-        navigate(
-          userType === "landlord" ? "/landlord-dashboard" : "/tenant-dashboard"
-        );
+        navigate(userType === "landlord" ? "/landlord-dashboard" : "/tenant-dashboard");
         window.location.reload();
       } else {
         setError(data.message || "Invalid login credentials");
-        setSomethingwentwrong(true);
+        toast.error(data.message || "Invalid login credentials");
       }
     } catch (err) {
       setLoading(false);
-      setError("Network error. Please try again.");
-      setSomethingwentwrong(true);
+      setError(data.message);
+      toastify.error(data.message);
+      // setError("Network error. Please try again.");
+      // toast.error("Network error. Please try again.");
     }
   };
 
@@ -91,6 +86,7 @@ const Login = () => {
       <div className="login-logo-container">
         <img src={logo} alt="Roomble Logo" />
       </div>
+
       {/* Right Section: Login Form */}
       <div className="login-login-box">
         <h2 className="login-login-title">Login to your Account</h2>
@@ -99,27 +95,25 @@ const Login = () => {
         {/* Tenant / Landlord buttons */}
         <div className="login-user-type-buttons">
           <button
-            className={`login-user-btn ${
-              userType === "tenant" ? "selected" : ""
-            }`}
+            className={`login-user-btn ${userType === "tenant" ? "selected" : ""}`}
             onClick={() => handleUserTypeChange("tenant")}
           >
-            <img
-              src={userType === "landlord" ? "/key.png" : "/key_white.png"}
-              style={{ width: "50px", height: "50px" }}
+            <img 
+              src={userType === "landlord" ? "/key.png" : "/key_white.png"} 
+              style={{ width: "50px", height: "50px" }} 
+  
             />
             Tenant
           </button>
           <button
-            className={`login-user-btn ${
-              userType === "landlord" ? "selected" : ""
-            }`}
+            className={`login-user-btn ${userType === "landlord" ? "selected" : ""}`}
             onClick={() => handleUserTypeChange("landlord")}
           >
-            <img
-              src={userType === "landlord" ? "/white_house.png" : "/house.jpg"}
-              style={{ width: "50px", height: "50px" }}
-            />
+            <img 
+            src={userType === "landlord" ? "/white_house.png" : "/house.jpg"} 
+            style={{ width: "50px", height: "50px" }} 
+
+          />
             Landlord
           </button>
         </div>
@@ -135,9 +129,7 @@ const Login = () => {
             required
           />
 
-          <label htmlFor="password" className="login-page-label">
-            Password
-          </label>
+          <label htmlFor="password" className="login-page-label">Password</label>
           <input
             type="password"
             id="login-password"
@@ -166,20 +158,14 @@ const Login = () => {
 
           {error && <p className="login-error-text">{error}</p>}
 
-          <button
-            type="submit"
-            className="login-login-button"
-            disabled={loading}
-          >
+          <button type="submit" className="login-login-button" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
         <p className="login-register-text">
           Not Registered Yet?{" "}
-          <Link
-            to={userType === "landlord" ? "/signup-landlord" : "/signup-tenant"}
-          >
+          <Link to={userType === "landlord" ? "/signup-landlord" : "/signup-tenant"}>
             Create an account
           </Link>
         </p>
