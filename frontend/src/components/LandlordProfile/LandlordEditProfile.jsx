@@ -128,6 +128,7 @@ const LandlordEditProfile = () => {
             value={formData.email}
             name="email"
             onChange={handleInputChange}
+            readOnly
           />
         </div>
       </div>

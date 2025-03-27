@@ -134,6 +134,7 @@ const TenantEditPage = () => {
             value={formData.email}
             name="email"
             onChange={handleInputChange}
+            readOnly
           />
 
           <label>Gender</label>

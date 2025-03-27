@@ -1,9 +1,3 @@
-body {
-    background: linear-gradient(135deg, #fdfbfb, #f1f1f1); /* Subtle gradient */
-    font-family: 'Open Sans', sans-serif; /* Ensure a clean font */
-    margin: 0;
-    padding: 0;
-}
 .add-prop-container {
     max-width: 800px;
     margin: 40px auto;
@@ -13,9 +7,10 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.add-prop-top,
-.add-prop-middle,
-.add-prop-bottom {
+/* Top, Middle, and Bottom sections within the component */
+.add-prop-container .add-prop-top,
+.add-prop-container .add-prop-middle,
+.add-prop-container .add-prop-bottom {
     margin-bottom: 20px;
     padding: 20px;
     background-color: #fff;
@@ -23,54 +18,54 @@ body {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Section heading styles */
-h4 {
+/* Section heading styles scoped to the component */
+.add-prop-container h4 {
     margin-bottom: 10px;
     color: #333;
     font-size: 18px;
     font-weight: 600;
 }
 
-/* Form item container */
-.form-item {
+/* Form item container scoped to the component */
+.add-prop-container .form-item {
     margin-bottom: 15px;
 }
 
-/* Input fields and textareas */
-input,
-textarea,
-select {
-    /* width: 100%; */
+/* Input fields, textareas, and select elements scoped to the component */
+.add-prop-container input,
+.add-prop-container textarea,
+.add-prop-container select {
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 14px;
     transition: all 0.3s ease;
     background-color: #FDE6E8;
+    width: 100%;
 }
 
-input:focus,
-textarea:focus,
-select:focus {
+.add-prop-container input:focus,
+.add-prop-container textarea:focus,
+.add-prop-container select:focus {
     outline: none;
     border-color: #7D141D;
     box-shadow: 0 0 5px rgba(125, 20, 29, 0.2);
 }
 
-/* Textarea styles */
-textarea {
+/* Textarea specific styles scoped to the component */
+.add-prop-container textarea {
     min-height: 100px;
     resize: none;
 }
 
-/* Error message styles */
-.addProp-form-error {
+/* Error message styles scoped to the component */
+.add-prop-container .addProp-form-error {
     color: #ff4d4d;
     font-size: 14px;
 }
 
-/* Upload container */
-.upload-container {
+/* Upload container styles scoped to the component */
+.add-prop-container .upload-container {
     padding: 15px;
     border: 2px dashed #7D141D;
     border-radius: 12px;
@@ -80,12 +75,12 @@ textarea {
     transition: background-color 0.3s;
 }
 
-.upload-container:hover {
+.add-prop-container .upload-container:hover {
     background-color: #ffeaea;
 }
 
-/* Submit button styles */
-.Form-Submit-btn {
+/* Submit button styles scoped to the component */
+.add-prop-container .Form-Submit-btn {
     width: 100%;
     padding: 12px;
     background-color: #7D141D;
@@ -98,28 +93,28 @@ textarea {
     transition: background-color 0.3s ease;
 }
 
-.Form-Submit-btn:hover {
+.add-prop-container .Form-Submit-btn:hover {
     background-color: #5b0e14;
 }
 
-/* Responsive design */
+/* Responsive design scoped to the component */
 @media (max-width: 768px) {
     .add-prop-container {
         padding: 15px;
     }
 
-    h4 {
+    .add-prop-container h4 {
         font-size: 16px;
     }
 
-    input,
-    textarea,
-    select {
+    .add-prop-container input,
+    .add-prop-container textarea,
+    .add-prop-container select {
         font-size: 14px;
         padding: 10px;
     }
 
-    .Form-Submit-btn {
+    .add-prop-container .Form-Submit-btn {
         font-size: 14px;
     }
 }
