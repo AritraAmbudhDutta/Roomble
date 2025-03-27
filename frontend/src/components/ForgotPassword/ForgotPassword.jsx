@@ -4,6 +4,7 @@ import "../../css/ForgotPassword/ForgotPassword.css"; // Import the CSS specific
 import logo from "../../../public/logo.png";
 import { Basecontext } from '../../context/base/Basecontext';
 import config from "../../config.json";
+import {toast} from 'react-toastify';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
@@ -11,6 +12,7 @@ const ForgotPassword = () => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [isLandlord, setIsLandlord] = useState(false);
+    const [somethingwentwrong, setSomethingwentwrong] = useState(false);
     const navigate = useNavigate();
 
     const state = useContext(Basecontext)
@@ -51,12 +53,21 @@ const ForgotPassword = () => {
                 navigate("/otp-forgot");
             } else {
                 setError(data.message || "Email not found. Please try again.");
+                setSomethingwentwrong(true);
             }
         } catch (err) {
             setLoading(false);
             setError("Network error. Please try again.");
+            setSomethingwentwrong(true);
         }
     };
+
+      useEffect(()=>{
+        if(somethingwentwrong){
+          toast.error('Something went wrong. Please try again later.');
+          navigate(-1)
+        }
+      }, [somethingwentwrong]);
     
 
     return (

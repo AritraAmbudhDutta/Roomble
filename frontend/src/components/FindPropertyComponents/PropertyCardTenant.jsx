@@ -19,6 +19,7 @@ const PropertyCardTenant = ({
 }) => {
   const [bookmarked, setBookmarked] = useState(false);
   const [loading, setLoading] = useState(true); // Loading state to block multiple requests
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
 
   // Toggle bookmark with confirmation popup
   const toggleBookmark = async () => {
@@ -54,9 +55,12 @@ const PropertyCardTenant = ({
         const data = await response.json();
         if (data.success) {
           setBookmarked(data.bookmarked);
+        }else{
+          setSomethingwentwrong(true);
         }
       } catch (error) {
         console.error("Failed to fetch bookmark status:", error);
+        setSomethingwentwrong(true);
       } finally {
         setLoading(false); // Set loading to false after request completes
       }
@@ -80,6 +84,14 @@ const PropertyCardTenant = ({
       });
     }
   }, [bookmarked, loading, id]);
+
+    useEffect(()=>{
+      if(somethingwentwrong){
+        toast.error('Something went wrong. Please try again later.');
+        navigate(-1)
+      }
+    }, [somethingwentwrong]);
+
 
   return (
     <div className={`property-card ${available ? "" : "delisted"}`}>

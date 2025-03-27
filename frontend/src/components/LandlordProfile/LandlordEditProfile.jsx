@@ -5,6 +5,7 @@ import { Basecontext } from "../../context/base/Basecontext";
 import { useNavigate } from "react-router-dom";
 import config from "../../config.json";
 import Swal from "sweetalert2";
+import {toast} from 'react-toastify';
 
 const LandlordEditProfile = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const LandlordEditProfile = () => {
   fetuser();
   const [file, setFile] = useState(null);
   const token = localStorage.getItem("authtoken");
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
 
   const [formData, setFormData] = useState({
     name: state.user.name,
@@ -44,6 +46,13 @@ const LandlordEditProfile = () => {
       confirmButtonText: "Ok",
     });
   };
+
+    useEffect(()=>{
+      if(somethingwentwrong){
+        toast.error('Something went wrong. Please try again later.');
+        navigate(-1)
+      }
+    }, [somethingwentwrong]);
 
   // NEED TO SEND DATA TO BACKEND FROM HERE
   const handleSubmit = async () => {
@@ -77,9 +86,12 @@ const LandlordEditProfile = () => {
         window.location.reload();
       } else {
         console.error("Failed to submit form");
+        setSomethingwentwrong(true);
+        
       }
     } catch (error) {
       console.error("Error:", error);
+      setSomethingwentwrong(true);
     }
   };
 

@@ -14,17 +14,24 @@ import { Basecontext } from '../../context/base/Basecontext'
 import useDidMountEffect from "../../useDidMountEffect";
 import { socket } from "../../socket";
 import config from "../../config.json";
+import { toast } from "react-toastify";
 
 function ChatBox({currentConvId,setCurrentConvId,currentMessages,setCurrentMessages}) {
 
     const state = useContext(Basecontext)
     const {user, setUser, fetuser} = state
+    const [somethingwentwrong, setSomethingwentwrong] = useState(false);
 
     const [emojiopen, setEmojiopen] = React.useState(false);//For Emoji Picker to make it open and close
     const [message, setMessage] = React.useState('');//For the message input
     const [otherUser, setOtherUser] = React.useState({name: "Loading...", status: "offline", profilepic: "/sampleUser_Img.png"});
     const endRef=useRef(null);
-
+    useEffect(()=>{
+    if(somethingwentwrong){
+        toast.error('Something went wrong. Please try again later.');
+        navigate(-1)
+    }
+    }, [somethingwentwrong]);
     useEffect(()=>{
         socket.on("update_online_users",()=>{
             const fetchUserNameStatus = async () => {
@@ -46,7 +53,7 @@ function ChatBox({currentConvId,setCurrentConvId,currentMessages,setCurrentMessa
                         setOtherUser({ name: data.name, status: data.status, profilepic: data.profilepic });
                     }
                 } catch (err) {
-                    
+                    setSomethingwentwrong(true);
                 }
             };
         

@@ -5,6 +5,8 @@ import '../../css/MessageBoxStyle/MessageBox.css';
 import { Basecontext } from '../../context/base/Basecontext';
 import { socket } from '../../socket.js';
 import config from "../../config.json";
+import {toast} from 'react-toastify';
+
 function MessageBox() {
 
     const state = useContext(Basecontext);
@@ -12,6 +14,7 @@ function MessageBox() {
     const [currentMessages, setCurrentMessages] = useState([]);
     const [currentUserId, setCurrentUserId] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [somethingwentwrong, setSomethingwentwrong] = useState(false);
 
 
     useEffect(() => {
@@ -28,15 +31,23 @@ function MessageBox() {
                 const data = await res.json();
                 if (data.success) {
                     setCurrentMessages(data.conversations);
+                }else{
+                    setSomethingwentwrong(true);
                 }
 
             } catch (error) {
-                
+                setSomethingwentwrong(true);
             }
         };
 
         fetchConversations();
     }, [user]);
+      useEffect(()=>{
+        if(somethingwentwrong){
+          toast.error('Something went wrong. Please try again later.');
+          navigate(-1)
+        }
+      }, [somethingwentwrong]);
 
     useEffect(()=>{
         socket.on("message", (data) => {
@@ -56,7 +67,7 @@ function MessageBox() {
                     }
     
                 } catch (error) {
-                    
+                    setSomethingwentwrong(true);
                 }
             };
     

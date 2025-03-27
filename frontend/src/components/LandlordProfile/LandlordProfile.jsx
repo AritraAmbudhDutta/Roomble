@@ -5,8 +5,10 @@ import logo from "../../../public/property-img.png";
 import pfp from "../../../public/sampleUser_Img.png";
 import { useNavigate } from "react-router-dom";
 import config from "../../config.json";
+import { toast } from "react-toastify";
 const LandlordProfile = () => {
   const [respData, setRespData] = useState(null);
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
   const navigate = useNavigate();
   const handleSubmit = () => {
     navigate("/landlord-edit-page");
@@ -63,11 +65,19 @@ const LandlordProfile = () => {
         setRespData(data);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setSomethingwentwrong(true);
       }
     };
 
     fetchData();
   }, []);
+
+    useEffect(()=>{
+      if(somethingwentwrong){
+        toast.error('Something went wrong. Please try again later.');
+        navigate(-1)
+      }
+    }, [somethingwentwrong]);
 
   if (!respData) {
     return <div className="landlord-profile-loading">Loading...</div>;

@@ -114,6 +114,7 @@ const OtherLandlord = () => {
     }
   };
 
+  
   useEffect(()=>{
     if(somethingwentwrong){
       toast.error('Something went wrong. Please try again later.');

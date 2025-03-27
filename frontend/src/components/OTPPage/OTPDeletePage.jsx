@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "../../css/OTPPage/OTPPageTenant.css";
 import logo from "../../../public/logo.png";
 import config from "../../config.json";
+import {toast} from 'react-toastify';
+
 export default function OTPPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -11,6 +13,13 @@ export default function OTPPage() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(null);
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);  
+    useEffect(()=>{
+      if(somethingwentwrong){
+        toast.error('Something went wrong. Please try again later.');
+        navigate(-1)
+      }
+    }, [somethingwentwrong]);
   const inputRefs = useRef([]);
 
   const handleChange = (index, value) => {
@@ -78,6 +87,7 @@ export default function OTPPage() {
       console.error("Error:", error);
       setMessage("Something went wrong. Please try again.");
       setSuccess(false);
+      setSomethingwentwrong(true);
     }
   };
 

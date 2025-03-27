@@ -6,9 +6,11 @@ import logo from "../../../public/logo.png";
 import { Basecontext } from '../../context/base/Basecontext'
 import { jwtDecode } from "jwt-decode";
 import config from "../../config.json";
+import { toast } from "react-toastify";
 
 export default function OTPPageForgot() {
   const navigate = useNavigate();
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
 
   const state = useContext(Basecontext)
   const {user, setUser, fetuser} = state
@@ -98,13 +100,22 @@ export default function OTPPageForgot() {
       } else {
         setMessage(data.message || "Failed to verify OTP.");
         setSuccess(false);
+        setSomethingwentwrong(true);
       }
     } catch (error) {
       console.error("Network/Parsing Error:", error);
       setMessage("Network error or invalid server response. Please try again.");
       setSuccess(false);
+      setSomethingwentwrong(true);
     }
   };
+
+    useEffect(()=>{
+      if(somethingwentwrong){
+        toast.error('Something went wrong. Please try again later.');
+        navigate(-1)
+      }
+    }, [somethingwentwrong]);
 
   return (
     <div className="otp-page-container">

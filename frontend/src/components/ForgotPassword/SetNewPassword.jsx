@@ -3,11 +3,13 @@ import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import "../../css/ForgotPassword/SetNewPassword.css";
 import logo from "../../../public/logo.png";
 import config from "../../config.json";
+import { toast } from "react-toastify";
 const SetNewPassword = () => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [somethingwentwrong, setSomethingwentwrong] = useState(false);
 
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -70,12 +72,20 @@ const SetNewPassword = () => {
                 navigate("/login");
             } else {
                 setError(data.message || "Failed to reset password.");
+                setSomethingwentwrong(true);
             }
         } catch (error) {
             console.error("Network/Parsing Error:", error);
             setError(`Network error: ${error.message}`);
+            setSomethingwentwrong(true);
           }
         };
+        useEffect(()=>{
+        if(somethingwentwrong){
+            toast.error('Something went wrong. Please try again later.');
+            navigate(-1)
+        }
+        }, [somethingwentwrong]);
     
     return (
         <div className="main-container">

@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import "../../css/FindPropertyStyles/SearchArea.css";
 import SearchIcon from "@mui/icons-material/Search";
 import config from "../../config.json";
+import {toast} from "react-toastify";
 
 function SearchFlatmatesFilter({ setFlatmates }) {
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("");
   const [locality, setLocality] = useState("");
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
   const [filters, setFilters] = useState({
     smokeDrink: null,
     pets: null,
@@ -57,9 +59,11 @@ function SearchFlatmatesFilter({ setFlatmates }) {
         console.log("Flatmates Found:", data.data);
       } else {
         console.error("Error:", data.message);
+        setSomethingwentwrong(true);
       }
     } catch (error) {
       console.error("Request failed:", error);
+      setSomethingwentwrong(true);
     }
   };
 
@@ -79,6 +83,13 @@ function SearchFlatmatesFilter({ setFlatmates }) {
   useEffect(()=>{
     handleApplyChanges();
   },[])
+
+    useEffect(()=>{
+      if(somethingwentwrong){
+        toast.error('Something went wrong. Please try again later.');
+        navigate(-1)
+      }
+    }, [somethingwentwrong]);
 
   return (
     <div className="search-prop-container">

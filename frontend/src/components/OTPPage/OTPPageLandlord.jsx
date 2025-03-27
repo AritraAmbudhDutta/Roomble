@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../../css/OTPPage/OTPPageLandlord.css"; // Import the CSS specific to this component
 import logo from "../../../public/logo.png";
 import config from "../../config.json";
+import { toast } from "react-toastify";
 export default function OTPPageTenant({ id }) {
   const navigate = useNavigate();
   console.log(`id is ${id}`);
@@ -13,6 +14,13 @@ export default function OTPPageTenant({ id }) {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(null);
   const inputRefs = useRef([]);
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+    useEffect(()=>{
+      if(somethingwentwrong){
+        toast.error('Something went wrong. Please try again later.');
+        navigate(-1)
+      }
+    }, [somethingwentwrong]);
 
   const handleChange = (index, value) => {
     if (!/^[0-9]?$/.test(value)) return; // Allow only digits

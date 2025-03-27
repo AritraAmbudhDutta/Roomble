@@ -2,11 +2,13 @@ import React, { useEffect, useState, useContext } from "react";
 import PropertyCard from "./PropertyCard";
 import "../../css/LandlordDashboard.css";
 import config from "../../config.json";
+import { toast } from "react-toastify";
 
 const HomePage = () => {
   const [Properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
   // const state = useContext(Basecontext);
   // const { user, setUser, fetuser } = state;
   // fetuser();
@@ -29,12 +31,14 @@ const HomePage = () => {
         const data = await response.json();
         if (!data.success) {
           throw new Error(data.message);
+          setSomethingwentwrong(true);
         }
 
         setProperties(data.Properties);
       } catch (error) {
         setError(error);
         console.log(`Error from Landlord Dashboard in frontend`);
+        setSomethingwentwrong(true);
       } finally {
         setLoading(false);
       }
@@ -56,6 +60,12 @@ const HomePage = () => {
     newth.available = item.available;
     properties.push(newth);
   }
+    useEffect(()=>{
+      if(somethingwentwrong){
+        toast.error('Something went wrong. Please try again later.');
+        navigate(-1)
+      }
+    }, [somethingwentwrong]);
   return (
     <div className="page">
       <div className="properties-section">
