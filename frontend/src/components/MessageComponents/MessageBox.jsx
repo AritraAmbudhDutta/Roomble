@@ -74,11 +74,11 @@ function MessageBox() {
             fetchConversations();
         })
     })
-
+// filetr according to time and search
     const filteredMessages = currentMessages
         .filter(conversation =>
             conversation.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        ).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
     return (<div className="message-cards">
         {/*Top contains the heading and search bar*/}

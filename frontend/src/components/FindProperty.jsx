@@ -39,7 +39,7 @@ function FindProperty() {
           setBHK([bhk]);
         }
       };
-    
+
       const handleApplyChanges = async () => {
         
         try {
@@ -55,7 +55,7 @@ function FindProperty() {
                     max_price: values[1],
                     min_area: area[0],
                     max_area: area[1],
-                    bhk: BHK[0] === 4 ? "more" : BHK, //
+                    bhk: BHK[0] === 4 ? "more" : BHK[0], //
                 },
             });
             setLastSearchLocality(locality);

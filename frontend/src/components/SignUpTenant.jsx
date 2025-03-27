@@ -6,9 +6,9 @@ import "../css/SignUpTenant.css";
 function SignUpPage({ setID }) {
   return (
     <div className="signup-tenant-container">
-      <div className="signup-tenant-logo">
-        <img src={logo} alt="Roomble Logo" />
-      </div>
+      {/* <div className="signup-tenant-logo"> */}
+      <img src={logo} alt="Roomble Logo" />
+      {/* </div> */}
       <div>
         <SignUpForm setID={setID} />
       </div>
