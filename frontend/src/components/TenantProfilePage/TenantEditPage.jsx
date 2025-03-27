@@ -31,12 +31,12 @@ const TenantEditPage = () => {
     remove: "",
   });
 
-    useEffect(()=>{
-      if(somethingwentwrong){
-        toast.error('Something went wrong. Please try again later.');
-        navigate(-1)
-      }
-    }, [somethingwentwrong]);
+  useEffect(() => {
+    if (somethingwentwrong) {
+      toast.error("Something went wrong. Please try again later.");
+      navigate(-1);
+    }
+  }, [somethingwentwrong]);
 
   useEffect(() => {
     setFormData({
@@ -75,7 +75,11 @@ const TenantEditPage = () => {
 
     // Append text fields to FormData
     Object.keys(formData).forEach((key) => {
-      formDataCopy.append(key, formData[key]);
+      if (key === "gender") {
+        formDataCopy.append(key, formData[key] === "Male" ? true : false);
+      } else {
+        formDataCopy.append(key, formData[key]);
+      }
     });
 
     // Append the file (if any)
@@ -175,17 +179,13 @@ const TenantEditPage = () => {
               <div className="edit-smoke-btn">
                 <button
                   className={formData.smoke ? "active" : ""}
-                  onClick={() =>
-                    setFormData({ ...formData, smoke: true })
-                  }
+                  onClick={() => setFormData({ ...formData, smoke: true })}
                 >
                   YES
                 </button>
                 <button
                   className={!formData.smoke ? "active" : ""}
-                  onClick={() =>
-                    setFormData({ ...formData, smoke: false })
-                  }
+                  onClick={() => setFormData({ ...formData, smoke: false })}
                 >
                   NO
                 </button>
@@ -197,17 +197,13 @@ const TenantEditPage = () => {
               <div className="edit-veg-btn">
                 <button
                   className={formData.veg ? "active" : ""}
-                  onClick={() =>
-                    setFormData({ ...formData, veg: true })
-                  }
+                  onClick={() => setFormData({ ...formData, veg: true })}
                 >
                   VEG
                 </button>
                 <button
                   className={!formData.veg ? "active" : ""}
-                  onClick={() =>
-                    setFormData({ ...formData, veg: false })
-                  }
+                  onClick={() => setFormData({ ...formData, veg: false })}
                 >
                   NON VEG
                 </button>
@@ -219,17 +215,13 @@ const TenantEditPage = () => {
               <div className="edit-flatmate-btn">
                 <button
                   className={formData.flatmate ? "active" : ""}
-                  onClick={() =>
-                    setFormData({ ...formData, flatmate: true })
-                  }
+                  onClick={() => setFormData({ ...formData, flatmate: true })}
                 >
                   Want
                 </button>
                 <button
                   className={!formData.flatmate ? "active" : ""}
-                  onClick={() =>
-                    setFormData({ ...formData, flatmate: false })
-                  }
+                  onClick={() => setFormData({ ...formData, flatmate: false })}
                 >
                   Don't Want
                 </button>
@@ -241,17 +233,13 @@ const TenantEditPage = () => {
               <div className="edit-pets-btn">
                 <button
                   className={formData.pets ? "active" : ""}
-                  onClick={() =>
-                    setFormData({ ...formData, pets: true })
-                  }
+                  onClick={() => setFormData({ ...formData, pets: true })}
                 >
                   YES
                 </button>
                 <button
                   className={!formData.pets ? "active" : ""}
-                  onClick={() =>
-                    setFormData({ ...formData, pets: false })
-                  }
+                  onClick={() => setFormData({ ...formData, pets: false })}
                 >
                   NO
                 </button>
