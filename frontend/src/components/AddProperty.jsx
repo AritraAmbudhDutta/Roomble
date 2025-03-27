@@ -234,7 +234,7 @@ function AddProperty() {
                 <div className={"form-item Amenities-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>Pick the location on Maps</h4>
-                            <APIProvider apiKey={"AIzaSyDcNMGzIFqM0LUoFjXpfkyU6HaK1EfCtLo"}>
+                            <APIProvider apiKey={import.meta.env.VITE_MAPS_API}>
                                 <div className="maps_box">
                                     <Map
                                         defaultCenter={selectedLocation}
