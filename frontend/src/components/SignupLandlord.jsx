@@ -6,7 +6,7 @@ import "../css/SignupLandlord.css";
 function SignupLandlord({ setID }) {
   return (
     <div className="Container">
-      <div className="Logo">
+      <div className="signup-tenant-contaier">
         <img src={logo} alt="Roomble Logo" />
       </div>
       <div>
