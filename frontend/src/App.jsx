@@ -4,7 +4,7 @@ import { socket } from "./socket";
 import { Navbar } from "./components/Navbar";
 import BaseState from "./context/base/Basestate.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Messages from "./components/Messages";
 import SignUpTenant from "./components/SignUpTenant";
 import Login from "./components/Login.jsx";
@@ -35,6 +35,10 @@ import { Home } from "./components/Home.jsx";
 
 function App() {
   const [id, setID] = useState("");
+
+  //get the page url here using react router dom
+  const location = useLocation();
+  // console.log(location.pathname);
 
   const hideNavbarRoutes = ["/login", "/signup-landlord", "/signup-tenant", "/otp-page-tenant", "/otp-page-land", "/forgot-password", "/otp-forgot", "/set-new-password", "/otp-delete-page"];
 
