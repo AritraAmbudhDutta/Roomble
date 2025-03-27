@@ -13,7 +13,7 @@ export default function TenantProfilePage() {
   const navigate = useNavigate();
 
   const state = useContext(Basecontext);
-  const { user, setUser, fetuser } = state;
+  const { user, setUser, fetuser } = state;  
   fetuser();
 
   const handleSubmit = () => {

@@ -15,6 +15,7 @@ function EditProperty(property) {
 
     const state = useContext(Basecontext);
     const { user, setUser, fetuser } = state;
+    const [somethingwentwrong, setSomethingwentwrong] = useState(false);
     const navigate = useNavigate();
     const [selectedLocation, setSelectedLocation] = useState({ lat: 19.0760, lng: 72.8777 });
     const handleMapClick = (event) => {
@@ -99,10 +100,13 @@ function EditProperty(property) {
             console.log(data);
             if (data.success) {
                 navigate("/landlord-profile-page");
+            }else{
+                setSomethingwentwrong(true);
             }
         }
         catch (error) {
             console.error("Error updating property:", error);
+            setSomethingwentwrong(true);
         }
         
     };
@@ -126,10 +130,18 @@ function EditProperty(property) {
                 }
             } catch (error) {
                 console.log(error);
+                setSomethingwentwrong(true);
             }
         };
         fetchProperty();
     }, []);
+
+      useEffect(()=>{
+        if(somethingwentwrong){
+          toast.error('Something went wrong. Please try again later.');
+          navigate(-1)
+        }
+      }, [somethingwentwrong]);
 
     return (
         <div className="add-prop-container">

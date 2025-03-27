@@ -7,6 +7,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import config from "../config.json"; 
+import { useEffect } from "react";
 
 function FindProperty() {
       const [city, setCity] = useState("");
@@ -16,6 +17,7 @@ function FindProperty() {
       const [area, setArea] = useState([500, 10000]); // Initial values [lower, upper]
       const [properties, setProperties] = useState([]);
       const [error, setError] = useState("");
+      const [somethingwentwrong, setSomethingwentwrong] = useState(false);
       const [lastSearchLocality, setLastSearchLocality] = useState("");
       const [filtersApllied, setFiltersApplied] = useState(false);
       const navigate = useNavigate();
@@ -65,8 +67,15 @@ function FindProperty() {
             console.error("Error fetching properties:", err);
             setError(err.response?.data?.error || "Something went wrong");
             setFiltersApplied(false);
+            setSomethingwentwrong(true);
         }
     };
+      useEffect(()=>{
+        if(somethingwentwrong){
+          toast.error('Something went wrong. Please try again later.');
+          navigate(-1)
+        }
+      }, [somethingwentwrong]);
     
       const handleClearChanges = () => {
         setCity("");
@@ -101,7 +110,6 @@ function FindProperty() {
         />
         </div>
         <div className="Property-card-div">
-            <ToastContainer />
                 {/* Display Matching Properties First */}
                 {!filtersApllied  && <h2>Please select a locality in filters and click apply</h2>}
                 {(filtersApllied && matchingProperties.length === 0) && <h2>Sorry! No propertiey matched with your filters</h2>}

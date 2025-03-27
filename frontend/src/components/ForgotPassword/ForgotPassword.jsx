@@ -5,6 +5,7 @@ import logo from "../../../public/logo.png";
 import { Basecontext } from '../../context/base/Basecontext';
 import config from "../../config.json";
 import {toast} from 'react-toastify';
+import { useEffect } from "react";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
