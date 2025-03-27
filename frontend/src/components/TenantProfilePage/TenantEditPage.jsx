@@ -42,7 +42,7 @@ const TenantEditPage = () => {
     setFormData({
       name: state.user.name,
       email: state.user.email,
-      gender: state.user.gender === "Male" ? "Male" : "Female",
+      gender: state.user.gender? "Male" : "Female",
       city: state.user.city,
       locality: state.user.locality,
       smoke: state.user.smoke,
@@ -53,6 +53,7 @@ const TenantEditPage = () => {
       accounttype: state.user.type,
       remove: "",
     });
+    console.log(state.user);
   }, [user]);
 
   const handleInputChange = (e) => {
