@@ -165,14 +165,14 @@ const PropertyDisplay = () => {
     try {
       // console.log(Sendid);
       toast.success("Deleting...");
-      console.log(`${config.backend}/api/deleteproperty/deleteProperty/${id}`);
+      // console.log(`${config.backend}/api/deleteproperty/deleteProperty/${id}`);
       const response = await fetch(
-        `${config.backend}/api/deleteproperty/deleteProperty`,
+        `${config.backend}/api/deleteproperty/deleteProperty/${id}`,
         {
-          method: "POST",
+          method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            authtoken: token, // Replace with actual data
+            authtoken: localStorage.getItem("authtoken"), // Replace with actual data
           },
         }
       );

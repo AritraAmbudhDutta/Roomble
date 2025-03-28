@@ -4,12 +4,10 @@ const Landlord = require("../models/Landlord");
 const Property = require("../models/Property");
 const authMiddleware = require("../middlewares/checkuser");
 const mongoose = require('mongoose');
-router.post("/deleteProperty", authMiddleware, async (req, res) => {
-    try {
-        console.log(`mkc`)
-        
+router.delete("/deleteProperty/:id", authMiddleware, async (req, res) => {
+    try {     
         const landlordId = req.user.id;
-        const propertyId = req.params.propertyId;
+        const  propertyId  = req.params.id;
 
         console.log(propertyId)
         // console.log(propertyId);
