@@ -88,18 +88,18 @@ const SetNewPassword = () => {
         }, [somethingwentwrong]);
     
     return (
-        <div className="main-container">
+        <div className="rp-main-container">
             {/* Left Section: Logo */}
-            <div className="logo-container">
+            <div className="rp-logo-container">
                 <img src={logo} alt="Roomble Logo" />
             </div>
 
             {/* Right Section: Reset Password Form */}
-            <div className="login-box">
+            <div className="rp-login-box">
                 <h2 className="login-title">Reset Password</h2>
 
-                <form className="login-form" onSubmit={handleSubmit}>
-                    <label htmlFor="new-password">Enter new password</label>
+                <form className="rp-login-form" onSubmit={handleSubmit}>
+                    <label htmlFor="new-password">Enter New password</label>
                     <input
                         type="password"
                         id="new-password"
@@ -121,7 +121,7 @@ const SetNewPassword = () => {
 
                     {error && <p className="error-text">{error}</p>}
 
-                    <button type="submit" className="login-button" disabled={loading}>
+                    <button type="submit" className="rp-login-button" disabled={loading}>
                         {loading ? "Redirecting..." : "Submit"}
                     </button>
                 </form>
