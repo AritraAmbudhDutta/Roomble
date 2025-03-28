@@ -44,8 +44,8 @@ export const Navbar = () => {
         {user.type === 'none' ? (
           <ul>
             <li><Link to="/">Home</Link></li>
-            <li><Link to="/signup-tenant">Sign-Up Tenant</Link></li>
-            <li><Link to="/signup-landlord">Sign-Up Landlord</Link></li>
+            <li><Link to="/signup-tenant">Sign-Up as Tenant</Link></li>
+            <li><Link to="/signup-landlord">Sign-Up as Landlord</Link></li>
             <li><Link to="/login">Login</Link></li>
           </ul>
         ) : user.type === 'tenant' ? (

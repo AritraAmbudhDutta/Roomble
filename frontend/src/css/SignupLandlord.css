@@ -7,12 +7,15 @@ Body{
 }
 
 .Container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;  
+  background-color: white;   
+  padding: 40px 30px;
+  gap: 0px;
+  position: relative;
   }
 
   .Logo {
@@ -25,61 +28,63 @@ Body{
     max-width: 80%;
     max-height: 80%;
   }
-  .Signup-box {
+  .LSignup-box {
     width: 600px;
-    height: 680px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* justify-content: space-around; */
-    background-color: #FDE6E8;
-    gap: 7px;
-    /* padding: 10px; */
+    background-color:#FDE6E8;
+    gap: 5px;
     border-radius: 25px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    /* margin-right: 0px; */
-    margin-top: 10px;
-    
+    margin-top: 0;    
+    box-sizing: border-box;
+    padding: 30px 40px;
   }
   
-  .Title {
-    margin-top: 30px;
-    margin-bottom: 15px;
-    /* text-align: center; */
+  .LTitle {
+    text-align: center;
+    margin-top: 0;
     color:black;
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 500;
+    margin-bottom: 40px;
   }
  
-  .Signup-form {
-    /* margin-top: 30px; */
-    /* margin-bottom: 20px; */
-  display: flex;
-  flex-direction: column;
-  
-  gap: 15px;
+  .LSignup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
   }
 
-  .Signup-form label {
+  .LSignup-form label {
     display: block;
     color: black;
-    /* margin-top: 10px; */
-    /* margin-left: 85px; */
     font-weight: 500;
-    font-size: 15px;
-    
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;    
   }
   
-  .Input-box {
-    width: 320px;
-    padding : 9px;
+  .LInput-box {
+    width: 420px;
+    height: 50px;
+    padding: 9px;
     border: 2px solid #a84d4d;
     border-radius: 5px;
-    background-color:#FDE6E8;
-    /* margin-top: 5px; */
-    /* margin-left: 85px; */
-    font-size: 15px;
-    
+    background-color: #FDE6E8;
+    font-size: 16px;
+    margin-bottom: 15px;
+    padding: 9px;
+    line-height: 0.6;
+  }
+
+  .LInput-box:focus {
+    border: 2px solid #ae3c42;
+    outline: none;
+    box-shadow: 0 0 12px rgba(174, 60, 66, 0.3);
   }
   .Options {
     display: flex;
@@ -87,42 +92,40 @@ Body{
     /* margin-top: 15px; */
     gap: 5px;
   }
-  
 
-  
-  
-  
-  .Signup-button {
-    width: 340px;
-    height: 40px;
-    background-color: #7d141d;
+  .LSignup-button {
+    background: linear-gradient(135deg,#7B1212, #a52a2a);
     color: white;
-    padding: 2px;
     border: none;
-    border-radius: 5px;
-    /* margin-top: 15px; */
-    margin-bottom: 10px;
-    font-size: 18px;
+    padding: 12px;
+    font-size: 20px;
+    border-radius: 30px;          /* Softer corners */
     cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-    /* margin-left: 85px; */
+    width: 100%;
+    transition: all 0.4s ease, box-shadow 0.3s;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   }
   
-  .Signup-button:hover {
-    background-color:#b3121d ;
+  .LSignup-button:hover {
+    box-shadow: 0 10px 30px rgba(213, 55, 55, 0.4); /* Glow on hover */
+    transform: translateY(-3px);  /* Slight lift effect */
   }
   
-  .Footer-text-signup {
-    /* text-align: center; */
-    color: #7d141d;
-    /* margin-top: 5px; */
-    /* margin-bottom: 20px; */
-    font-weight: bold;
-    font-size: 19px;
+  .LSignup-button:active {
+    background: linear-gradient(135deg, #a52a2a, #d53737);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transform: translateY(1px);  /* Pressed-down effect */
+  }
+
+  .LFooter-text-signup {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ae3c42;
+    margin-top: 20px;
     
   }
-  .Signup-form .question {
+  .LSignup-form .question {
     text-align: left;
     color: black;
     /* background-color: aqua; */
@@ -133,22 +136,36 @@ Body{
     /* translate: 85px -10px; */
     font-size: 16px;
   }
-  .Error-confirm-password {
-    font-weight: 500;
-    font-size: 12px;
+  .LError-confirm-password {
+    font-size: 13px;
     color: red;
-    margin-top: 5px;
-  }
-  .Error-password {
-    font-size: 12px;
     font-weight: 500;
+    margin-top: -10px;
+  }
+  .LError-password {
+    font-size: 13px;
     color: red;
-    margin-top: 5px;
-  }
-  .Success-message {
-    font-size: 12px;
     font-weight: 500;
+    margin-top: -10px;
+  }
+  .LSuccess-message {
+    font-size: 14px;
     color: green;
+    font-weight: 600;
     margin-top: 5px;
   }
+
+  /* Responsive Design */
+@media (max-width: 768px) {
+  .LSignup-box {
+    width: 90%;
+    padding: 20px;
+  }
+  .LInput-box {
+    width: 100%;
+  }
+  .LSignup-button {
+    width: 100%;
+  }
+}
   

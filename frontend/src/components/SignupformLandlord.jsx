@@ -104,16 +104,16 @@ function SignupformLandlord({ setID }) {
   };
 
   return (
-    <div className="Signup-box">
-      <h2 className="Title">Signup as a Landlord</h2>
+    <div className="LSignup-box">
+      <h2 className="LTitle">Signup as a Landlord</h2>
 
-      <form className="Signup-form" onSubmit={validateFormInput}>
+      <form className="LSignup-form" onSubmit={validateFormInput}>
         <div>
-          <label>Your good name</label>
+          <label>Full Name</label>
           <input
             type="text"
-            className="Input-box"
-            placeholder="name"
+            className="LInput-box"
+            placeholder="Enter your full name"
             required
             name="name"
             onChange={({ target }) =>
@@ -123,10 +123,10 @@ function SignupformLandlord({ setID }) {
         </div>
 
         <div>
-          <label>Your Email (please check regularly)</label>
+          <label>Email Address</label>
           <input
             type="email"
-            className="Input-box"
+            className="LInput-box"
             placeholder="mail@abc.com"
             name="email"
             onChange={({ target }) =>
@@ -140,8 +140,8 @@ function SignupformLandlord({ setID }) {
           <label>Password</label>
           <input
             type="password"
-            className="Input-box"
-            placeholder="*************"
+            className="LInput-box"
+            placeholder="Enter password between 6 and 10 characters"
             name="password"
             value={formInput.password}
             onChange={({ target }) => {
@@ -149,15 +149,15 @@ function SignupformLandlord({ setID }) {
             }}
             required
           />
-          <p className="Error-password">{formError.password}</p>
+          <p className="LError-password">{formError.password}</p>
         </div>
 
         <div>
           <label>Confirm Password</label>
           <input
             type="password"
-            className="Input-box"
-            placeholder="*************"
+            className="LInput-box"
+            placeholder="Re-enter the same password"
             name="confirmPassword"
             value={formInput.confirmPassword}
             onChange={({ target }) => {
@@ -165,13 +165,13 @@ function SignupformLandlord({ setID }) {
             }}
             required
           />
-          <p className="Error-confirm-password">{formError.confirmPassword}</p>
-          <p className="Success-message">{formInput.successMsg}</p>
+          <p className="LError-confirm-password">{formError.confirmPassword}</p>
+          <p className="LSuccess-message">{formInput.successMsg}</p>
         </div>
-        <button className="Signup-button">Sign up</button>
+        <button className="LSignup-button">Sign up</button>
       </form>
 
-      <p className="Footer-text-signup">
+      <p className="LFooter-text-signup">
         With Roomble, you'll stumble on the perfect place to rumble!
       </p>
     </div>
