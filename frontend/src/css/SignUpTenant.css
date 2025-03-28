@@ -179,6 +179,63 @@ body {
   margin-top: 5px;
 }
 
+.signup-tenant-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  margin-bottom: 60px;
+}
+.signup-tenant-choices-smoke {
+  display: flex;
+  /* justify-content: space-between; */
+  gap: 60px;
+}
+.signup-tenant-choices-veg {
+  display: flex;
+  /* justify-content: space-between; */
+  gap: 90px;
+}
+.signup-tenant-choices-pets {
+  display: flex;
+  /* justify-content: space-between; */
+  gap: 82px;
+}
+.signup-tenant-choices-flatmate {
+  display: flex;
+  /* justify-content: space-between; */
+  gap: 15px;
+}
+.signup-tenant-choices-gender {
+  display: flex;
+  /* justify-content: space-between; */
+  gap: 160px;
+}
+
+.signup-tenant-smoke-btn,
+.signup-tenant-veg-btn,
+.signup-tenant-pets-btn,
+.signup-tenant-flatmate-btn,
+.signup-tenant-gender-btn {
+  display: flex;
+}
+
+.signup-tenant-choices button {
+  padding: 6px 10px;
+  border: none;
+  background: #FFC5CB;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 12px;
+  width: 108px; /* Make buttons smaller */
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.signup-tenant-choices .active {
+  background: #ae3c42;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .signup-tenant-box {

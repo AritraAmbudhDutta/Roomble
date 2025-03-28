@@ -40,7 +40,7 @@ function App() {
   const location = useLocation();
   // console.log(location.pathname);
 
-  const hideNavbarRoutes = ["/login", "/signup-landlord", "/signup-tenant", "/otp-page-tenant", "/otp-page-land", "/forgot-password", "/otp-forgot", "/set-new-password", "/otp-delete-page"];
+  const hideNavbarRoutes = ["/login", "/otp-page-tenant", "/otp-page-land", "/forgot-password", "/otp-forgot", "/set-new-password", "/otp-delete-page"];
 
 
   return (

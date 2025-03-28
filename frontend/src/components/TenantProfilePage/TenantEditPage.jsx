@@ -116,6 +116,9 @@ const TenantEditPage = () => {
 
   return (
     <div className="tenant-edit-container">
+                <div className="tenant-edit-info">
+                    <h1>Edit Profile</h1>
+                </div>
       {/* Header Section */}
       <div className="tenant-edit-header">
         <div className="tenant-edit-profile">
@@ -135,13 +138,9 @@ const TenantEditPage = () => {
             }}
           />
 
-          <div className="tenant-edit-info">
-            <h2>{state.user.name}</h2>
-            <p>{state.user.email}</p>
-          </div>
         </div>
         <button className="tenant-edit-btn" onClick={handleSubmit}>
-          Edit
+          Done
         </button>
       </div>
 
@@ -171,9 +170,10 @@ const TenantEditPage = () => {
             <option value="Male">Male</option>
             <option value="Female">Female</option>
           </select>
+
           <div className="tenant-edit-choices">
             <div className="tenant-edit-choices-smoke">
-              <label>Alcohol/Smoking</label>
+              <label>Do you drink/smoke?</label>
               <div className="edit-smoke-btn">
                 <button
                   className={formData.smoke ? "active" : ""}
@@ -191,7 +191,7 @@ const TenantEditPage = () => {
             </div>
 
             <div className="tenant-edit-choices-veg">
-              <label>VEG/NON VEG</label>
+              <label>Food Preferences</label>
               <div className="edit-veg-btn">
                 <button
                   className={formData.veg ? "active" : ""}
@@ -203,31 +203,31 @@ const TenantEditPage = () => {
                   className={!formData.veg ? "active" : ""}
                   onClick={() => setFormData({ ...formData, veg: false })}
                 >
-                  NON VEG
+                  NON-VEG
                 </button>
               </div>
             </div>
 
             <div className="tenant-edit-choices-flatmate">
-              <label>Want Flatmate</label>
+              <label>Are you seeking flatmates?</label>
               <div className="edit-flatmate-btn">
                 <button
                   className={formData.flatmate ? "active" : ""}
                   onClick={() => setFormData({ ...formData, flatmate: true })}
                 >
-                  Want
+                  YES
                 </button>
                 <button
                   className={!formData.flatmate ? "active" : ""}
                   onClick={() => setFormData({ ...formData, flatmate: false })}
                 >
-                  Don't Want
+                  NO
                 </button>
               </div>
             </div>
 
             <div className="tenant-edit-choices-pets">
-              <label>Domesticated Animal</label>
+              <label>Do you have pets?</label>
               <div className="edit-pets-btn">
                 <button
                   className={formData.pets ? "active" : ""}
@@ -276,7 +276,7 @@ const TenantEditPage = () => {
             <option value="Goregaon">Goregaon</option>
           </select>
 
-          <span>My Brief Intro</span>
+          <span>About Me</span>
           <textarea
             type="text"
             id="briefIntro"

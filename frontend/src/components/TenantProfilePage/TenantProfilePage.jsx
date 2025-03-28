@@ -74,14 +74,14 @@ export default function TenantProfilePage() {
         <div className="tenant-profile-details">
           <div className="tenant-profile-name">
             <p>
-              <span>Full Name </span>
+              <span>Name</span>
               <span>:</span>
               <span>{state.user.name}</span>
             </p>
           </div>
           <div className="tenant-profile-mail">
             <p>
-              <span>Email Address </span>
+              <span>Email</span>
               <span>:</span> <span>{state.user.email}</span>
             </p>
           </div>
@@ -93,13 +93,13 @@ export default function TenantProfilePage() {
           </div>
           <div className="tenant-profile-locality">
             <p>
-              <span>Locality </span>
+              <span>Locality</span>
               <span>:</span> <span>{state.user.locality}</span>
             </p>
           </div>
           <div className="tenant-profile-gender">
           <p>
-              <span>Gender </span>
+              <span>Gender</span>
               <span>:</span>{" "}
               <span>
                 {state.user.gender ? (
@@ -124,7 +124,7 @@ export default function TenantProfilePage() {
           </div>
           <div className="tenant-profile-flatmate">
           <p>
-              <span>Seeking Flatmate </span>
+              <span>Are you seeking a flatmate?</span>
               <span>:</span>{" "}
               <span>
                 {state.user.flatmate ? (
@@ -149,12 +149,12 @@ export default function TenantProfilePage() {
           </div>
           <div className="tenant-profile-smoke">
           <p>
-              <span>Alcohol/Smoking </span>
+              <span>Do you drink/smoke?</span>
               <span>:</span>{" "}
               <span>
                 {state.user.smoke ? (
                   <>
-                    Smokes/Drinks{" "}
+                    Yes{" "}
                     <FontAwesomeIcon
                       icon={faWineGlassAlt}
                       style={{ color: "#7D141D", marginLeft: "5px" }}
@@ -162,7 +162,7 @@ export default function TenantProfilePage() {
                   </>
                 ) : (
                   <>
-                    Doesn't Smoke/Drink{" "}
+                    No{" "}
                     <FontAwesomeIcon
                       icon={faBan}
                       style={{ color: "#7D141D", marginLeft: "5px" }}
@@ -174,7 +174,7 @@ export default function TenantProfilePage() {
           </div>
           <div className="tenant-profile-veg">
           <p>
-              <span>Veg/Non Veg </span>
+              <span>Food Preferences</span>
               <span>:</span>{" "}
               <span>
                 {state.user.veg ? (
@@ -199,7 +199,7 @@ export default function TenantProfilePage() {
           </div>
           <div className="tenant-profile-pets">
           <p>
-    <span>Has Pets </span>
+    <span>Do you have pets?</span>
     <span>:</span>{" "}
     <span>
       {state.user.pets ? (

@@ -59,6 +59,10 @@
     gap: 20px;
   }
   
+  .tenant-edit-info{
+    margin-bottom : 20px;
+  }
+  
   .tenant-edit-left {
     width: 50%;
     display: flex;
@@ -90,7 +94,7 @@
   .tenant-edit-choices-smoke {
     display: flex;
     /* justify-content: space-between; */
-    gap: 132px;
+    gap: 120px;
   }
   .tenant-edit-choices-veg {
     display: flex;
@@ -100,18 +104,18 @@
   .tenant-edit-choices-pets {
     display: flex;
     /* justify-content: space-between; */
-    gap: 100px;
+    gap: 140px;
   }
   .tenant-edit-choices-flatmate {
     display: flex;
     /* justify-content: space-between; */
-    gap: 145px;
+    gap: 83px;
   }
   
   .tenant-edit-choices button {
     padding: 6px 10px;
     border: none;
-    background:#FDE6E8; /*#FFC5CB;*/
+    background: #FFC5CB;
     color: white;
     cursor: pointer;
     border-radius: 5px;

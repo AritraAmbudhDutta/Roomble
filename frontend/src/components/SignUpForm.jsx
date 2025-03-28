@@ -289,185 +289,283 @@ function SignUpForm({ setID }) {
               <p className="signup-tenant-error">{formError.locality}</p>
             )}
 
-            <label>
-              Do you smoke/drink?
-              <label htmlFor="smoke-yes">
-                <input
-                  type="radio"
-                  id="smoke-yes"
-                  name="smoke"
-                  className="signup-tenant-radio"
-                  value="yes"
-                  checked={formInput.smoke === "yes"}
-                  onChange={({ target }) =>
-                    handleUserInput(target.name, target.value)
-                  }
-                  required
-                />{" "}
-                Yes
-              </label>
-              <label htmlFor="smoke-no">
-                <input
-                  type="radio"
-                  id="smoke-no"
-                  name="smoke"
-                  className="signup-tenant-radio"
-                  value="no"
-                  checked={formInput.smoke === "no"}
-                  onChange={({ target }) =>
-                    handleUserInput(target.name, target.value)
-                  }
-                />{" "}
-                No
-              </label>
-            </label>
+          <div className="signup-tenant-choices">
+          <div className="signup-tenant-choices-gender">
+              <label>Gender</label>
+              
+              <div className="signup-tenant-gender-btn">
+                <label htmlFor="gender-male">
+                  <input
+                    type="radio"
+                    id="gender-male"
+                    name="gender"
+                    className="signup-tenant-radio"
+                    value="male"
+                    checked={formInput.gender === "male"}
+                    onChange={({ target }) =>
+                      handleUserInput(target.name, target.value)
+                    }
+                    required
+                    hidden
+                  />
+                  <button
+                    className={formInput.gender === "male" ? "active" : ""}
+                    onClick={() => handleUserInput("gender", "male")}
+                    type="button"
+                  >
+                    MALE
+                  </button>
+                </label>
+
+                <label htmlFor="gender-female">
+                  <input
+                    type="radio"
+                    id="gender-female"
+                    name="gender"
+                    className="signup-tenant-radio"
+                    value="female"
+                    checked={formInput.gender === "female"}
+                    onChange={({ target }) =>
+                      handleUserInput(target.name, target.value)
+                    }
+                    hidden
+                  />
+                  <button
+                    className={formInput.gender === "female" ? "active" : ""}
+                    onClick={() => handleUserInput("gender", "female")}
+                    type="button"
+                  >
+                    FEMALE
+                  </button>
+                </label>
+              </div>
+            </div>
+
+            {formError.gender && (
+              <p className="signup-tenant-error">{formError.gender}</p>
+            )}
+
+            <div className="signup-tenant-choices-smoke">
+              <label>Do you drink/smoke?</label>
+              
+              <div className="signup-tenant-smoke-btn">
+                <label htmlFor="smoke-yes">
+                  <input
+                    type="radio"
+                    id="smoke-yes"
+                    name="smoke"
+                    className="signup-tenant-radio"
+                    value="yes"
+                    checked={formInput.smoke === "yes"}
+                    onChange={({ target }) =>
+                      handleUserInput(target.name, target.value)
+                    }
+                    required
+                    hidden
+                  />
+                  <button
+                    className={formInput.smoke === "yes" ? "active" : ""}
+                    onClick={() => handleUserInput("smoke", "yes")}
+                    type="button"
+                  >
+                    YES
+                  </button>
+                </label>
+
+                <label htmlFor="smoke-no">
+                  <input
+                    type="radio"
+                    id="smoke-no"
+                    name="smoke"
+                    className="signup-tenant-radio"
+                    value="no"
+                    checked={formInput.smoke === "no"}
+                    onChange={({ target }) =>
+                      handleUserInput(target.name, target.value)
+                    }
+                    hidden
+                  />
+                  <button
+                    className={formInput.smoke === "no" ? "active" : ""}
+                    onClick={() => handleUserInput("smoke", "no")}
+                    type="button"
+                  >
+                    NO
+                  </button>
+                </label>
+              </div>
+            </div>
+
             {formError.smoke && (
               <p className="signup-tenant-error">{formError.smoke}</p>
             )}
 
-            <label>
-              Do you plan on keeping pets?
-              <label htmlFor="pets-yes">
-                <input
-                  type="radio"
-                  id="pets-yes"
-                  name="pets"
-                  className="signup-tenant-radio"
-                  value="yes"
-                  checked={formInput.pets === "yes"}
-                  onChange={({ target }) =>
-                    handleUserInput(target.name, target.value)
-                  }
-                  required
-                />{" "}
-                Yes
-              </label>
-              <label htmlFor="pets-no">
-                <input
-                  type="radio"
-                  id="pets-no"
-                  name="pets"
-                  className="signup-tenant-radio"
-                  value="no"
-                  checked={formInput.pets === "no"}
-                  onChange={({ target }) =>
-                    handleUserInput(target.name, target.value)
-                  }
-                />{" "}
-                No
-              </label>
-            </label>
+            <div className="signup-tenant-choices-pets">
+              <label>Do you have pets?</label>
+              
+              <div className="signup-tenant-pets-btn">
+                <label htmlFor="pets-yes">
+                  <input
+                    type="radio"
+                    id="pets-yes"
+                    name="pets"
+                    className="signup-tenant-radio"
+                    value="yes"
+                    checked={formInput.pets === "yes"}
+                    onChange={({ target }) =>
+                      handleUserInput(target.name, target.value)
+                    }
+                    required
+                    hidden
+                  />
+                  <button
+                    className={formInput.pets === "yes" ? "active" : ""}
+                    onClick={() => handleUserInput("pets", "yes")}
+                    type="button"
+                  >
+                    YES
+                  </button>
+                </label>
+
+                <label htmlFor="pets-no">
+                  <input
+                    type="radio"
+                    id="pets-no"
+                    name="pets"
+                    className="signup-tenant-radio"
+                    value="no"
+                    checked={formInput.pets === "no"}
+                    onChange={({ target }) =>
+                      handleUserInput(target.name, target.value)
+                    }
+                    hidden
+                  />
+                  <button
+                    className={formInput.pets === "no" ? "active" : ""}
+                    onClick={() => handleUserInput("pets", "no")}
+                    type="button"
+                  >
+                    NO
+                  </button>
+                </label>
+              </div>
+            </div>
+
             {formError.pets && (
               <p className="signup-tenant-error">{formError.pets}</p>
             )}
+        
 
-            <label>
-              Are you a Vegetarian?
-              <label htmlFor="veg-yes">
-                <input
-                  type="radio"
-                  id="veg-yes"
-                  name="veg"
-                  className="signup-tenant-radio"
-                  value="yes"
-                  checked={formInput.veg === "yes"}
-                  onChange={({ target }) =>
-                    handleUserInput(target.name, target.value)
-                  }
-                  required
-                />{" "}
-                Yes
-              </label>
-              <label htmlFor="veg-no">
-                <input
-                  type="radio"
-                  id="veg-no"
-                  name="veg"
-                  className="signup-tenant-radio"
-                  value="no"
-                  checked={formInput.veg === "no"}
-                  onChange={({ target }) =>
-                    handleUserInput(target.name, target.value)
-                  }
-                />{" "}
-                No
-              </label>
-            </label>
+            <div className="signup-tenant-choices-veg">
+              <label>Food Preferences</label>
+              
+              <div className="signup-tenant-veg-btn">
+                <label htmlFor="veg-yes">
+                  <input
+                    type="radio"
+                    id="veg-yes"
+                    name="veg"
+                    className="signup-tenant-radio"
+                    value="yes"
+                    checked={formInput.veg === "yes"}
+                    onChange={({ target }) =>
+                      handleUserInput(target.name, target.value)
+                    }
+                    required
+                    hidden
+                  />
+                  <button
+                    className={formInput.veg === "yes" ? "active" : ""}
+                    onClick={() => handleUserInput("veg", "yes")}
+                    type="button"
+                  >
+                    VEG
+                  </button>
+                </label>
+
+                <label htmlFor="veg-no">
+                  <input
+                    type="radio"
+                    id="veg-no"
+                    name="veg"
+                    className="signup-tenant-radio"
+                    value="no"
+                    checked={formInput.veg === "no"}
+                    onChange={({ target }) =>
+                      handleUserInput(target.name, target.value)
+                    }
+                    hidden
+                  />
+                  <button
+                    className={formInput.veg === "no" ? "active" : ""}
+                    onClick={() => handleUserInput("veg", "no")}
+                    type="button"
+                  >
+                    NON-VEG
+                  </button>
+                </label>
+              </div>
+            </div>
+
             {formError.veg && (
               <p className="signup-tenant-error">{formError.veg}</p>
             )}
+          
+            <div className="signup-tenant-choices-flatmate">
+                <label>Are you seeking a flatmate?</label>
+                
+                <div className="signup-tenant-flatmate-btn">
+                  <label htmlFor="flatmate-yes">
+                    <input
+                      type="radio"
+                      id="flatmate-yes"
+                      name="flatmate"
+                      className="signup-tenant-radio"
+                      value="yes"
+                      checked={formInput.flatmate === "yes"}
+                      onChange={({ target }) =>
+                        handleUserInput(target.name, target.value)
+                      }
+                      required
+                      hidden
+                    />
+                    <button
+                      className={formInput.flatmate === "yes" ? "active" : ""}
+                      onClick={() => handleUserInput("flatmate", "yes")}
+                      type="button"
+                    >
+                      YES
+                    </button>
+                  </label>
 
-            <label>
-              Do you need a flatmate?
-              <label htmlFor="flatmate-yes">
-                <input
-                  type="radio"
-                  id="flatmate-yes"
-                  name="flatmate"
-                  className="signup-tenant-radio"
-                  value="yes"
-                  checked={formInput.flatmate === "yes"}
-                  onChange={({ target }) =>
-                    handleUserInput(target.name, target.value)
-                  }
-                  required
-                />{" "}
-                Yes
-              </label>
-              <label htmlFor="flatmate-no">
-                <input
-                  type="radio"
-                  id="flatmate-no"
-                  name="flatmate"
-                  className="signup-tenant-radio"
-                  value="no"
-                  checked={formInput.flatmate === "no"}
-                  onChange={({ target }) =>
-                    handleUserInput(target.name, target.value)
-                  }
-                />{" "}
-                No
-              </label>
-            </label>
-            {formError.flatmate && (
-              <p className="signup-tenant-error">{formError.flatmate}</p>
-            )}
+                  <label htmlFor="flatmate-no">
+                    <input
+                      type="radio"
+                      id="flatmate-no"
+                      name="flatmate"
+                      className="signup-tenant-radio"
+                      value="no"
+                      checked={formInput.flatmate === "no"}
+                      onChange={({ target }) =>
+                        handleUserInput(target.name, target.value)
+                      }
+                      hidden
+                    />
+                    <button
+                      className={formInput.flatmate === "no" ? "active" : ""}
+                      onClick={() => handleUserInput("flatmate", "no")}
+                      type="button"
+                    >
+                      NO
+                    </button>
+                  </label>
+                </div>
+              </div>
 
-            <label>
-              What's your gender?
-              <label htmlFor="gender-male">
-                <input
-                  type="radio"
-                  id="gender-male"
-                  name="gender"
-                  className="signup-tenant-radio"
-                  value="male"
-                  checked={formInput.gender === "male"}
-                  onChange={({ target }) =>
-                    handleUserInput(target.name, target.value)
-                  }
-                  required
-                />{" "}
-                Male
-              </label>
-              <label htmlFor="gender-female">
-                <input
-                  type="radio"
-                  id="gender-female"
-                  name="gender"
-                  className="signup-tenant-radio"
-                  value="female"
-                  checked={formInput.gender === "female"}
-                  onChange={({ target }) =>
-                    handleUserInput(target.name, target.value)
-                  }
-                />{" "}
-                Female
-              </label>
-            </label>
-            {formError.gender && (
-              <p className="signup-tenant-error">{formError.gender}</p>
-            )}
+              {formError.flatmate && (
+                <p className="signup-tenant-error">{formError.flatmate}</p>
+              )}
+          </div>
 
             <div className="signup-navigation-buttons">
               <button
