@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../css/FindPropertyStyles/SearchArea.css";
-import SearchIcon from "@mui/icons-material/Search";
 import config from "../../config.json";
 import { toast } from "react-toastify";
 
 function SearchFlatmatesFilter({ setFlatmates }) {
-  const [search, setSearch] = useState("");
   const [city, setCity] = useState("");
   const [locality, setLocality] = useState("");
-  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+  const [somethingWentWrong, setSomethingWentWrong] = useState(false);
   const [filters, setFilters] = useState({
     smokeDrink: null,
     pets: null,
@@ -16,9 +15,7 @@ function SearchFlatmatesFilter({ setFlatmates }) {
     gender: null,
   });
 
-  const handleSearchChange = (e) => {
-    setSearch(e.target.value);
-  };
+  const navigate = useNavigate();
 
   const handleFilterChange = (filter, value) => {
     setFilters((prevFilters) => ({ ...prevFilters, [filter]: value }));
@@ -29,8 +26,9 @@ function SearchFlatmatesFilter({ setFlatmates }) {
 
     const queryParams = new URLSearchParams();
     if (locality) queryParams.append("locality", locality);
+    if (city) queryParams.append("city", city);
 
-    // Ensure all filters are included explicitly
+    // Ensure all filters are appended
     if (filters.gender !== null)
       queryParams.append("gender", filters.gender ? "true" : "false");
     if (filters.smokeDrink !== null)
@@ -42,9 +40,7 @@ function SearchFlatmatesFilter({ setFlatmates }) {
 
     try {
       const response = await fetch(
-        `${
-          config.backend
-        }/api/Search_Routes/SearchFlatmates?${queryParams.toString()}`,
+        `${config.backend}/api/Search_Routes/SearchFlatmates?${queryParams.toString()}`,
         {
           method: "GET",
           headers: {
@@ -53,24 +49,27 @@ function SearchFlatmatesFilter({ setFlatmates }) {
           },
         }
       );
-      toast.success("Fetching Data");
+
       const data = await response.json();
-      console.log("API Response:", data);
+
       if (data.success) {
         setFlatmates(data.data);
-        console.log("Flatmates Found:", data.data);
+        if (data.data.length > 0) {
+          toast.success("Flatmates found!");
+        } else {
+          toast.info("No results found.");
+        }
       } else {
         console.error("Error:", data.message);
-        setSomethingwentwrong(true);
+        setSomethingWentWrong(true);
       }
     } catch (error) {
       console.error("Request failed:", error);
-      setSomethingwentwrong(true);
+      setSomethingWentWrong(true);
     }
   };
 
   const handleClearChanges = () => {
-    setSearch("");
     setCity("");
     setLocality("");
     setFilters({
@@ -88,16 +87,17 @@ function SearchFlatmatesFilter({ setFlatmates }) {
   }, []);
 
   useEffect(() => {
-    if (somethingwentwrong) {
-      toast.error("Something went wrong. Please try again later.");
+    if (somethingWentWrong) {
+      toast.error("Something went wrong. Please try again.");
       navigate(-1);
     }
-  }, [somethingwentwrong]);
+  }, [somethingWentWrong, navigate]);
 
   return (
     <div className="search-prop-container">
-      <h1 style={{ paddingLeft: "20px", paddingTop: "20px" }}> Filters</h1>
+      <h1 style={{ paddingLeft: "20px", paddingTop: "20px" }}>Filters</h1>
 
+      {/* City Filter */}
       <div className="city-search-container">
         <label>City</label>
         <select value={city} onChange={(e) => setCity(e.target.value)}>
@@ -106,6 +106,7 @@ function SearchFlatmatesFilter({ setFlatmates }) {
         </select>
       </div>
 
+      {/* Locality Filter */}
       <div className="locality-search-container">
         <label>Locality</label>
         <select value={locality} onChange={(e) => setLocality(e.target.value)}>
@@ -125,13 +126,41 @@ function SearchFlatmatesFilter({ setFlatmates }) {
 
       {/* Filters */}
       <div className="filter-options">
-        {["SmokeDrink", "Pets", "EatNonVeg"].map((key) => (
-          <div key={key} className="filter-row">
-            <span className="filter-label">
-              {key.replace(/([A-Z])/g, " $1").trim()}?
-            </span>
+          {/* Gender Filter */}
+          <div className="filter-row">
+            <span className="filter-label">Gender</span>
             <div className="filter-choices">
-              <label>
+              <label className="custom-radio">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="true"
+                  checked={filters.gender === true}
+                  onChange={() => handleFilterChange("gender", true)}
+                />
+                <span className="radio-btn">Male</span> 
+              </label>
+              <label className="custom-radio">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="false"
+                  checked={filters.gender === false}
+                  onChange={() => handleFilterChange("gender", false)}
+                />
+                <span className="radio-btn">Female</span>
+              </label>
+            </div>
+          </div>
+
+        {[
+          { label: "Smokes/Drinks", key: "smokeDrink" },
+          { label: "Has Pets", key: "pets" },
+        ].map(({ label, key }) => (
+          <div key={key} className="filter-row">
+            <span className="filter-label">{label}</span>
+            <div className="filter-choices">
+              <label className="custom-radio">
                 <input
                   type="radio"
                   name={key}
@@ -139,9 +168,9 @@ function SearchFlatmatesFilter({ setFlatmates }) {
                   checked={filters[key] === true}
                   onChange={() => handleFilterChange(key, true)}
                 />
-                Yes
+                <span className="radio-btn">Yes</span>
               </label>
-              <label>
+              <label className="custom-radio">
                 <input
                   type="radio"
                   name={key}
@@ -149,39 +178,39 @@ function SearchFlatmatesFilter({ setFlatmates }) {
                   checked={filters[key] === false}
                   onChange={() => handleFilterChange(key, false)}
                 />
-                No
+                <span className="radio-btn">No</span>
               </label>
             </div>
           </div>
         ))}
 
-        {/* Gender Filter */}
+        {/* Veg/Non-Veg Filter */}
         <div className="filter-row">
-          <span className="filter-label">Gender?</span>
-          <div className="filter-choices">
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="true"
-                checked={filters.gender === true}
-                onChange={() => handleFilterChange("gender", true)}
-              />
-              Male
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="false"
-                checked={filters.gender === false}
-                onChange={() => handleFilterChange("gender", false)}
-              />
-              Female
-            </label>
+            <span className="filter-label">Food Preferences</span>
+            <div className="filter-choices">
+              <label className="custom-radio">
+                <input
+                  type="radio"
+                  name="eatNonVeg"
+                  value="false"
+                  checked={filters.eatNonVeg === false}
+                  onChange={() => handleFilterChange("eatNonVeg", false)}
+                />
+                <span className="radio-btn">Veg</span>
+              </label>
+              <label className="custom-radio">
+                <input
+                  type="radio"
+                  name="eatNonVeg"
+                  value="true"
+                  checked={filters.eatNonVeg === true}
+                  onChange={() => handleFilterChange("eatNonVeg", true)}
+                />
+                <span className="radio-btn">Non-Veg</span>
+              </label>
+            </div>
           </div>
         </div>
-      </div>
 
       <div className="search-prop-buttons">
         <button onClick={handleApplyChanges}>Apply</button>
