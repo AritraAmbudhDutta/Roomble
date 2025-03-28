@@ -11,7 +11,7 @@ function MessageCard({conversation}) {
         const time = new Date(timestamp);
         const now = new Date();
         
-        const hours = time.getHours();
+        const hours = String(time.getHours()).padStart(2, '0'); // Ensures 2-digit hours
         const minutes = String(time.getMinutes()).padStart(2, '0'); // Ensures 2-digit minutes
         
         // Get today's and yesterday's dates (without time)

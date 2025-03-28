@@ -9,7 +9,7 @@ function RecievedMessage(props) {
         const yesterday = new Date(today);
         yesterday.setDate(today.getDate() - 1); // Midnight yesterday
     
-        const hours = time.getHours();
+        const hours = String(time.getHours()).padStart(2, '0'); // Ensures 2-digit hours
         const minutes = String(time.getMinutes()).padStart(2, '0'); // Ensures 2 digits
     
         if (time >= today) {
