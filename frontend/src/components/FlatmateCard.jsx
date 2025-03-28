@@ -30,7 +30,7 @@ const FlatmateCard = ({
     if (help) {
       // If help is true, use the parent's onBookmarkToggle
       await onBookmarkToggle();
-      setBookmarked(!bookmarked);
+      // setBookmarked(!bookmarked);
     } else {
       // If help is false, use the local toggleBookmark
       await toggleBookmark();
