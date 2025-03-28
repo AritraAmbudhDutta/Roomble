@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Basecontext } from "./Basecontext";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import the CSS for styling
+import "react-toastify/dist/ReactToastify.css"; 
 import { useNavigate } from "react-router-dom";
 
 const BaseState = (props) => {
   const [user, setUser] = useState({ type: "none" });
   const [somethingwentwrong, setSomethingWentWrong] = useState(false);
-  // New global loading state
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const fetuser = async () => {
     try {
       if (localStorage.getItem("authtoken") && user.type === "none") {
-        setLoading(true); // Set loading true before fetch
+        setLoading(true);
         const res = await fetch("http://localhost:3000/api/auth/user", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            authtoken: localStorage.getItem("authtoken"),
+            authtoken: localStorage.getItem("authtoken")
           },
         });
         const data = await res.json();
@@ -33,7 +32,7 @@ const BaseState = (props) => {
       console.log(err);
       setSomethingWentWrong(true);
     } finally {
-      setLoading(false); // Set loading false after fetch
+      setLoading(false);
     }
   };
 
@@ -47,12 +46,13 @@ const BaseState = (props) => {
   }, [somethingwentwrong, navigate]);
 
   return (
-    <Basecontext.Provider
-      value={{ user, setUser, fetuser, loading, setLoading }}
-    >
+    <Basecontext.Provider value={{ user, setUser, fetuser, loading, setLoading }}>
+      {/* Loading overlay with spinner */}
+      <div className={loading ? "loading-flex" : "loading-none"}>
+        <div className="spinner"></div>
+      </div>
       {props.children}
-      
-      {/* <ToastContainer /> */}
+      <ToastContainer />
     </Basecontext.Provider>
   );
 };
