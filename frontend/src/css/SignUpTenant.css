@@ -211,6 +211,14 @@ body {
   gap: 160px;
 }
 
+.signup-tenant-radio {
+  opacity: 0;  /* Make radio buttons invisible */
+    position: absolute;  /* Remove from layout */
+    pointer-events: none;  /* Prevent interaction */
+
+}
+
+
 .signup-tenant-smoke-btn,
 .signup-tenant-veg-btn,
 .signup-tenant-pets-btn,
