@@ -17,7 +17,7 @@ const HomePage = () => {
     const fetchProperties = async () => {
       const token = localStorage.getItem("authtoken");
       try {
-        toast.success("Fetching Data");
+        // toast.success("Fetching Data");
         const response = await fetch(
           `${config.backend}/api/view_profiles/Self_profile`,
           {
