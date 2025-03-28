@@ -65,7 +65,7 @@ router.post(`/Self_profile`, authMiddleware, async (req,res) => {
                 success : true,
                 name : user.name,
                 email : user.email,
-                message : `This user owns ${properyData.length} properties.`,
+                message : `You own ${properyData.length} properties.`,
                 Properties : properyData,
                 reviews : user.reviews,
                 Images : user.Images,
