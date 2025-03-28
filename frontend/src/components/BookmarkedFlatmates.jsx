@@ -13,9 +13,9 @@ const BookmarkedFlatmates = () => {
   const [showFlatmates, setShowFlatmates] = useState(true);
   const [flatmates, setFlatmates] = useState([]);
   const [properties, setProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user } = useContext(Basecontext);
+  const { user, loading, setLoading } = useContext(Basecontext);
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOverDeleteZone, setDragOverDeleteZone] = useState(false);
@@ -32,7 +32,7 @@ const BookmarkedFlatmates = () => {
     const fetchBookmarkedData = async () => {
       const token = localStorage.getItem("authtoken");
       try {
-        toast.success("Fetching Data");
+        // toast.success("Fetching Data");
         const response = await fetch(
           `${config.backend}/api/BookMarking_Routes/get_bookmarks`,
           {

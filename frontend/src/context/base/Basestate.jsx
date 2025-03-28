@@ -4,51 +4,57 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import the CSS for styling
 import { useNavigate } from "react-router-dom";
 
-
 const BaseState = (props) => {
-    const [user, setUser] = useState({ "type": "none" });
-    const navigate = useNavigate();
-    const [somethingwentwrong, setsomethingwentwrong] = useState(false);
+  const [user, setUser] = useState({ type: "none" });
+  const [somethingwentwrong, setSomethingWentWrong] = useState(false);
+  // New global loading state
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-    const fetuser = async () => {
-        try {
-            if (localStorage.getItem("authtoken") && user.type === "none") {
-                const res = await fetch("http://localhost:3000/api/auth/user", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "authtoken": localStorage.getItem("authtoken")
-                    },
-                });
-                const data = await res.json();
-                // console.log(data.user)
-                if (data.success) {
-                    setUser(data.user);
-                }
-                else {
-                    setsomethingwentwrong(true);
-                }
-            }
+  const fetuser = async () => {
+    try {
+      if (localStorage.getItem("authtoken") && user.type === "none") {
+        setLoading(true); // Set loading true before fetch
+        const res = await fetch("http://localhost:3000/api/auth/user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authtoken: localStorage.getItem("authtoken"),
+          },
+        });
+        const data = await res.json();
+        if (data.success) {
+          setUser(data.user);
+        } else {
+          setSomethingWentWrong(true);
         }
-        catch (err) {
-            console.log(err);
-            setsomethingwentwrong(true);
-        }
-
+      }
+    } catch (err) {
+      console.log(err);
+      setSomethingWentWrong(true);
+    } finally {
+      setLoading(false); // Set loading false after fetch
     }
-    useEffect(() => {
-        if (somethingwentwrong) {
-            toast.error("Please Login again");
-            localStorage.removeItem("authtoken");
-            setUser({ "type": "none" });
-            navigate("/login");
-        }
-    }, [somethingwentwrong])
-    return (
-        <Basecontext.Provider value={{ user, setUser, fetuser }}>
-            {props.children}
-        </Basecontext.Provider>
-    );
-}
+  };
+
+  useEffect(() => {
+    if (somethingwentwrong) {
+      toast.error("Please Login again");
+      localStorage.removeItem("authtoken");
+      setUser({ type: "none" });
+      navigate("/login");
+    }
+  }, [somethingwentwrong, navigate]);
+
+  return (
+    <Basecontext.Provider
+      value={{ user, setUser, fetuser, loading, setLoading }}
+    >
+      {props.children}
+      
+      {/* <ToastContainer /> */}
+    </Basecontext.Provider>
+  );
+};
 
 export default BaseState;
