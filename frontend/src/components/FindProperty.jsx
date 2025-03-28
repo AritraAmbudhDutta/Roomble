@@ -50,7 +50,8 @@ function FindProperty() {
         notify("Please select a locality!");
         return;
       }
-      toast.success("Fetching Data");
+      // toast.success("Fetching Data");
+      
       const response = await axios.get(
         `${config.backend}/api/Search_Routes/SearchProperties`,
         {

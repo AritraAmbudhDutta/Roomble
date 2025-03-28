@@ -55,7 +55,7 @@ function SearchFlatmatesFilter({ setFlatmates }) {
       if (data.success) {
         setFlatmates(data.data);
         if (data.data.length > 0) {
-          toast.success("Flatmates found!");
+          // toast.success("Flatmates found!");
         } else {
           toast.info("No results found.");
         }
