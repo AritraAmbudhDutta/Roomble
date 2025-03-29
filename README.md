@@ -1,9 +1,11 @@
 Roomble
 ==================================
 
-This full-stack web application is made as a course project of [CS253](https://www.cse.iitk.ac.in/users/isaha/Courses/sdo25.shtml/): Software Development and Operations in spring 2024 under the guidance of [Prof. Indranil Saha](https://www.cse.iitk.ac.in/users/isaha/).
+This full-stack web application is made as a course project of [CS253](https://www.cse.iitk.ac.in/users/isaha/Courses/sdo25.shtml/): Software Development and Operations in Spring 2024 under the guidance of [Prof. Indranil Saha](https://www.cse.iitk.ac.in/users/isaha/).
 
-Roomble is an integrated property rental and flatmate matching application which seeks to solve the common problems faced by young newcomers to metro cities. Users are classified into 2 different categories - tenants and landlords. The platform simplifies the process of finding suitable rentals and appropriate flatmates with the following salient features -
+Roomble is an integrated property rental and flatmate matching application which seeks to solve the common problems faced by young newcomers to metro cities. Users are classified into 2 different categories - tenants and landlords. 
+
+The platform simplifies the process of finding suitable rentals and appropriate flatmates with the following salient features -
 
 ### For Tenants:
 * Search properties efficiently by location, price range, amenities, and more
