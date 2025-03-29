@@ -76,12 +76,12 @@ Link to SRS: [Roomble SRS doc](https://github.com/Shlok-Jain/Roomble/blob/main/D
 
 ## Software Design Document
 
-The Software Design Document (SDD) describes software created to facilitate analysis, planning, implementation, and decision-making. This explains how thr software product will be built to meet a set of technical requirements.
+The Software Design Document (SDD) describes software created to facilitate analysis, planning, implementation, and decision-making. This explains how the software product will be built to meet a set of technical requirements.
 
 Link to SDD: [Roomble Design doc](https://github.com/Shlok-Jain/Roomble/blob/main/Documents/Design_Doc_CS253_Marauders.pdf)
 
 ## Software Implementation Document
 
-The Software Implementation Document (SID) describes how the software product is built to meet a set of technical requirements. This document talks about implementation details like integration, CI/CD, hosting, VCS; it provides a surface-level overview of codebases and completeness of the application.
+The Software Implementation Document (SID) describes how the software product is developed and deployed. This document talks about implementation details like integration, CI/CD, hosting, VCS; it provides a surface-level overview of codebases and completeness of the application.
 
 Link to SID: [Roomble Implementation doc](https://github.com/Shlok-Jain/Roomble/blob/main/Documents/Implementation_Document_Group7_Marauders.pdf)
