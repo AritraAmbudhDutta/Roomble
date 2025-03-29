@@ -17,7 +17,7 @@ router.post(`/Tenant_Prop` , authMiddleware , async (req, res) => {
 
         let Actual_Property = await Property.findById(Property_id).populate(`landlord`);
 
-        let result = await SendMailer(Actual_Property.landlord.email, "Someone is interested in your property" , `Greetings, ${Actual_Property.landlord.name}. ${Actual_Tenant.name} is interested in your property at ${Actual_Property.address} .`);
+        let result = await SendMailer(Actual_Property.landlord.email, "Someone is interested in your property" , `Greetings, ${Actual_Property.landlord.name}. ${Actual_Tenant.name} is interested in your property at ${Actual_Property.address}. Mail him at ${Actual_Tenant.email} or message him via Roomble.`);
 
         console.log(result);
 
