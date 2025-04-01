@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import "../css/PropertyDisplay.css";
 import { Basecontext } from "../context/base/Basecontext";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Bounce, ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import the CSS for styling
 import {
   Backdrop,

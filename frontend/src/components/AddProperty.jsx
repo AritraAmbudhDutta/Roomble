@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DragAndDrop from './AddPropertyComponents/DragAndDrop';
 import "../css/AddPropertyStyles/AddProperty.css";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import FadeInAnimation from '../components/animations/FadeInAnimation';
 import config from "../config.json";
 import { APIProvider, Map, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";

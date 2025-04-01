@@ -3,7 +3,6 @@ import "../css/Navbar.css";
 import { Basecontext } from "../context/base/Basecontext";
 import { Link } from "react-router-dom";
 import { socket } from "../socket";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const Navbar = () => {
@@ -77,8 +76,6 @@ export const Navbar = () => {
           </Link>
         )}
       </div>
-      {/* Include the ToastContainer if it's not already in your root component */}
-      <ToastContainer />
     </div>
   );
 };

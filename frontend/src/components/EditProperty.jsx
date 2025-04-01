@@ -7,7 +7,7 @@ import { Basecontext } from '../context/base/Basecontext';
 import { useNavigate } from 'react-router-dom';
 import config from '../config.json';
 import FadeInAnimation from './animations/FadeInAnimation';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { APIProvider, Map, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
 
 

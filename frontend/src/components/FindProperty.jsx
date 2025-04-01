@@ -5,7 +5,7 @@ import PropertyCardTenant from "../components/FindPropertyComponents/PropertyCar
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import config from "../config.json";
 import { useEffect } from "react";
 
