@@ -20,7 +20,7 @@ export default function TenantProfilePage() {
     navigate("/tenant-edit-page");
   };
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.removeItem("authtoken");
     window.location.href = "/";
   };
   // const handleDelete = async () => {
