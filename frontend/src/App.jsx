@@ -32,6 +32,7 @@ import LandlordEditProfile from "./components/LandlordProfile/LandlordEditProfil
 import { Review } from "./components/Review.jsx";
 import { Bounce, ToastContainer } from "react-toastify";
 import { Home } from "./components/Home.jsx";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [id, setID] = useState("");
@@ -40,33 +41,45 @@ function App() {
   const location = useLocation();
   // console.log(location.pathname);
 
-  const hideNavbarRoutes = ["/otp-page-tenant", "/otp-page-land", "/forgot-password", "/otp-forgot", "/set-new-password", "/otp-delete-page"];
-
+  const hideNavbarRoutes = [
+    "/otp-page-tenant",
+    "/otp-page-land",
+    "/forgot-password",
+    "/otp-forgot",
+    "/set-new-password",
+    "/otp-delete-page",
+  ];
 
   return (
     <BaseState>
       {/* Conditionally rendering the navbar */}
       {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
       <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick={false}
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="dark"
-              transition={Bounce}
-            />
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
       <Routes>
-        <Route path="/" element={<Home/>} />
+        <Route path="/" element={<Home />} />
         <Route path="/signup-tenant" element={<SignUpTenant setID={setID} />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/signup-landlord" element={<SignupLandlord setID={setID} />} />
+        <Route
+          path="/signup-landlord"
+          element={<SignupLandlord setID={setID} />}
+        />
         <Route path="/login" element={<Login />} />
-        <Route path="/otp-page-landlord" element={<OTPPageLandlord id={id} />} />
+        <Route
+          path="/otp-page-landlord"
+          element={<OTPPageLandlord id={id} />}
+        />
         <Route path="/otp-forgot" element={<OTPPageForgot />} />
         <Route path="/otp-page-tenant" element={<OTPPageTenant id={id} />} />
         <Route path="/messages" element={<MessageStart />} />
@@ -86,7 +99,7 @@ function App() {
         <Route path="/chat/:id" element={<Messages />} />
         <Route path="/property/:id" element={<PropertyDisplay />} />
         <Route path="/landlord/:id" element={<OtherLandlord />} />
-        <Route path="/review/:id" element={<Review/>} />
+        <Route path="/review/:id" element={<Review />} />
       </Routes>
     </BaseState>
   );
