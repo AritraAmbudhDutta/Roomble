@@ -3,12 +3,14 @@ import PropertyCard from "./PropertyCard";
 import "../../css/LandlordDashboard.css";
 import config from "../../config.json";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [Properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+  const navigate = useNavigate();
   // const state = useContext(Basecontext);
   // const { user, setUser, fetuser } = state;
   // fetuser();

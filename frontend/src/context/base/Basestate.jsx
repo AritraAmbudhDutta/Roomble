@@ -41,6 +41,7 @@ const BaseState = (props) => {
       toast.error("Please Login again");
       localStorage.removeItem("authtoken");
       setUser({ type: "none" });
+      window.location.reload();
       navigate("/login");
     }
   }, [somethingwentwrong, navigate]);

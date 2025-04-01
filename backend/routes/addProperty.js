@@ -88,7 +88,7 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
         let Image_count = 0;
         for(let image of imageData){
             if(image.size > maxSize){
-                return res.json(400).json({
+                return res.json(400).send({
                     success : false,
                     message : `Image size is ${image.size} but maximum allowed is only ${maxSize}`
                 })
