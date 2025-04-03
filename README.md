@@ -38,7 +38,7 @@ The interface of the web app is simple and intuitive ensuring that users will no
 
 ## How to run the software locally?
 
-* Make sure you have Node.js and pip installed in your system.
+* Make sure you have Node.js installed in your system.
 
 Clone the repository -
 
