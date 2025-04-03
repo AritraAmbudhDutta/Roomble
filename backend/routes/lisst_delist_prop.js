@@ -34,7 +34,7 @@ router.post(`/List_Delist_Prop`, authMiddleware, async (req, res) => {
             if (!prop) {
                 return res.status(500).json({
                     success: false,
-                    message: "Some internal error in server"
+                    message: "Property Not found"
                 });
             }
 
@@ -42,13 +42,6 @@ router.post(`/List_Delist_Prop`, authMiddleware, async (req, res) => {
             prop.available = (action === "enlist");
             await prop.save();
 
-            // If the action is 'delist', remove the property from bookmarks of all users
-            if (action === "delist") {
-                await Tenant.updateMany(
-                    { bookmarks: list_id }, // Find tenants who have bookmarked this property
-                    { $pull: { bookmarks: list_id } } // Remove the property from their bookmarks
-                );
-            }
 
             return res.status(200).json({
                 success: true,
@@ -57,7 +50,7 @@ router.post(`/List_Delist_Prop`, authMiddleware, async (req, res) => {
         } else {
             return res.status(401).json({
                 success: false,
-                message: "Please keep your hands to your properties."
+                message: "This property Doesn't belong to you."
             });
         }
     } catch (e) {

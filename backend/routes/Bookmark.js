@@ -181,6 +181,13 @@ router.post(`/edit_bookmarks`, authMiddleware, async (req, res) => {
       }
     } else if (thing === `property` && action === `unmark`) {
       let user = await Tenant.findById(userid);
+      console.log(`id ${userid}`)
+      if(user.bookmarks_property.size === 0){
+        return res.status(404).json({
+          success : false,
+          message : "This user has bookmarked 0 properties"
+        })
+      }
       if (user.bookmarks_property.includes(id)) {
         user.bookmarks_property = user.bookmarks_property.filter(
           (elem) => elem != id
@@ -205,7 +212,7 @@ router.post(`/edit_bookmarks`, authMiddleware, async (req, res) => {
       });
     }
   } catch (e) {
-    // console.log(e);
+    console.error(e);
     return res.status(500).json({
       success: false,
       message: "Some internal Server error :( Please try again.",
