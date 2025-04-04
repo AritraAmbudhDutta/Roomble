@@ -122,7 +122,7 @@ function FindProperty() {
           <h2>Please select a locality in filters and click apply</h2>
         )}
         {filtersApllied && matchingProperties.length === 0 && (
-          <h2>Sorry! No propertiey matched with your filters</h2>
+          <h2>Sorry! No property matched with your filters</h2>
         )}
         {matchingProperties.length > 0 && (
           <>
