@@ -198,7 +198,7 @@ function EditProperty(property) {
                         <h4 style={{ color: "#7D141D" }}>Rent(Per Month) *</h4>
                         <input
                             value={formData.price}
-                            onChange={(e) => updateFormData("rent", e.target.value)}
+                            onChange={(e) => updateFormData("price", e.target.value)}
                             placeholder="Enter Rent"
                         />
                         {errors.rent && <p className="addProp-form-error">{errors.rent}</p>}
