@@ -36,11 +36,14 @@ function FindProperty() {
     setArea(newArea); // `newValues` is an array like [minValue, maxValue]
   };
 
+  // In your FindProperty.jsx or similar component
   const handleBHKChange = (bhk) => {
     if (BHK.includes(bhk)) {
+      // Remove BHK if already selected
       setBHK(BHK.filter((b) => b !== bhk));
     } else {
-      setBHK([bhk]);
+      // Add BHK to selection
+      setBHK([...BHK, bhk]);
     }
   };
 
@@ -51,7 +54,7 @@ function FindProperty() {
         return;
       }
       // toast.success("Fetching Data");
-      
+
       const response = await axios.get(
         `${config.backend}/api/Search_Routes/SearchProperties`,
         {
@@ -61,7 +64,7 @@ function FindProperty() {
             max_price: values[1],
             min_area: area[0],
             max_area: area[1],
-            bhk: BHK[0] === 4 ? "more" : BHK[0], //
+            bhk: BHK.length > 0 ? BHK.join(',') : undefined,
           },
         }
       );

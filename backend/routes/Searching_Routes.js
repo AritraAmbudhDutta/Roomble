@@ -3,7 +3,7 @@ const Towns = require("../models/Towns"); // Model for town distances
 const Tenant = require('../models/Tenant');
 const Property = require('../models/Property');
 require(`dotenv`).config(`../.env`); // Load environment variables
-const authMiddleware = require("../middlewares/checkuser"); 
+const authMiddleware = require("../middlewares/checkuser");
 const router = express.Router();
 require('dotenv').config();
 
@@ -39,7 +39,7 @@ const SECRET_KEY = process.env.SECRET_KEY;
 // For each boolean feature (gender, smoke, veg, pets):
 // sim(bool) = matches / total boolean attributes
 
- 
+
 // Final Recommendation Score
 
 // S=α⋅sim(locality) + (1−α)⋅sim(bool),
@@ -73,7 +73,7 @@ router.get("/SearchFlatmates", authMiddleware, async (req, res) => {
         let potentialFlatmates = await Tenant.find({
             _id: { $ne: tenant_id },
             locality: { $exists: true },
-            flatmate: true 
+            flatmate: true
         }).select("-password");
 
         // Compute recommendation scores
@@ -85,7 +85,7 @@ router.get("/SearchFlatmates", authMiddleware, async (req, res) => {
             if (flatmate.locality === tenant.locality) {
                 distance = 0;
             }
-            
+
             if (distance === undefined) {
                 distance = 100; // Default distance
             }
@@ -102,10 +102,10 @@ router.get("/SearchFlatmates", authMiddleware, async (req, res) => {
 
             let score = alpha * localitySimilarity + (1 - alpha) * booleanSimilarity;
 
-            return { 
-                ...flatmate.toObject(), 
-                recommendationScore: score, 
-                bookmarked: user.bookmarks_tenants.includes(flatmate._id) 
+            return {
+                ...flatmate.toObject(),
+                recommendationScore: score,
+                bookmarked: user.bookmarks_tenants.includes(flatmate._id)
             };
         });
 
@@ -122,7 +122,7 @@ router.get("/SearchFlatmates", authMiddleware, async (req, res) => {
         const petsFilter = pets !== undefined ? pets === "true" : undefined;
 
         // **Apply filters based on user-specified parameters**
-        if (Object.keys(req.query).length > 0) {  
+        if (Object.keys(req.query).length > 0) {
             scoredResults = scoredResults.filter(flatmate => {
                 if (locality !== undefined && flatmate.locality !== locality) return false;
                 if (genderFilter !== undefined && flatmate.gender !== genderFilter) return false;
@@ -147,7 +147,7 @@ router.get("/SearchFlatmates", authMiddleware, async (req, res) => {
 
 // Searching Properties
 
-router.get('/SearchProperties', async (req, res) => {  
+router.get('/SearchProperties', async (req, res) => {
     const { town, min_price, max_price, min_area, max_area, bhk, ...filters } = req.query; // Extract filters from request body
 
     if (!town) {
@@ -182,20 +182,44 @@ router.get('/SearchProperties', async (req, res) => {
 
         // Handle BHK filtering
         if (bhk) {
-            if (bhk === "more") {
-                query.bhk = { $gt: 3 }; // More than 3 BHK
+            if (bhk.includes(',')) {
+                // Convert all selections to numbers (except "more")
+                const selectedBhks = bhk.split(',');
+
+                // Handle case where more is included
+                if (selectedBhks.includes('more')) {
+                    const numericBhks = selectedBhks
+                        .filter(val => val !== 'more')
+                        .map(Number)
+                        .filter(val => !isNaN(val));
+
+                    // Use $or to handle both specific BHKs and "more than 3"
+                    query.$or = [
+                        { bhk: { $in: numericBhks } },  // Match only the exact BHK values selected
+                        { bhk: { $gt: 3 } }            // For the "more" option
+                    ];
+                } else {
+                    // Only include exact matches - no range searching
+                    const numericBhks = selectedBhks.map(Number).filter(val => !isNaN(val));
+                    query.bhk = { $in: numericBhks };
+                }
+            } else if (bhk === "more") {
+                query.bhk = { $gt: 3 };
             } else {
                 const bhkNumber = Number(bhk);
-                if (!isNaN(bhkNumber)) query.bhk = bhkNumber; // Exact match for 1, 2, 3 BHK
+                if (!isNaN(bhkNumber)) query.bhk = bhkNumber;
             }
         }
-
         // Add other dynamic filters
         Object.keys(filters).forEach(key => {
             if (filters[key] !== undefined && filters[key] !== "") {
                 query[key] = isNaN(filters[key]) ? filters[key] : Number(filters[key]);
             }
         });
+
+        // Add this before executing the Property.find query
+        console.log("BHK query:", JSON.stringify(query.bhk));
+        console.log("Full query:", JSON.stringify(query));
 
         // Fetch properties with filtering
         const properties = await Property.find(query).lean();
