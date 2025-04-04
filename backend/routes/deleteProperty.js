@@ -14,7 +14,7 @@ router.delete("/deleteProperty/:id", authMiddleware, async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(propertyId)) {
             // console.log(`!!!!INVALID ID FOUND!!!!!`);
             // console.log(id);
-            return res.status(400).json({ error: `${id} is invalid ID` });
+            return res.status(400).json({ error: `${propertyId} is invalid ID` });
         }
 
         const landlord = await Landlord.findById(landlordId);
