@@ -156,7 +156,7 @@ const LandlordEditProfile = () => {
       </div>
       <div className="edtbttn">
         <button className="landlord-edit-btn" onClick={handleSubmit}>
-          Edit
+          Save
         </button>
       </div>
     </div>
