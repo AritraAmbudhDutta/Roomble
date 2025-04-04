@@ -144,9 +144,6 @@ const LandlordEditProfile = () => {
           <span>
             Email Address <br />
             <br />
-            Enter new email address
-            <br />
-            <br />
           </span>
           <input
             type="email"
