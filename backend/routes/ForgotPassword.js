@@ -112,6 +112,7 @@ router.post(`/enteremail`, async(req, res) => {
                     conversations : user.conversations,
                 });
                 await newlyCreatedUser.save();
+                console.log(`new Landord OTp saved with email`, newlyCreatedUser.email);
                 
                 return res.status(200).json({
                     success : true,
@@ -123,7 +124,8 @@ router.post(`/enteremail`, async(req, res) => {
         }
         
     } catch (error) {
-        // console.log(error);
+        console.log(`error in forgot password`)
+        console.error(error);
         return res.status(500).json({
             success : false,
             message : "internal server error"
@@ -145,7 +147,10 @@ router.post(`/enterOTP`, authMiddleware , async (req,res) => {
             user = await Tenant_OTP.findOne({email : useremail});
         }
         else if(accounttype === `landlord`){
+            // console.log(`here`);
             user = await Landlord_OTP.findOne({email : useremail});
+            // console.log(`user = ` , user);
+            // console.log(useremail);
         }
         else{
             // console.log(accounttype);
@@ -179,7 +184,8 @@ router.post(`/enterOTP`, authMiddleware , async (req,res) => {
         }
         
     } catch (err){
-        // console.log(err);
+        console.log(err);
+        console.log(`error in forgot passowrd 184`)
         return res.status(500).json({
             success : false,
             message : "Internal Server error"
@@ -196,6 +202,7 @@ router.post(`/ForgotPassword`, authMiddleware, async (req,res) => {
         let accounttype = req.body.accounttype;
         if(accounttype === `tenant`){
             let user = await Tenant_OTP.findOne({email : useremail});
+            console.log(`user = ` , user);
             if(!user){
                 return res.status(404).json({
                     success : false,
@@ -219,7 +226,8 @@ router.post(`/ForgotPassword`, authMiddleware, async (req,res) => {
             }
         }
         else if(accounttype === `landlord`){
-            let user = Landlord_OTP.findOne({email : useremail});
+            let user = await Landlord_OTP.findOne({email : useremail});
+            console.log(`user = ` , user);
             if(!user){
                 return res.status(404).json({
                     success : false,
@@ -233,10 +241,10 @@ router.post(`/ForgotPassword`, authMiddleware, async (req,res) => {
                 })
             }
             else{
-                let landlord_user = Landlord.findOne({email : useremail});
+                let landlord_user = await Landlord.findOne({email : useremail});
                 landlord_user.password = Hashedpassword;
                 await landlord_user.save();
-                return res.status(404).json({
+                return res.status(200).json({
                     success : true,
                     message : "Successfully updated"
                 })
@@ -244,10 +252,11 @@ router.post(`/ForgotPassword`, authMiddleware, async (req,res) => {
         }
 
     } catch (error) {
-        // console.log(error);
+        console.error(error);
+        console.log(`error in forgot password 250`)
         return res.status(500).json({
             success : false,
-            message : "Internal Server Error"
+            message : `Internal server error ${error}` 
         })
     }
 })

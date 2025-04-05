@@ -3,7 +3,7 @@ import { useState, useRef, useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../../css/ForgotPassword/OTPPageForgot.css"; // Import the CSS specific to this component
 import logo from "../../../public/logo.png";
-import { Basecontext } from '../../context/base/Basecontext'
+import { Basecontext } from "../../context/base/Basecontext";
 import { jwtDecode } from "jwt-decode";
 import config from "../../config.json";
 import { toast } from "react-toastify";
@@ -12,13 +12,13 @@ export default function OTPPageForgot() {
   const navigate = useNavigate();
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
 
-  const state = useContext(Basecontext)
-  const {user, setUser, fetuser} = state
-  fetuser()
+  const state = useContext(Basecontext);
+  const { user, setUser, fetuser } = state;
+  fetuser();
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const accounttype = queryParams.get("accounttype") || "tenant";  // Default to tenant if missing
+  const accounttype = queryParams.get("accounttype") || "tenant"; // Default to tenant if missing
 
   const respURL = `${config.backend}/api/forgotPassword/enterOTP/`;
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -27,13 +27,13 @@ export default function OTPPageForgot() {
   const inputRefs = useRef([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
- 
+
   useEffect(() => {
     const savedToken = localStorage.getItem("authtoken");
     if (savedToken) {
       setToken(savedToken);
     }
-    setLoading(false);   // Set loading to false once the token is loaded
+    setLoading(false); // Set loading to false once the token is loaded
   }, []);
 
   const handleChange = (index, value) => {
@@ -57,11 +57,13 @@ export default function OTPPageForgot() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log(accounttype);
+
     if (loading) {
       setMessage("Loading... Please wait.");
       return;
     }
-  
+
     if (!token) {
       setMessage("Authentication token is missing. Please try again.");
       return;
@@ -82,21 +84,26 @@ export default function OTPPageForgot() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "authtoken": token,              
-          "accounttype": accounttype
+          authtoken: token,
+          accounttype: accounttype,
         },
-        body: JSON.stringify({ Entered_OTP: enteredOTP, accounttype : accounttype }),
+        body: JSON.stringify({
+          Entered_OTP: enteredOTP,
+          accounttype: accounttype,
+        }),
       });
       const data = await response.json();
-      setMessage(data.message);
-      setSuccess(data.success);
+      console.log("Response Data:", data);
       if (data.success) {
         // Decode the token to extract the email
         const decodedToken = jwtDecode(token);
-        const email = decodedToken.email;     // Extract email from token
-  
+        const email = decodedToken.email; // Extract email from token
+        setSuccess(data.success);
+        setMessage(data.message);
         // Navigate with token, email, and accounttype as URL params
-        navigate(`/set-new-password?token=${token}&email=${email}&accounttype=${accounttype}`);
+        navigate(
+          `/set-new-password?token=${token}&email=${email}&accounttype=${accounttype}`
+        );
       } else {
         setMessage(data.message || "Failed to verify OTP.");
         setSuccess(false);
@@ -110,12 +117,12 @@ export default function OTPPageForgot() {
     }
   };
 
-    useEffect(()=>{
-      if(somethingwentwrong){
-        toast.error('Something went wrong. Please try again later.');
-        navigate(-1)
-      }
-    }, [somethingwentwrong]);
+  useEffect(() => {
+    if (somethingwentwrong) {
+      toast.error("Something went wrong. Please try again later.");
+      navigate(-1);
+    }
+  }, [somethingwentwrong]);
 
   return (
     <div className="otp-page-container">

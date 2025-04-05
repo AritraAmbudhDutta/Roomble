@@ -58,25 +58,27 @@ export const Home = () => {
           </div>
         </div>
       </section>
-      <section className="home-third">
-        <div className="home-third-cta">
-          <FadeInAnimation>
-            <h2>Ready to get started?</h2>
-          </FadeInAnimation>
-          <div className="home-third-buttons">
+      {localStorage.getItem("authtoken") === null && (
+        <section className="home-third">
+          <div className="home-third-cta">
             <FadeInAnimation>
-              <Link to="/signup-tenant" className="home-third-button">
-                Sign Up as Tenant
-              </Link>
+              <h2>Ready to get started?</h2>
             </FadeInAnimation>
-            <FadeInAnimation>
-              <Link to="/signup-landlord" className="home-third-button">
-                Sign Up as Landlord
-              </Link>
-            </FadeInAnimation>
+            <div className="home-third-buttons">
+              <FadeInAnimation>
+                <Link to="/signup-tenant" className="home-third-button">
+                  Sign Up as Tenant
+                </Link>
+              </FadeInAnimation>
+              <FadeInAnimation>
+                <Link to="/signup-landlord" className="home-third-button">
+                  Sign Up as Landlord
+                </Link>
+              </FadeInAnimation>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </>
   );
 };
