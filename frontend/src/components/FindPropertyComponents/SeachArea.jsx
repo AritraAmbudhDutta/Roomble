@@ -16,11 +16,42 @@ function SearchArea({
   setArea,
   handleSliderChange,
   handleAreaChange,
-  handleBHKChange,
   handleApplyChanges,
   handleClearChanges,
+  properties = [] // default to an empty array if not provided
 }) {
-  
+  // Define BHK options with a custom value for "More"
+  const bhkOptions = [
+    { label: "1 BHK", value: 1 },
+    { label: "2 BHK", value: 2 },
+    { label: "3 BHK", value: 3 },
+    { label: "More", value: "more" },
+  ];
+
+  // Handler to add/remove filter options
+  const handleBHKChange = (value) => {
+    if (BHK.includes(value)) {
+      setBHK(BHK.filter((bhk) => bhk !== value));
+    } else {
+      setBHK([...BHK, value]);
+    }
+  };
+
+  // Filtering logic for properties
+  const filteredProperties = properties.filter((property) => {
+    // If no BHK filters are applied, show all properties
+    if (BHK.length === 0) return true;
+
+    // Check if property matches any selected BHK filter
+    return BHK.some((filterValue) => {
+      if (filterValue === "more") {
+        return property.bhk >= 5;
+      } else {
+        return property.bhk === filterValue;
+      }
+    });
+  });
+
   return (
     <div className="search-prop-container">
       <h1>Filters</h1>
@@ -51,7 +82,7 @@ function SearchArea({
         <label>Price Range</label>
         <div className="price-range-values">
           <p>
-            ₹{values[0]}-₹{values[1]}
+            ₹{values[0]} - ₹{values[1]}
           </p>
         </div>
         <RangeSlider
@@ -59,14 +90,14 @@ function SearchArea({
           max={100000}
           step={250}
           value={values}
-          onInput={handleSliderChange} // Updates values
+          onInput={handleSliderChange}
         />
       </div>
       <div className="area-range-container">
         <label>Area Range</label>
         <div className="area-range-values">
           <p>
-            {area[0]}sqft-{area[1]}sqft
+            {area[0]} sqft - {area[1]} sqft
           </p>
         </div>
         <RangeSlider
@@ -74,19 +105,19 @@ function SearchArea({
           max={10000}
           step={50}
           value={area}
-          onInput={handleAreaChange} // Updates values
+          onInput={handleAreaChange}
         />
       </div>
       <div className="BHK-container">
         <label>Number of BHK</label>
-        {[1, 2, 3, 4].map((bhk) => (
-          <div key={bhk} className="BHK-checkbox">
+        {bhkOptions.map(({ label, value }) => (
+          <div key={value} className="BHK-checkbox">
             <input
               type="checkbox"
-              checked={BHK.includes(bhk)}
-              onChange={() => handleBHKChange(bhk)}
+              checked={BHK.includes(value)}
+              onChange={() => handleBHKChange(value)}
             />
-            <label>{bhk !== 4 ? bhk + " BHK" : "more"}</label>
+            <label>{label}</label>
           </div>
         ))}
       </div>
@@ -94,6 +125,18 @@ function SearchArea({
         <button onClick={handleApplyChanges}>Apply</button>
         <button onClick={handleClearChanges}>Clear filters</button>
       </div>
+
+      {/* Example display of filtered properties */}
+      {/* <div className="filtered-properties">
+        <h2>Filtered Properties</h2>
+        {filteredProperties.map((property) => (
+          <div key={property.id} className="property-item">
+            <p>
+              {property.name} - {property.bhk} BHK
+            </p>
+          </div>
+        ))}
+      </div> */}
     </div>
   );
 }
