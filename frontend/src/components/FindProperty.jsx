@@ -98,6 +98,7 @@ function FindProperty() {
     setLastSearchLocality("");
     setFiltersApplied(false);
   };
+
   return (
     <div className="find-property-body">
       <div className="search-area-div">
@@ -119,18 +120,29 @@ function FindProperty() {
           handleClearChanges={handleClearChanges}
         />
       </div>
+  
       <div className="Property-card-div">
-        {/* Display Matching Properties First */}
+        {/* Prompt to apply filters */}
         {!filtersApllied && (
-          <h2>Please select a locality in filters and click apply</h2>
-        )}
+          <div className="empty-state-container">
+            <img src="./house_when_page_empty.png" alt="No Filters Applied" className="empty-state-img" />
+            <h2 className="empty-message">Please select a locality in filters and click apply</h2>
+          </div>
+)}
+
+  
+        {/* No matches found */}
         {filtersApllied && matchingProperties.length === 0 && (
-          <h2>Sorry! No property matched with your filters</h2>
+          <div className="empty-state-container">
+            <img src="./house_when_page_empty.png" alt="No match" className="empty-state-img" />
+            <h2 className="empty-message">Sorry! No property matched with your filters</h2>
+          </div>
         )}
+  
+        {/* Matching properties */}
         {matchingProperties.length > 0 && (
           <>
             <h2>Properties in {lastSearchLocality}</h2>
-
             {matchingProperties.map((property) => (
               <PropertyCardTenant
                 key={property._id}
@@ -147,8 +159,8 @@ function FindProperty() {
             ))}
           </>
         )}
-
-        {/* Display Other Properties */}
+  
+        {/* Other recommendations */}
         {otherProperties.length > 0 && (
           <>
             <h2>Other Properties You May Be Interested In</h2>

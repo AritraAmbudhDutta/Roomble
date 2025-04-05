@@ -28,3 +28,36 @@
 .property-card:hover {
     transform: scale(1.05); /* Adds a subtle hover effect */
 }
+
+.empty-state-container {
+    text-align: center;
+    width: 100%;
+    margin-top: 50px;
+    animation: tenant-dashboard-slideFade 0.5s ease;
+  }
+  
+  .empty-state-img {
+    max-width: 300px;
+    height: auto;
+    opacity: 0.8;
+    margin-bottom: 20px;
+  }
+  
+  .empty-message {
+    font-size: 22px;
+    color: #666;
+    font-weight: 600;
+    font-family: 'Open Sans Condensed', sans-serif;
+  }
+  
+  @keyframes tenant-dashboard-slideFade {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
