@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
 import "../../css/LandlordProfileStyles/LandlordEditProfile.css";
-import logo from "../../../public/sampleUser_img.png";
 import { Basecontext } from "../../context/base/Basecontext";
 import { useNavigate } from "react-router-dom";
 import config from "../../config.json";
@@ -12,6 +11,7 @@ const LandlordEditProfile = () => {
   const state = useContext(Basecontext);
   const { user, setUser, fetuser } = state;
   fetuser();
+
   const [file, setFile] = useState(null);
   const token = localStorage.getItem("authtoken");
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
@@ -36,7 +36,6 @@ const LandlordEditProfile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Popup to inform user that email is not editable
   const handleEmailClick = (e) => {
     e.preventDefault();
     Swal.fire({
@@ -54,16 +53,11 @@ const LandlordEditProfile = () => {
     }
   }, [somethingwentwrong]);
 
-  // NEED TO SEND DATA TO BACKEND FROM HERE
   const handleSubmit = async () => {
-    const formDataCopy = new FormData(); // Create a FormData object
-
-    // Append text fields to FormData
+    const formDataCopy = new FormData();
     Object.keys(formData).forEach((key) => {
       formDataCopy.append(key, formData[key]);
     });
-
-    // Append the file (if any)
     if (file) {
       formDataCopy.append("image", file);
     }
@@ -81,82 +75,65 @@ const LandlordEditProfile = () => {
       );
       const data = await response.json();
       if (data.success) {
-        console.log("Form submitted successfully");
         navigate("/landlord-profile-page");
         window.location.reload();
       } else {
-        console.error("Failed to submit form");
         setSomethingwentwrong(true);
       }
     } catch (error) {
-      console.error("Error:", error);
       setSomethingwentwrong(true);
     }
   };
 
   return (
     <div className="landlord-edit-container">
-      {/* Header Section */}
       <div className="landlord-edit-header">
-        <div className="landlord-edit-profile">
-          <label htmlFor="landlord-edit-image-upload">
-            <img
-              src={state.user.Images || "https://via.placeholder.com/80"}
-              alt="Profile"
-              className="landlord-edit-profile-img"
-            />
-          </label>
-          <input
-            type="file"
-            id="image_input"
-            accept="image/png, image/gif, image/jpeg, image/jpg"
-            onChange={(e) => {
-              setFile(e.target.files[0]);
-            }}
+        <label htmlFor="image_input" className="image-wrapper">
+          <img
+            src={state.user.Images || "https://via.placeholder.com/200"}
+            alt="Profile"
+            className="landlord-edit-profile-img"
           />
-
-          <div className="landlord-edit-info">
-            <h2>{state.user.name}</h2>
-            <p>{state.user.email}</p>
-          </div>
+        </label>
+        <input
+          type="file"
+          id="image_input"
+          accept="image/png, image/gif, image/jpeg, image/jpg"
+          onChange={(e) => {
+            setFile(e.target.files[0]);
+          }}
+        />
+        <div className="landlord-edit-info">
+          <h2>{state.user.name}</h2>
+          <p>{state.user.email}</p>
         </div>
       </div>
 
-      {/* Form Section */}
       <div className="landlord-edit-form">
-        {/* Left Side */}
-        <div className="name">
-          <span>
-            Full Name <br />
-            <br />
-            Enter new name
-            <br />
-            <br />
-          </span>
+        <div className="form-group">
+          <label>Full Name</label>
           <input
             type="text"
             name="name"
+            placeholder="Enter new name"
             value={formData.name}
             onChange={handleInputChange}
           />
         </div>
-        <div className="email-addr">
-          <span>
-            Email Address <br />
-            <br />
-          </span>
+
+        <div className="form-group">
+          <label>Email Address</label>
           <input
             type="email"
-            value={formData.email}
             name="email"
+            value={formData.email}
             onClick={handleEmailClick}
             readOnly
           />
         </div>
-      </div>
-      <div className="edtbttn">
+
         <button className="landlord-edit-btn" onClick={handleSubmit}>
-          Save
+          Save Changes
         </button>
       </div>
     </div>
