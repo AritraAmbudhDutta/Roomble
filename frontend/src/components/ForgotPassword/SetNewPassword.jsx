@@ -110,6 +110,8 @@ const SetNewPassword = () => {
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             required
+            minLength={6}
+            maxLength={10}
           />
 
           <label htmlFor="confirm-password">Confirm New Password</label>

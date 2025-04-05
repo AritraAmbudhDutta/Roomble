@@ -210,12 +210,28 @@ function SignUpForm({ setID }) {
               placeholder="Enter password between 6 and 10 characters"
               name="password"
               value={formInput.password}
-              onChange={({ target }) =>
-                handleUserInput(target.name, target.value)
-              }
+              onChange={({ target }) => {
+                handleUserInput(target.name, target.value);
+                if (target.value.length < 6) {
+                  setFormError((prev) => ({
+                    ...prev,
+                    password: "Password must be at least 6 characters.",
+                  }));
+                } else if (target.value.length > 10) {
+                  setFormError((prev) => ({
+                    ...prev,
+                    password: "Password must not exceed 10 characters.",
+                  }));
+                } else {
+                  setFormError((prev) => {
+                    const { password, ...rest } = prev;
+                    return rest;
+                  });
+                }
+              }}
               required
-              minLength="6"
-              maxLength="10"
+              // minLength="6"
+              // maxLength="10"
             />
             {formError.password && (
               <p className="signup-tenant-error">{formError.password}</p>
@@ -228,12 +244,36 @@ function SignUpForm({ setID }) {
               placeholder="Re-enter the same password"
               name="confirmPassword"
               value={formInput.confirmPassword}
-              onChange={({ target }) =>
-                handleUserInput(target.name, target.value)
-              }
+              onChange={({ target }) => {
+                handleUserInput(target.name, target.value);
+                if (target.value.length < 6) {
+                  setFormError((prev) => ({
+                    ...prev,
+                    confirmPassword:
+                      "Confirm password must be at least 6 characters.",
+                  }));
+                } else if (target.value.length > 10) {
+                  setFormError((prev) => ({
+                    ...prev,
+                    confirmPassword:
+                      "Confirm password must not exceed 10 characters.",
+                  }));
+                } else if (target.value !== formInput.password) {
+                  setFormError((prev) => ({
+                    ...prev,
+                    confirmPassword:
+                      "Password and Confirm password do not match.",
+                  }));
+                } else {
+                  setFormError((prev) => {
+                    const { confirmPassword, ...rest } = prev;
+                    return rest;
+                  });
+                }
+              }}
               required
-              minLength="6"
-              maxLength="10"
+              // minLength="6"
+              // maxLength="10"
             />
             {formError.confirmPassword && (
               <p className="signup-tenant-error">{formError.confirmPassword}</p>
