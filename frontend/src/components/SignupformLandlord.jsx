@@ -167,7 +167,9 @@ function SignupformLandlord({ setID }) {
             // minLength="6"
             // maxLength="10"
           />
-          <p className="signup-landlord-error">{formError.password}</p>
+          {formError.password && (
+            <p className="signup-landlord-error">{formError.password}</p>
+          )}
         </div>
 
         <div>
@@ -209,7 +211,10 @@ function SignupformLandlord({ setID }) {
             // minLength="6"
             // maxLength="10"
           />
-          <p className="signup-landlord-error">{formError.confirmPassword}</p>
+          {formError.confirmPassword && (
+            <p className="signup-landlord-error">{formError.confirmPassword}</p>
+          )}
+
           <p className="signup-landlord-error">{formInput.successMsg}</p>
         </div>
         <button className="LSignup-button">Sign up</button>
