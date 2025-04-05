@@ -55,7 +55,10 @@ function SearchFlatmatesFilter({ setFlatmates }) {
       if (data.success) {
         setFlatmates(data.data);
         if (data.data.length > 0) {
+          let size = 0;
           // toast.success("Flatmates found!");
+          while(size++ < data.data.length) 
+          console.log("Name: " + data.data[size-1].name + " Compatibility Score: " + Math.round(100*data.data[size-1].recommendationScore));
         } else {
           toast.info("No results found.");
         }
@@ -79,7 +82,8 @@ function SearchFlatmatesFilter({ setFlatmates }) {
       gender: null,
     });
     setFlatmates([]);
-    handleApplyChanges();
+    
+    window.location.reload() ;
   };
 
   useEffect(() => {

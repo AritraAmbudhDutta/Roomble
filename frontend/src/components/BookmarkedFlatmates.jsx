@@ -48,6 +48,7 @@ const BookmarkedFlatmates = () => {
           toast.error(data.message);
           return;
         }
+        
         setFlatmates(data.FlatmateBookMarks);
         setProperties(data.PropertyBookMarks);
       } catch (err) {
