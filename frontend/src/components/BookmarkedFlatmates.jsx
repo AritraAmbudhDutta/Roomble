@@ -13,12 +13,10 @@ const BookmarkedFlatmates = () => {
   const [showFlatmates, setShowFlatmates] = useState(true);
   const [flatmates, setFlatmates] = useState([]);
   const [properties, setProperties] = useState([]);
-  // const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user, loading, setLoading } = useContext(Basecontext);
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [dragOverDeleteZone, setDragOverDeleteZone] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,7 +30,6 @@ const BookmarkedFlatmates = () => {
     const fetchBookmarkedData = async () => {
       const token = localStorage.getItem("authtoken");
       try {
-        // toast.success("Fetching Data");
         const response = await fetch(
           `${config.backend}/api/BookMarking_Routes/get_bookmarks`,
           {
@@ -48,7 +45,6 @@ const BookmarkedFlatmates = () => {
           toast.error(data.message);
           return;
         }
-        
         setFlatmates(data.FlatmateBookMarks);
         setProperties(data.PropertyBookMarks);
       } catch (err) {
@@ -63,19 +59,11 @@ const BookmarkedFlatmates = () => {
 
   const handleDragStart = () => {
     setIsDragging(true);
-    setDragOverDeleteZone(false);
   };
 
   const handleDragEnd = async (result, handler) => {
     setIsDragging(false);
-    setDragOverDeleteZone(false);
     await handler(result);
-  };
-
-  const handleDragUpdate = (update) => {
-    if (update.destination) {
-      setDragOverDeleteZone(update.destination.droppableId === "delete-zone");
-    }
   };
 
   const handleDelete = async (bookmarkId, thing) => {
@@ -126,13 +114,9 @@ const BookmarkedFlatmates = () => {
       const success = await handleDelete(bookmarkId, thing);
       if (success) {
         if (thing === "flatmate") {
-          setFlatmates((prev) =>
-            prev.filter((item) => item._id !== bookmarkId)
-          );
+          setFlatmates((prev) => prev.filter((item) => item._id !== bookmarkId));
         } else if (thing === "property") {
-          setProperties((prev) =>
-            prev.filter((item) => item._id !== bookmarkId)
-          );
+          setProperties((prev) => prev.filter((item) => item._id !== bookmarkId));
         }
       }
     }
@@ -159,9 +143,7 @@ const BookmarkedFlatmates = () => {
           const updatedFlatmates = [...flatmates];
           updatedFlatmates.splice(index, 1);
           const success = await handleDelete(removedItem._id, "flatmate");
-          if (success) {
-            setFlatmates(updatedFlatmates);
-          }
+          if (success) setFlatmates(updatedFlatmates);
         }
       }
     }
@@ -188,96 +170,130 @@ const BookmarkedFlatmates = () => {
           const updatedProperties = [...properties];
           updatedProperties.splice(index, 1);
           const success = await handleDelete(removedItem._id, "property");
-          if (success) {
-            setProperties(updatedProperties);
-          }
+          if (success) setProperties(updatedProperties);
         }
       }
     }
   };
 
-  const togglePage = () => {
-    setShowFlatmates((prev) => !prev);
+  const handleTabClick = (isFlatmatesTab) => {
+    setShowFlatmates(isFlatmatesTab);
   };
 
   if (loading)
-    return <div className="bookmarked-page">Loading bookmarks...</div>;
-  if (error) return <div className="bookmarked-page">Error: {error}</div>;
+    return <div className="tenant-dashboard-bookmarked-page">Loading bookmarks...</div>;
+  if (error)
+    return <div className="tenant-dashboard-bookmarked-page">Error: {error}</div>;
 
   return (
-    <div className="bookmarked-page">
-      <button className="toggle-button" onClick={togglePage}>
-        {showFlatmates
-          ? "Switch to Bookmarked Properties"
-          : "Switch to Bookmarked Flatmates"}
-      </button>
-      <div
-        key={showFlatmates ? "flatmates" : "properties"}
-        className="page-container"
-      >
-        {showFlatmates ? (
-          <div className="page-content animate-flip">
-            <DragDropContext
-              onDragStart={handleDragStart}
-              onDragEnd={(result) =>
-                handleDragEnd(result, handleFlatmatesDragEnd)
-              }
-            >
-              <Droppable droppableId="delete-zone">
-                {(provided, snapshot) => (
-                  <div
-                    className={`delete-zone ${
-                      isDragging ? "visible" : "hidden"
+    <div className="tenant-dashboard-bookmarked-page">
+      <div className="tenant-dashboard-tabs">
+        <button
+          className={`tenant-dashboard-tab-button ${
+            showFlatmates ? "tenant-dashboard-active-tab" : ""
+          }`}
+          onClick={() => handleTabClick(true)}
+        >
+          Bookmarked Flatmates
+        </button>
+        <button
+          className={`tenant-dashboard-tab-button ${
+            !showFlatmates ? "tenant-dashboard-active-tab" : ""
+          }`}
+          onClick={() => handleTabClick(false)}
+        >
+          Bookmarked Properties
+        </button>
+      </div>
+
+      <div key={showFlatmates ? "flatmates" : "properties"} className="tenant-dashboard-page-container">
+        <div className="tenant-dashboard-page-content animate-flip">
+          <DragDropContext
+            onDragStart={handleDragStart}
+            onDragEnd={(result) =>
+              handleDragEnd(result, showFlatmates ? handleFlatmatesDragEnd : handlePropertiesDragEnd)
+            }
+          >
+            <Droppable droppableId="delete-zone">
+              {(provided, snapshot) => (
+                <div
+                  className={`tenant-dashboard-delete-zone ${
+                    isDragging ? "visible" : "hidden"
+                  }`}
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  <img
+                    src="/delete-icon.png"
+                    alt="Delete"
+                    className={`tenant-dashboard-trash-icon ${
+                      snapshot.isDraggingOver ? "trash-active" : ""
                     }`}
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                  >
-                    <img
-                      src="/delete-icon.png"
-                      alt="Delete"
-                      className={`trash-icon ${
-                        snapshot.isDraggingOver ? "trash-active" : ""
-                      }`}
-                    />
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-              <h1 className="page-title">Your Bookmarked Flatmates</h1>
-              <Droppable droppableId="flatmates">
+                  />
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+
+            <h1 className="tenant-dashboard-page-title">
+              Your Bookmarked {showFlatmates ? "Flatmates" : "Properties"}
+            </h1>
+
+            {showFlatmates && flatmates.length === 0 ? (
+              <div className="tenant-dashboard-empty-message">
+                <img src="./people_when_page_empty.png" alt="No bookmarks" />
+                <h3>No Bookmarked Flatmates Yet</h3>
+              </div>
+            ) : !showFlatmates && properties.length === 0 ? (
+              <div className="tenant-dashboard-empty-message">
+                <img src="./house_when_page_empty.png" alt="No bookmarks" />
+                <h3>No Bookmarked Properties Yet</h3>
+              </div>
+            ) : (
+              <Droppable droppableId={showFlatmates ? "flatmates" : "properties"}>
                 {(provided) => (
                   <div
-                    className="flatmates-grid"
+                    className="tenant-dashboard-flatmates-grid"
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    {flatmates.map((flatmate, index) => (
-                      <Draggable
-                        key={flatmate._id}
-                        draggableId={flatmate._id}
-                        index={index}
-                      >
+                    {(showFlatmates ? flatmates : properties).map((item, index) => (
+                      <Draggable key={item._id} draggableId={item._id} index={index}>
                         {(provided) => (
                           <div
-                            className="draggable-card"
+                            className="tenant-dashboard-draggable-card"
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                           >
-                            <FlatmateCard
-                              id={flatmate._id}
-                              name={flatmate.name}
-                              locality={flatmate.locality}
-                              city={flatmate.city || "Mumbai"}
-                              gender={flatmate.gender}
-                              image={flatmate.Images}
-                              compatibilityScore={flatmate.score}
-                              isBookmarked={true}
-                              onBookmarkToggle={() =>
-                                handleBookmarkClick(flatmate._id, "flatmate")
-                              }
-                              help={true}
-                            />
+                            {showFlatmates ? (
+                              <FlatmateCard
+                                id={item._id}
+                                name={item.name}
+                                locality={item.locality}
+                                city={item.city || "Mumbai"}
+                                gender={item.gender}
+                                image={item.Images}
+                                compatibilityScore={item.score}
+                                isBookmarked={true}
+                                onBookmarkToggle={() =>
+                                  handleBookmarkClick(item._id, "flatmate")
+                                }
+                                help={true}
+                              />
+                            ) : (
+                              <PropertyCardTenant
+                                id={item._id}
+                                image={item.Images[0]}
+                                price={item.price}
+                                title={item.name}
+                                location={item.address}
+                                bhk={item.bhk}
+                                available={item.available}
+                                onView={() => {}}
+                                onDelete={() => handleBookmarkClick(item._id, "property")}
+                              />
+                            )}
                           </div>
                         )}
                       </Draggable>
@@ -286,87 +302,9 @@ const BookmarkedFlatmates = () => {
                   </div>
                 )}
               </Droppable>
-            </DragDropContext>
-          </div>
-        ) : (
-          <div className="page-content animate-flip">
-            <DragDropContext
-              onDragStart={handleDragStart}
-              onDragEnd={(result) =>
-                handleDragEnd(result, handlePropertiesDragEnd)
-              }
-            >
-              <Droppable droppableId="delete-zone">
-                {(provided, snapshot) => (
-                  <div
-                    className={`delete-zone ${
-                      isDragging ? "visible" : "hidden"
-                    }`}
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                  >
-                    <img
-                      src="/delete-icon.png"
-                      alt="Delete"
-                      className={`trash-icon ${
-                        snapshot.isDraggingOver ? "trash-active" : ""
-                      }`}
-                    />
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-              <h1 className="page-title">Your Bookmarked Properties</h1>
-              <Droppable droppableId="properties">
-                {(provided) => (
-                  <div
-                    className="flatmates-grid"
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                  >
-                    {properties.length === 0 ? (
-                      <p>No properties bookmarked yet.</p>
-                    ) : (
-                      properties.map((property, index) => (
-                        <Draggable
-                          key={property._id}
-                          draggableId={property._id}
-                          index={index}
-                        >
-                          {(provided) => (
-                            <div
-                              className="draggable-card"
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <PropertyCardTenant
-                                id={property._id}
-                                image={property.Images[0]}
-                                price={property.price}
-                                title={property.name}
-                                location={`${property.address}`}
-                                bhk={property.bhk}
-                                available={property.available}
-                                onView={() =>
-                                  console.log("Viewing:", property.name)
-                                }
-                                onDelete={() =>
-                                  handleBookmarkClick(property._id, "property")
-                                }
-                              />
-                            </div>
-                          )}
-                        </Draggable>
-                      ))
-                    )}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-          </div>
-        )}
+            )}
+          </DragDropContext>
+        </div>
       </div>
     </div>
   );
