@@ -99,8 +99,9 @@ function EditProperty(property) {
             const data = await response.json();
             console.log(data);
             if (data.success) {
+                toast.success('Property updated successfully!');
                 navigate("/landlord-profile-page");
-            }else{
+            } else {
                 setSomethingwentwrong(true);
             }
         }
