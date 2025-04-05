@@ -99,7 +99,7 @@ const FlatmateCard = ({
         <img src={image} alt={name} className="profile-pic" />
         <span className="flatmate-name">{name}</span>
         <span className="compatibility-score">
-          <span className="star-icon">⭐</span> {score}%
+          <span className="star-icon"> 🤝 </span> {score}%
         </span>
       </div>
 
