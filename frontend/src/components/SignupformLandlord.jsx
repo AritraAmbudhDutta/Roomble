@@ -9,12 +9,12 @@ import { useEffect } from "react";
 function SignupformLandlord({ setID }) {
   const navigate = useNavigate();
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
-  useEffect(()=>{
-      if(somethingwentwrong){
-        toast.error('Something went wrong. Please try again later.');
-        navigate(-1)
-      }
-    }, [somethingwentwrong]);
+  useEffect(() => {
+    if (somethingwentwrong) {
+      toast.error("Something went wrong. Please try again later.");
+      navigate(-1);
+    }
+  }, [somethingwentwrong]);
   const [formInput, setFormInput] = useState({
     name: "",
     email: "",
@@ -146,10 +146,30 @@ function SignupformLandlord({ setID }) {
             value={formInput.password}
             onChange={({ target }) => {
               handleUserInput(target.name, target.value);
+              if (target.value.length < 6) {
+                setFormError((prev) => ({
+                  ...prev,
+                  password: "Password must be at least 6 characters.",
+                }));
+              } else if (target.value.length > 10) {
+                setFormError((prev) => ({
+                  ...prev,
+                  password: "Password must not exceed 10 characters.",
+                }));
+              } else {
+                setFormError((prev) => {
+                  const { password, ...rest } = prev;
+                  return rest;
+                });
+              }
             }}
             required
+            // minLength="6"
+            // maxLength="10"
           />
-          <p className="LError-password">{formError.password}</p>
+          {formError.password && (
+            <p className="signup-landlord-error">{formError.password}</p>
+          )}
         </div>
 
         <div>
@@ -162,11 +182,40 @@ function SignupformLandlord({ setID }) {
             value={formInput.confirmPassword}
             onChange={({ target }) => {
               handleUserInput(target.name, target.value);
+              if (target.value.length < 6) {
+                setFormError((prev) => ({
+                  ...prev,
+                  confirmPassword:
+                    "Confirm password must be at least 6 characters.",
+                }));
+              } else if (target.value.length > 10) {
+                setFormError((prev) => ({
+                  ...prev,
+                  confirmPassword:
+                    "Confirm password must not exceed 10 characters.",
+                }));
+              } else if (target.value !== formInput.password) {
+                setFormError((prev) => ({
+                  ...prev,
+                  confirmPassword:
+                    "Password and Confirm password do not match.",
+                }));
+              } else {
+                setFormError((prev) => {
+                  const { confirmPassword, ...rest } = prev;
+                  return rest;
+                });
+              }
             }}
             required
+            // minLength="6"
+            // maxLength="10"
           />
-          <p className="LError-confirm-password">{formError.confirmPassword}</p>
-          <p className="LSuccess-message">{formInput.successMsg}</p>
+          {formError.confirmPassword && (
+            <p className="signup-landlord-error">{formError.confirmPassword}</p>
+          )}
+
+          <p className="signup-landlord-error">{formInput.successMsg}</p>
         </div>
         <button className="LSignup-button">Sign up</button>
       </form>

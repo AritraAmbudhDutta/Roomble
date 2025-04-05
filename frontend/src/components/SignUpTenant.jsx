@@ -7,7 +7,7 @@ function SignUpPage({ setID }) {
   return (
     <div className="signup-tenant-container">
       {/* <div className="signup-tenant-logo"> */}
-      <img src={logo} alt="Roomble Logo" />
+      <img className="signup-tenant-logo" src={logo} alt="Roomble Logo" />
       {/* </div> */}
       <div>
         <SignUpForm setID={setID} />
