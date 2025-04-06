@@ -122,7 +122,7 @@ const TenantEditPage = () => {
       {/* Header Section */}
       <div className="tenant-edit-header">
         <div className="tenant-edit-profile">
-          <label htmlFor="tenant-edit-image-upload">
+          <label htmlFor="image_input">
             <img
               src={state.user.Images || "https://via.placeholder.com/80"}
               alt="Profile"
