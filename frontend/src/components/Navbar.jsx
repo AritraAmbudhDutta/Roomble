@@ -47,6 +47,7 @@ export const Navbar = () => {
             <li><Link to="/signup-tenant">Sign-Up as Tenant</Link></li>
             <li><Link to="/signup-landlord">Sign-Up as Landlord</Link></li>
             <li><Link to="/login">Login</Link></li>
+            <li><Link to="/contact-us">Contact Us</Link></li>
           </ul>
         ) : user.type === "tenant" ? (
           <ul>
@@ -55,6 +56,7 @@ export const Navbar = () => {
             <li><Link to="/messages">Messages</Link></li>
             <li><Link to="/find-property">Find Property</Link></li>
             <li><Link to="/find-flatmate">Find Flatmate</Link></li>
+            <li><Link to="/contact-us">Contact Us</Link></li>
           </ul>
         ) : (
           <ul>
@@ -62,6 +64,7 @@ export const Navbar = () => {
             <li><Link to="/landlord-dashboard">Dashboard</Link></li>
             <li><Link to="/add-property">Add Property</Link></li>
             <li><Link to="/messages">Messages</Link></li>
+            <li><Link to="/contact-us">Contact Us</Link></li>
           </ul>
         )}
       </div>

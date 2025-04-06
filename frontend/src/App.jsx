@@ -32,6 +32,7 @@ import LandlordEditProfile from "./components/LandlordProfile/LandlordEditProfil
 import { Review } from "./components/Review.jsx";
 import { Bounce, ToastContainer } from "react-toastify";
 import { Home } from "./components/Home.jsx";
+import ContactUs from "./components/ContactUs.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -100,6 +101,7 @@ function App() {
         <Route path="/property/:id" element={<PropertyDisplay />} />
         <Route path="/landlord/:id" element={<OtherLandlord />} />
         <Route path="/review/:id" element={<Review />} />
+        <Route path="/contact-us" element={<ContactUs />} />
       </Routes>
     </BaseState>
   );
