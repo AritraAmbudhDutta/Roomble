@@ -15,6 +15,7 @@ import useDidMountEffect from "../../useDidMountEffect";
 import { socket } from "../../socket";
 import config from "../../config.json";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function ChatBox({currentConvId,setCurrentConvId,currentMessages,setCurrentMessages}) {
 
@@ -26,6 +27,8 @@ function ChatBox({currentConvId,setCurrentConvId,currentMessages,setCurrentMessa
     const [message, setMessage] = React.useState('');//For the message input
     const [otherUser, setOtherUser] = React.useState({name: "Loading...", status: "offline", profilepic: "/sampleUser_Img.png"});
     const endRef=useRef(null);
+
+    const navigate = useNavigate();
     useEffect(()=>{
     if(somethingwentwrong){
         toast.error('Something went wrong. Please try again later.');

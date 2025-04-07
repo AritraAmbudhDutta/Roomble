@@ -2,13 +2,16 @@ import React,{useEffect, useState} from 'react';
 import '../css/MessageBoxStyle/Messages.css';
 import MessageBox from './MessageComponents/MessageBox';
 import ChatBox from './MessageComponents/ChatBox';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import config from '../config.json';
 import { toast } from 'react-toastify';
 
 function Messages() {
   const [currentConvId, setCurrentConvId] = useState(null);
   const [somethingwentwrong , setSomethingwentwrong] = useState(false); 
+
+  const navigate = useNavigate();
+
   useEffect(()=>{
       if(somethingwentwrong){
         toast.error('Something went wrong. Please try again later.');

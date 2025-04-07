@@ -3,6 +3,7 @@ import { Basecontext } from "./Basecontext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 import { useNavigate } from "react-router-dom";
+import config from "../../config.json";
 
 const BaseState = (props) => {
   const [user, setUser] = useState({ type: "none" });
@@ -14,7 +15,7 @@ const BaseState = (props) => {
     try {
       if (localStorage.getItem("authtoken") && user.type === "none") {
         setLoading(true);
-        const res = await fetch("http://localhost:3000/api/auth/user", {
+        const res = await fetch(`${config.backend}/api/auth/user`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

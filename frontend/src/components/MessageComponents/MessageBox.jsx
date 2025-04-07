@@ -6,6 +6,7 @@ import { Basecontext } from '../../context/base/Basecontext';
 import { socket } from '../../socket.js';
 import config from "../../config.json";
 import {toast} from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 function MessageBox() {
 
@@ -15,6 +16,7 @@ function MessageBox() {
     const [currentUserId, setCurrentUserId] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+    const navigate = useNavigate();
 
 
     useEffect(() => {
