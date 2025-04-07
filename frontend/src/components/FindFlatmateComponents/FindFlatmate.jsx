@@ -11,7 +11,6 @@ function FindFlatmate() {
             <div className="search-flatmate-div">
                 {/* Pass setFlatmates to update state */}
                 <SearchFlatmatesFilter setFlatmates={setFlatmates} />
-                console.log(flatmates);
             </div>
 
             <div className="Flatmate-card-div">
