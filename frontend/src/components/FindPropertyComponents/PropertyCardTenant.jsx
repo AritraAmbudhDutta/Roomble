@@ -1,3 +1,12 @@
+
+/*
+ * This component represents a property card for tenants, displaying property details such as
+ * image, price, location, and BHK (bedroom, hall, kitchen) information. It also allows users
+ * to bookmark properties and view more details. The component handles bookmark status fetching,
+ * toggling, and updating with backend API calls.
+ */
+
+
 import React, { useEffect, useState } from "react";
 import "../../css/PropertyCard.css";
 import "../../css/PropertyCardTenant.css";
@@ -5,6 +14,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import config from "../../config.json";
 import Swal from "sweetalert2";
+
 
 const PropertyCardTenant = ({
   image,

@@ -1,3 +1,8 @@
+
+    /**
+     * This function is used in a drag-and-drop file upload component.
+     */
+
 import React from 'react';
 import "../../css/AddPropertyStyles/DragAndDrop.css";
 import { useState, useRef } from 'react';
@@ -6,7 +11,7 @@ function DragAndDrop({ images, setImages, updateFormData }) {
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef(null);
 
-    // Trigger file input click
+   
     function selectFiles() {
         fileInputRef.current.click();
     }

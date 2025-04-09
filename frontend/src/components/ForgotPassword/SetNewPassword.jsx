@@ -1,10 +1,17 @@
+
+/**
+* This page allows users to reset their password by entering a new password and confirming it.
+* It validates the input, sends a request to the backend to update the password, and handles errors or success responses.
+*/
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import "../../css/ForgotPassword/SetNewPassword.css";
 import logo from "../../../public/logo.png";
 import config from "../../config.json";
 import { toast } from "react-toastify";
+
 const SetNewPassword = () => {
+  // State variables for form inputs, error messages, and loading state
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -14,10 +21,12 @@ const SetNewPassword = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  // Extract query parameters from the URL
   const token = searchParams.get("token");
   const email = searchParams.get("email");
   const accounttype = searchParams.get("accounttype");
 
+  // Redirect to the forgot-password page if required query parameters are missing
   useEffect(() => {
     if (!token || !email || !accounttype) {
       setError("Invalid or missing authentication details.");
@@ -25,10 +34,12 @@ const SetNewPassword = () => {
     }
   }, [token, email, accounttype, navigate]);
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
+    // Validate that the passwords match
     if (newPassword !== confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -36,19 +47,16 @@ const SetNewPassword = () => {
 
     try {
       setLoading(true);
-      console.log("Submitting request...");
-      console.log("Token:", token);
-      console.log("Email:", email);
-      console.log("Account Type:", accounttype);
 
+      // Send a POST request to the backend to reset the password
       const response = await fetch(
         `${config.backend}/api/forgotPassword/ForgotPassword`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            authtoken: token, // Send token
-            accounttype: accounttype, // Send account type
+            authtoken: token, // Include the token in the headers
+            accounttype: accounttype, // Include the account type in the headers
           },
           body: JSON.stringify({
             email,
@@ -58,18 +66,9 @@ const SetNewPassword = () => {
         }
       );
 
-      console.log("Response Status:", response.status);
-
-      //   if (!response.ok) {
-      //     const errorText = await response.text();
-      //     console.error("Error response:", errorText);
-      //     setError(`Error: ${response.status} - ${errorText}`);
-      //     return;
-      //   }
-
       const data = await response.json();
-      console.log("Server Response:", data);
 
+      // Handle success or failure response from the server
       if (data.success) {
         alert("Password reset successful!");
         navigate("/login");
@@ -78,73 +77,26 @@ const SetNewPassword = () => {
         setSomethingwentwrong(true);
       }
     } catch (error) {
+      // Handle network or parsing errors
       console.error("Network/Parsing Error:", error);
       setError(`Network error: ${error.message}`);
       setSomethingwentwrong(true);
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Show a toast notification and navigate back if something went wrong
   useEffect(() => {
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
       navigate(-1);
     }
-  }, [somethingwentwrong]);
+  }, [somethingwentwrong, navigate]);
 
-  return (
-    <div className="rp-main-container">
-      {/* Left Section: Logo */}
-      <div className="rp-logo-container">
-        <img src={logo} alt="Roomble Logo" />
-      </div>
-
-      {/* Right Section: Reset Password Form */}
-      <div className="rp-login-box">
-        <h2 className="login-title">Reset Password</h2>
-
-        <form className="rp-login-form" onSubmit={handleSubmit}>
-          <label htmlFor="new-password">Enter New password</label>
-          <input
-            type="password"
-            id="new-password"
-            placeholder="Enter new password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            required
-            minLength={6}
-            maxLength={10}
-          />
-
-          <label htmlFor="confirm-password">Confirm New Password</label>
-          <input
-            type="password"
-            id="new-password"
-            placeholder="Re-enter new password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-
-          {error && <p className="error-text">{error}</p>}
-
-          <button type="submit" className="rp-login-button" disabled={loading}>
-            {loading ? "Redirecting..." : "Submit"}
-          </button>
-        </form>
-
-        {/* Navigation Links */}
-        <p className="register-text">
-          Remember your password? <Link to="/login">Login</Link>
-        </p>
-        <p className="register-text">
-          Not Registered Yet? <Link to="/signup-tenant">Sign up</Link>
-        </p>
-
-        <p className="footer-text">
-          With Roomble, you'll stumble on the perfect place to rumble!
-        </p>
-      </div>
-    </div>
-  );
+  <p className="register-text">
+    "Not Registered Yet"? <Link to="/signup-tenant">Sign up</Link>
+  </p>
 };
 
 export default SetNewPassword;

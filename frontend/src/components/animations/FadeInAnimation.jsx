@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
 
 /**
  * FadeInAnimation Component
  * Wraps children with a fade-in animation effect using Framer Motion.
  *
- * Props:
- * - children: ReactNode - The content to animate.
  */
+
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+
 const FadeInAnimation = ({ children }) => {
   const [hasAnimated, setHasAnimated] = useState(false);
 

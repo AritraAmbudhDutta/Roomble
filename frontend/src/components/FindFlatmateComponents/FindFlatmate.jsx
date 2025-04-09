@@ -1,13 +1,16 @@
+
+/**
+ * FindFlatmate Component
+ * Displays a list of flatmates based on filters applied.
+ */
+
 import React, { useContext, useState } from "react";
 import SearchFlatmatesFilter from "./SearchFlatmatesFilter";
 import FlatmateCard from "../FlatmateCard";
 import { Basecontext } from "../../context/base/Basecontext";
 import "../../css/FindFlatmate.css";
 
-/**
- * FindFlatmate Component
- * Displays a list of flatmates based on filters applied.
- */
+
 function FindFlatmate() {
     // State to store the list of flatmates
     const [flatmates, setFlatmates] = useState([]);

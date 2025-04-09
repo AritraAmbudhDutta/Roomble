@@ -1,24 +1,34 @@
+
+/**
+* This page allows users to verify their OTP for password reset
+* Upon successful verification, users are redirected to the "Set New Password" page
+*/
+
 import React from "react";
 import { useState, useRef, useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../../css/ForgotPassword/OTPPageForgot.css"; // Import the CSS specific to this component
-import logo from "../../../public/logo.png";
+import logo from "../../../public/logo.png"; // Logo for the left section
 import { Basecontext } from "../../context/base/Basecontext";
 import { jwtDecode } from "jwt-decode";
 import config from "../../config.json";
 import { toast } from "react-toastify";
 
+
+
 export default function OTPPageForgot() {
   const navigate = useNavigate();
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
 
+  // Context to fetch user-related data
   const state = useContext(Basecontext);
   const { user, setUser, fetuser } = state;
   fetuser();
 
+  // Extract query parameters from the URL
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const accounttype = queryParams.get("accounttype") || "tenant"; // Default to tenant if missing
+  const accounttype = queryParams.get("accounttype") || "tenant"; // Default to "tenant" if missing
 
   const respURL = `${config.backend}/api/forgotPassword/enterOTP/`;
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -28,6 +38,7 @@ export default function OTPPageForgot() {
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
 
+  // Load token from localStorage on component mount
   useEffect(() => {
     const savedToken = localStorage.getItem("authtoken");
     if (savedToken) {
@@ -36,6 +47,7 @@ export default function OTPPageForgot() {
     setLoading(false); // Set loading to false once the token is loaded
   }, []);
 
+  // Handle OTP input changes
   const handleChange = (index, value) => {
     if (!/^[0-9]?$/.test(value)) return; // Allow only digits
 
@@ -43,21 +55,22 @@ export default function OTPPageForgot() {
     newOtp[index] = value;
     setOtp(newOtp);
 
+    // Automatically focus the next input field
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
+  // Handle backspace navigation in OTP inputs
   const handleKeyDown = (index, e) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
+  // Handle OTP form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log(accounttype);
 
     if (loading) {
       setMessage("Loading... Please wait.");
@@ -69,7 +82,7 @@ export default function OTPPageForgot() {
       return;
     }
 
-    const enteredOTP = otp.join("");
+    const enteredOTP = otp.join(""); // Combine OTP digits into a single string
 
     if (enteredOTP.length !== 6) {
       setMessage("Please enter a complete 6-digit OTP.");
@@ -78,8 +91,6 @@ export default function OTPPageForgot() {
     }
 
     try {
-      console.log("Using Token:", token);
-      console.log(enteredOTP);
       const response = await fetch(respURL, {
         method: "POST",
         headers: {
@@ -93,14 +104,15 @@ export default function OTPPageForgot() {
         }),
       });
       const data = await response.json();
-      console.log("Response Data:", data);
+
       if (data.success) {
         // Decode the token to extract the email
         const decodedToken = jwtDecode(token);
         const email = decodedToken.email; // Extract email from token
         setSuccess(data.success);
         setMessage(data.message);
-        // Navigate with token, email, and accounttype as URL params
+
+        // Navigate to the "Set New Password" page with necessary params
         navigate(
           `/set-new-password?token=${token}&email=${email}&accounttype=${accounttype}`
         );
@@ -117,6 +129,7 @@ export default function OTPPageForgot() {
     }
   };
 
+  // Handle errors and navigate back if something goes wrong
   useEffect(() => {
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
@@ -138,9 +151,8 @@ export default function OTPPageForgot() {
           <div>
             {message && (
               <p
-                className={`otp-page-message ${
-                  success ? "otp-page-success" : "otp-page-error"
-                }`}
+                className={`otp-page-message ${success ? "otp-page-success" : "otp-page-error"
+                  }`}
               >
                 {message}
               </p>

@@ -1,8 +1,3 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../../css/FindPropertyStyles/SearchArea.css";
-import config from "../../config.json";
-import { toast } from "react-toastify";
 
 /**
  * SearchFlatmatesFilter Component
@@ -11,6 +6,14 @@ import { toast } from "react-toastify";
  * Props:
  * - setFlatmates: Function to update the list of flatmates.
  */
+
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../../css/FindPropertyStyles/SearchArea.css";
+import config from "../../config.json";
+import { toast } from "react-toastify";
+
+
 function SearchFlatmatesFilter({ setFlatmates }) {
 // State variables for filters and error handling
   const [city, setCity] = useState("");

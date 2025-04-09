@@ -1,3 +1,11 @@
+
+  /**
+  * This page allows users to reset their password by entering their registered email.
+  * Upon successful submission, users are redirected to the OTP verification page.
+  * Users can select their account type (tenant or landlord) and submit their email to receive a password reset link.
+  * The page handles form submission, error handling, and navigation to the OTP verification page.
+  */
+
 import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../../css/ForgotPassword/ForgotPassword.css"; // Import the CSS specific to this component

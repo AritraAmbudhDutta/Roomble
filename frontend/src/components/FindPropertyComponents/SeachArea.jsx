@@ -1,3 +1,14 @@
+
+
+/**
+ * SearchArea Component
+ * 
+ * This component provides a user interface for filtering properties based on various criteria such as city,
+ * locality, price range, area range, and the number of BHKs (bedrooms, hall, kitchen).
+ * It allows users to apply or clear filters and dynamically updates the filtered properties based on the selected options.
+ * 
+ */
+
 import React from "react";
 import "../../css/FindPropertyStyles/SearchArea.css";
 import RangeSlider from "react-range-slider-input";
@@ -140,7 +151,8 @@ function SearchArea({
 
       {/* Example display of filtered properties */}
       {/* Uncomment to display filtered properties */}
-      {/* <div className="filtered-properties">
+      {/* 
+      <div className="filtered-properties">
         <h2>Filtered Properties</h2>
         {filteredProperties.map((property) => (
           <div key={property.id} className="property-item">
@@ -149,7 +161,8 @@ function SearchArea({
             </p>
           </div>
         ))}
-      </div> */}
+      </div> 
+      */}
     </div>
   );
 }
