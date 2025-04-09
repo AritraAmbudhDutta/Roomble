@@ -6,18 +6,18 @@ require(`dotenv`).config(`../.env`);
 const SECRET_KEY = process.env.SECRET_KEY;
 
 const checkUser = async (req, res, next) => {
-    const token = req.header('authtoken');
+    const token = req.header('authtoken'); // expect an AuthToken in the header of the reuqest
 
     if (!token) {
         return res.status(401).json({ message: 'Access Denied' });
     }
     try {
         const verified = jwt.verify(token, SECRET_KEY);
-        const user = await Tenant.findById(verified.id);
+        const user = await Tenant.findById(verified.id); // search the user by the ID in the Tenant collection
         if (!user) {
-            const user = await Landlord.findById(verified.id);
+            const user = await Landlord.findById(verified.id); // search the user by the ID in the Landlord collection if not found in Tenant collection
             if (!user) {
-                return res.status(400).json({ message: 'Invalid Token' });
+                return res.status(400).json({ message: 'Invalid Token' }); // user not found in both collections
             }
             req.user = user;
             return next();
@@ -25,7 +25,7 @@ const checkUser = async (req, res, next) => {
         req.user = user;
         return next();
     } catch (err) {
-        return res.status(400).json({ message: 'Invalid Token', success: false });
+        return res.status(400).json({ message: 'Invalid Token', success: false }); // invalid token
     }
 };
 

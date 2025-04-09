@@ -18,11 +18,11 @@ async function Sendmail(Recipient_email, Subject, body) {
     };
     let result = await transporter.sendMail(mailOptions);
     if(result.accepted){
-        console.log(`Email sent : ${result.response}`);
+        console.log(`Email sent : ${result.response}`); // Log the response from the server
         return true;
     }
     else{
-        console.log(`Failed to send Email`, result);
+        console.log(`Failed to send Email`, result); // Log the error response from the server
         return false;
     }
 }

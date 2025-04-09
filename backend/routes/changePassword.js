@@ -3,29 +3,33 @@ const router = express.Router();
 require(`dotenv`).config(`../.env`); // Load environment variables
 const jwt = require(`jsonwebtoken`);
 const bcrypt = require(`bcrypt`);
-const Sendmail = require("../helper_funcs/mailSender"); // MailSender
-const authMiddleware = require("../middlewares/checkuser"); // Middleware for JWT auth
+const Sendmail = require("../helper_funcs/mailSender"); // MailSender utility
+const authMiddleware = require("../middlewares/checkuser"); // Middleware for JWT authentication
 
-const SECRET_KEY = process.env.SECRET_KEY; // Change this to a secure secret key
+const SECRET_KEY = process.env.SECRET_KEY; // Secret key for JWT
 
 const Landlord = require(`../models/Landlord`);
 const Tenant = require(`../models/Tenant`);
 const { Landlord_OTP, Tenant_OTP } = require(`../models/OTP_models`);
 
+// Utility function to hash passwords securely
 async function Hashpassword(plainPassword) {
   try {
-    const saltRounds = 10;
+    const saltRounds = 10; // Number of salt rounds for bcrypt
     return await bcrypt.hash(plainPassword, saltRounds);
   } catch (error) {
     throw new Error('Password hashing failed');
   }
 }
 
-//Send accountType and email in the request body
+// Route to handle email submission for password reset
+// Requires `email` and `accounttype` in the request body
 router.post(`/enteremail`, async (req, res) => {
   try {
     const { email, accounttype } = req.body;
     let user;
+
+    // Fetch user based on account type
     if (accounttype === `tenant`) {
       user = await Tenant.findOne({ email: email });
     } else if (accounttype === `landlord`) {
@@ -43,14 +47,16 @@ router.post(`/enteremail`, async (req, res) => {
         message: "No such user exists",
       });
     } else {
+      // Generate a short-lived JWT token for authentication
       const token = jwt.sign({ id: user._id, email: user.email }, SECRET_KEY, {
-        expiresIn: "5m",
+        expiresIn: "5m", // Token expires in 5 minutes
       });
 
       if (accounttype === `tenant`) {
         let ifExists = await Tenant_OTP.findOne({ email: email });
 
         if (ifExists) {
+          // Generate a new OTP and send it via email
           let new_OTP = Math.floor(100000 + Math.random() * 900000).toString();
           await Sendmail(
             email,
@@ -66,6 +72,7 @@ router.post(`/enteremail`, async (req, res) => {
           });
         }
 
+        // Generate and send OTP for new requests
         let new_OTP = Math.floor(100000 + Math.random() * 900000).toString();
         await Sendmail(
           email,
@@ -94,6 +101,7 @@ router.post(`/enteremail`, async (req, res) => {
         let ifExists = await Landlord_OTP.findOne({ email: email });
 
         if (ifExists) {
+          // Generate a new OTP and send it via email
           let new_OTP = Math.floor(100000 + Math.random() * 900000).toString();
           await Sendmail(
             email,
@@ -109,6 +117,7 @@ router.post(`/enteremail`, async (req, res) => {
           });
         }
 
+        // Generate and send OTP for new requests
         let new_OTP = Math.floor(100000 + Math.random() * 900000).toString();
         await Sendmail(
           email,
@@ -134,29 +143,27 @@ router.post(`/enteremail`, async (req, res) => {
       }
     }
   } catch (error) {
-    // console.log(error);
     return res.status(500).json({
       success: false,
-      message: "internal server error",
+      message: "Internal server error",
     });
   }
 });
 
-//send authtoken and accounttype and Entered_OTP
+// Route to verify OTP and grant access for password change
+// Requires `authtoken`, `accounttype`, and `Entered_OTP` in the request
 router.post(`/enterOTP`, authMiddleware, async (req, res) => {
   try {
     let useremail = req.user.email;
-    let userid = req.user.id;
     let Entered_OTP = req.body.Entered_OTP;
     let accounttype = req.body.accounttype;
-    // "accounttype
+
     let user;
     if (accounttype === `tenant`) {
       user = await Tenant_OTP.findOne({ email: useremail });
     } else if (accounttype === `landlord`) {
       user = await Landlord_OTP.findOne({ email: useremail });
     } else {
-      // console.log(accounttype);
       return res.status(401).json({
         success: false,
         message: "Invalid Account Type",
@@ -166,10 +173,10 @@ router.post(`/enterOTP`, authMiddleware, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "Please request an OTP. Your OTP has been Expired/ Not sent.",
+        message: "Please request an OTP. Your OTP has expired or was not sent.",
       });
     } else if (user.OTP === Entered_OTP) {
-      // await ifExists.updateOne({ OTP: new_OTP });
+      // Mark the user as authorized to make changes
       await user.updateOne({ Allow_changes: true });
 
       return res.status(200).json({
@@ -179,11 +186,10 @@ router.post(`/enterOTP`, authMiddleware, async (req, res) => {
     } else {
       return res.status(401).json({
         success: false,
-        message: "Wrong OTP, pls try again",
+        message: "Wrong OTP, please try again.",
       });
     }
   } catch (err) {
-    // console.log(err);
     return res.status(500).json({
       success: false,
       message: "Internal Server error",
@@ -191,8 +197,8 @@ router.post(`/enterOTP`, authMiddleware, async (req, res) => {
   }
 });
 
-//send accounttype and authtoken in header. newPassword in body
-// not sure but we do need to send the oldPassword separately since authtoken does not contain info about the password afaik -> bikram
+// Route to change the password
+// Requires `accounttype`, `authtoken`, `newPassword`, and `oldPassword` in the request
 router.post(`/ChangePassword`, authMiddleware, async (req, res) => {
   try {
     let useremail = req.user.email;
@@ -208,19 +214,19 @@ router.post(`/ChangePassword`, authMiddleware, async (req, res) => {
     }
 
     const Hashedpassword = await Hashpassword(newPassword);
-    
+
     if (accounttype === `tenant`) {
       let user = await Tenant_OTP.findOne({ email: useremail });
       if (!user) {
         return res.status(404).json({
           success: false,
-          message: "OTP not found / OTP expired",
+          message: "OTP not found or expired",
         });
       }
       if (user.Allow_changes === false) {
         return res.status(401).json({
           success: false,
-          message: "Not Authorized to make changes",
+          message: "Not authorized to make changes",
         });
       }
       let tenant_user = await Tenant.findOne({ email: useremail });
@@ -231,27 +237,27 @@ router.post(`/ChangePassword`, authMiddleware, async (req, res) => {
           message: "Old password is incorrect",
         });
       }
-      
+
       tenant_user.password = Hashedpassword;
       await tenant_user.save();
       await Tenant_OTP.deleteOne({ email: useremail }); // Cleanup OTP record
-      
+
       return res.status(200).json({
         success: true,
-        message: "Successfully updated",
+        message: "Password successfully updated",
       });
     } else if (accounttype === `landlord`) {
       let user = await Landlord_OTP.findOne({ email: useremail });
       if (!user) {
         return res.status(404).json({
           success: false,
-          message: "OTP not found / OTP expired",
+          message: "OTP not found or expired",
         });
-      }y
+      }
       if (user.Allow_changes === false) {
         return res.status(401).json({
           success: false,
-          message: "Not Authorized to make changes",
+          message: "Not authorized to make changes",
         });
       }
       let landlord_user = await Landlord.findOne({ email: useremail });
@@ -262,18 +268,17 @@ router.post(`/ChangePassword`, authMiddleware, async (req, res) => {
           message: "Old password is incorrect",
         });
       }
-      
+
       landlord_user.password = Hashedpassword;
       await landlord_user.save();
       await Landlord_OTP.deleteOne({ email: useremail }); // Cleanup OTP record
-      
-      return res.status(200).json({  // Fixed status code from 404 to 200
+
+      return res.status(200).json({
         success: true,
-        message: "Successfully updated",
+        message: "Password successfully updated",
       });
     }
   } catch (error) {
-    // console.log(error);
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",

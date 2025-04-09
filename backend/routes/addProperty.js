@@ -16,7 +16,7 @@ const MAX_ALLOWED_PICS = 10;
 const maxSize = 2*1024*1024; // Maximum allowed size : 2mb
 const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
 
-//Send latitude and longitude
+//Send latitude and longitude alongwith other required fields in the request body, and the AuthToken in the header
 router.post("/listProperty",authMiddleware, async(req,res)=>{
     try{
         const landlordId = req.user.id;
@@ -24,8 +24,9 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
 
         const requiredFields = ["city","town","address","area","bhk","description","price","amenities", "lat","lng"];
 
-        const missingFields = requiredFields.filter(field => (propertyData[field] === undefined));
+        const missingFields = requiredFields.filter(field => (propertyData[field] === undefined)); // check if any required field is missing
 
+        // if any required field is missing, return an error response
         if(missingFields.length>0){
             return res.status(400).json({
                 success : false,
@@ -33,8 +34,10 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
             })
         }
 
+
         propertyData.amenities = propertyData.amenities.split(',');
 
+        // search for the landlord in the database
         let landlord = await Landlord.findById(landlordId);
         if(!landlord){
             return res.status(404).json({
@@ -43,10 +46,12 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
             })
         }
 
+        // search for the property in the database
         const property = await Property.findOne({
         address : propertyData.address, _id:{ $in: landlord.propertyList}
         });
 
+        // if property already exists in the same address log an error.
         if(property){
             return res.status(400).json({
                 success : false,
@@ -54,7 +59,7 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
             });
         }
 
-        
+        // create a new property object
         let newProperty = new Property(propertyData);
         
         
@@ -75,8 +80,9 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
         //make a new directory for each property
         let imageData = req.files.image;
         fs.mkdirSync(path.join(__dirname , `../Pictures` , `property` ,`${newProperty.id}`));
-        // console.log(imageData);
-        // return;
+        // console.log(imageData); // for debugging
+
+        // check if the number of images exceeds the maximum allowed limit
         if(imageData.length > MAX_ALLOWED_PICS){
             return res.status(400).json({
                 success : false,
@@ -125,28 +131,28 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
         }
 
 
-        landlord.propertyList.push(newProperty._id);
+        landlord.propertyList.push(newProperty._id); // add property id to the landlord's property list
 
         try{
             await landlord.save();
         }
         catch(updateError){
-            console.error("Error updating landlord: ",updateError);
+            console.error("Error updating landlord: ",updateError); // log the error for debugging
 
             await Property.findByIdAndDelete(newProperty._id);
             return res.status(500).json({
                 success : false,
-                message : "Failed to update landlord"
+                message : "Failed to update landlord" // send a generic error message to the client
             })
         }
         return res.status(201).json({
             success : true,
-            message : "Property added and listed successfully",
+            message : "Property added and listed successfully", // send a success message to the client
             property: newProperty,
         });
 
     } catch(error){
-        console.error("Unexpected Error: ",error);
+        console.error("Unexpected Error: ",error); // log the error for debugging
         return res.status(500).json({
             success : false,
             message : "Internal Server Error",
