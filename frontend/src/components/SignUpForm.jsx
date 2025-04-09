@@ -7,14 +7,17 @@ import { useEffect } from "react";
 
 function SignUpForm({ setID }) {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(1); // Tracks the current step in the signup process
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+
+  // Handle navigation and error notification if something goes wrong
   useEffect(() => {
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
-      navigate(-1);
+      navigate(-1); // Navigate back to the previous page
     }
   }, [somethingwentwrong]);
+
   const [formInput, setFormInput] = useState({
     name: "",
     email: "",
@@ -30,27 +33,29 @@ function SignUpForm({ setID }) {
     successMsg: "",
   });
 
-  // Separate error states for both pages
+  // Separate error states for both steps
   const [formError, setFormError] = useState({});
 
+  // Handles user input and updates the form state
   const handleUserInput = (name, value) => {
     setFormInput((prev) => ({ ...prev, [name]: value }));
   };
 
   const nextStep = () => {
-    setStep((prevStep) => prevStep + 1);
+    setStep((prevStep) => prevStep + 1); // Move to the next step
   };
 
   const prevStep = () => {
-    setStep((prevStep) => prevStep - 1);
+    setStep((prevStep) => prevStep - 1); // Move to the previous step
   };
 
+  // Validates email format using a regex
   const validateEmail = (email) => {
-    // simple regex to validate email format
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
   };
 
+  // Validates the first step of the form
   const validateStepOne = () => {
     let errors = {};
     if (!formInput.name.trim()) {
@@ -74,10 +79,10 @@ function SignUpForm({ setID }) {
       errors.confirmPassword = "Password and Confirm password do not match.";
     }
     setFormError(errors);
-    // If errors object is empty, validation passed
-    return Object.keys(errors).length === 0;
+    return Object.keys(errors).length === 0; // Return true if no errors
   };
 
+  // Validates the second step of the form
   const validateStepTwo = () => {
     let errors = {};
     if (!formInput.city) {
@@ -102,22 +107,24 @@ function SignUpForm({ setID }) {
       errors.gender = "Please select your gender.";
     }
     setFormError(errors);
-    return Object.keys(errors).length === 0;
+    return Object.keys(errors).length === 0; // Return true if no errors
   };
 
+  // Validates the form input based on the current step
   const validateFormInput = async (event) => {
     event.preventDefault();
     if (step === 1) {
       if (validateStepOne()) {
-        nextStep();
+        nextStep(); // Proceed to the next step if validation passes
       }
     } else {
       if (validateStepTwo()) {
-        await sendDataToAPI();
+        await sendDataToAPI(); // Submit the form if validation passes
       }
     }
   };
 
+  // Sends the form data to the backend API
   const sendDataToAPI = async () => {
     const apiURL = `${config.backend}/api/Tenant/auth/Tenant_register`;
 
@@ -145,14 +152,14 @@ function SignUpForm({ setID }) {
 
       if (responseData.success) {
         setFormInput((prev) => ({ ...prev, successMsg: responseData.message }));
-        setID(responseData.message);
-        navigate("/otp-page-tenant");
+        setID(responseData.message); // Set the user ID for further steps
+        navigate("/otp-page-tenant"); // Navigate to the OTP page
       } else {
         setFormInput((prev) => ({ ...prev, successMsg: responseData.message }));
       }
     } catch (error) {
       console.error("Error sending data:", error);
-      setSomethingwentwrong(true);
+      setSomethingwentwrong(true); // Handle errors gracefully
       setFormInput((prev) => ({
         ...prev,
         successMsg: "Couldn't fetch data.",

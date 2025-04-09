@@ -1,3 +1,6 @@
+// This component handles the landlord signup process. It validates user input, 
+// sends the data to the backend API, and navigates to the OTP page upon successful registration.
+
 import { responsiveFontSizes } from "@mui/material";
 import React from "react";
 import { useState } from "react";
@@ -9,37 +12,45 @@ import { useEffect } from "react";
 function SignupformLandlord({ setID }) {
   const navigate = useNavigate();
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+
+  // Handle navigation and error notification if something goes wrong
   useEffect(() => {
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
-      navigate(-1);
+      navigate(-1); // Navigate back to the previous page
     }
   }, [somethingwentwrong]);
+
   const [formInput, setFormInput] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+
   const [formError, setFormError] = useState({
     password: "",
     confirmPassword: "",
   });
 
+  // Handles user input and updates the form state
   const handleUserInput = (name, value) => {
     setFormInput((prev) => ({ ...prev, [name]: value }));
   };
+
+  // Validates the form input before submission
   const validateFormInput = async (event) => {
     event.preventDefault();
     let inputError = {
       confirmPassword: "",
     };
+
+    // Validate password length
     if (formInput.password.length < 6) {
       setFormError({
         ...inputError,
-        password: "Password should be atleast 6 characters",
+        password: "Password should be at least 6 characters",
       });
-      // setFormInput({...formInput, successMsg: "",})
       return;
     }
     if (formInput.password.length > 10) {
@@ -47,23 +58,23 @@ function SignupformLandlord({ setID }) {
         ...inputError,
         password: "Password should not be more than 10 characters",
       });
-      // setFormInput({...formInput, successMsg: "",})
       return;
     }
+
+    // Validate password and confirm password match
     if (formInput.password !== formInput.confirmPassword) {
       setFormError({
         ...inputError,
         confirmPassword: "Password and Confirm password do not match!",
       });
-      // setFormInput({...formInput, successMsg: "",})
       return;
     }
-    // setFormError(inputError);
-    // setFormInput((prevState) => ({
-    //   ...prevState, successMsg:"Validation Successful",
-    // }));
+
+    // If validation passes, send data to the API
     await sendDataToAPI();
   };
+
+  // Sends the form data to the backend API
   const sendDataToAPI = async () => {
     const apiURL = `${config.backend}/api/Landlord/auth/Landlord_register`;
 
@@ -84,22 +95,18 @@ function SignupformLandlord({ setID }) {
 
       if (responseData.success) {
         setFormInput((prev) => ({ ...prev, successMsg: responseData.message }));
-        setID(responseData.message);
-        navigate("/otp-page-landlord");
-        // navigate("/otp-page", { id: successMsg })
+        setID(responseData.message); // Set the user ID for further steps
+        navigate("/otp-page-landlord"); // Navigate to the OTP page
       } else {
         setFormInput((prev) => ({ ...prev, successMsg: responseData.message }));
-        // setID(responseData.message);
-        // navigate("/otp-page", { id: successMsg })
       }
     } catch (error) {
       console.error("Error sending data:", error);
-      setSomethingwentwrong(true);
+      setSomethingwentwrong(true); // Handle errors gracefully
       setFormInput((prev) => ({
         ...prev,
         successMsg: "Couldn't fetch data.",
       }));
-      // setID(null);
     }
   };
 
@@ -107,6 +114,7 @@ function SignupformLandlord({ setID }) {
     <div className="LSignup-box">
       <h2 className="LTitle">Signup as a Landlord</h2>
 
+      {/* Form for landlord signup */}
       <form className="LSignup-form" onSubmit={validateFormInput}>
         <div>
           <label>Full Name</label>
@@ -146,6 +154,8 @@ function SignupformLandlord({ setID }) {
             value={formInput.password}
             onChange={({ target }) => {
               handleUserInput(target.name, target.value);
+
+              // Validate password length dynamically
               if (target.value.length < 6) {
                 setFormError((prev) => ({
                   ...prev,
@@ -164,8 +174,6 @@ function SignupformLandlord({ setID }) {
               }
             }}
             required
-            // minLength="6"
-            // maxLength="10"
           />
           {formError.password && (
             <p className="signup-landlord-error">{formError.password}</p>
@@ -182,6 +190,8 @@ function SignupformLandlord({ setID }) {
             value={formInput.confirmPassword}
             onChange={({ target }) => {
               handleUserInput(target.name, target.value);
+
+              // Validate confirm password dynamically
               if (target.value.length < 6) {
                 setFormError((prev) => ({
                   ...prev,
@@ -208,8 +218,6 @@ function SignupformLandlord({ setID }) {
               }
             }}
             required
-            // minLength="6"
-            // maxLength="10"
           />
           {formError.confirmPassword && (
             <p className="signup-landlord-error">{formError.confirmPassword}</p>
@@ -226,4 +234,5 @@ function SignupformLandlord({ setID }) {
     </div>
   );
 }
+
 export default SignupformLandlord;

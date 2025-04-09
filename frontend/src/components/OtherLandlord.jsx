@@ -13,22 +13,21 @@ const OtherLandlord = () => {
     message: "Loading...",
     Properties: [],
     Images: `Loading...`,
-  });
+  }); // State to store landlord details
   const navigate = useNavigate();
-  const params = useParams();
-  const [reviews, setReviews] = useState([{
-    reviewername: '',
-    reviewerimage: '',
-    rating: 0,
-    comment: ''
-  }]);
+  const params = useParams(); // Extract landlord ID from URL parameters
+  const [reviews, setReviews] = useState([
+    {
+      reviewername: "",
+      reviewerimage: "",
+      rating: 0,
+      comment: "",
+    },
+  ]); // State to store reviews of the landlord
 
-  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false); // State to handle errors
 
-  const handleView = () => {
-    navigate("/prop-display ");
-  };
-  const token = localStorage.getItem("authtoken");
+  // Fetch landlord details and reviews
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -39,13 +38,35 @@ const OtherLandlord = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ requested_id: params.id, accounttype: "landlord" }),
+            body: JSON.stringify({
+              requested_id: params.id,
+              accounttype: "landlord",
+            }),
           }
         );
         const data = await response.json();
-        console.log(data);
         if (data.success) {
-          setRespData(data);
+          setRespData(data); // Set landlord details
+        } else {
+          setSomethingwentwrong(true);
+        }
+      } catch (error) {
+        setSomethingwentwrong(true);
+      }
+    };
+
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(`${config.backend}/api/reviews/reviewee`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ reviewee: params.id }),
+        });
+        const data = await response.json();
+        if (data.success) {
+          setReviews(data.reviews); // Set landlord reviews
         } else {
           setSomethingwentwrong(true);
         }
@@ -55,77 +76,55 @@ const OtherLandlord = () => {
     };
 
     fetchData();
-
-    const fetchReviews = async () => {
-      try{
-        const response = await fetch(`${config.backend}/api/reviews/reviewee`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ reviewee: params.id })
-        });
-        const data = await response.json();
-        if (data.success) {
-          setReviews(data.reviews);
-        }
-        else{
-          setSomethingwentwrong(true);
-        }
-      }
-      catch(error){
-        setSomethingwentwrong(true);
-      }
-    }
     fetchReviews();
-
   }, []);
 
+  // Handle messaging the landlord
   const messageclick = async () => {
-    try{
-      const response = await fetch(`${config.backend}/messages/createConversation`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'authtoken': localStorage.getItem('authtoken')
-        },
-        body: JSON.stringify({ user2: params.id })
-      });
+    try {
+      const response = await fetch(
+        `${config.backend}/messages/createConversation`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authtoken: localStorage.getItem("authtoken"),
+          },
+          body: JSON.stringify({ user2: params.id }),
+        }
+      );
       const data = await response.json();
       if (data.success) {
-        navigate('/chat/' + data.conversation_id);
+        navigate("/chat/" + data.conversation_id); // Navigate to the chat page
       } else {
         setSomethingwentwrong(true);
       }
-    }
-    catch(error){
+    } catch (error) {
       setSomethingwentwrong(true);
     }
   };
 
+  // Navigate to the review page
   const reviewclick = () => {
-    navigate('/review/' + params.id);
+    navigate("/review/" + params.id);
   };
 
+  // Redirect to tenant or landlord profile
   const redirectto = (type, id) => {
-    if (type === 'tenant') {
-      return () => navigate('/tenant/' + id);
+    if (type === "tenant") {
+      return () => navigate("/tenant/" + id);
     } else {
-      return () => navigate('/landlord/' + id);
+      return () => navigate("/landlord/" + id);
     }
   };
 
-  
-  useEffect(()=>{
-    if(somethingwentwrong){
-      toast.error('Something went wrong. Please try again later.');
-      navigate(-1)
+  // Handle errors and navigate back
+  useEffect(() => {
+    if (somethingwentwrong) {
+      toast.error("Something went wrong. Please try again later.");
+      navigate(-1);
     }
   }, [somethingwentwrong]);
-
-  // if (!respData) {
-  //   return <div className="landlord-profile-loading">Loading...</div>;
-  // }
 
   return (
     <>
@@ -134,7 +133,11 @@ const OtherLandlord = () => {
         <div className="landlord-profile-content">
           <div className="landlord-profile-header">
             <img
-              src={respData? respData.Images: `${config.backend}/Pictures/Default.png`}
+              src={
+                respData
+                  ? respData.Images
+                  : `${config.backend}/Pictures/Default.png`
+              }
               alt="Profile"
               className="landlord-profile-image"
             />
@@ -144,21 +147,27 @@ const OtherLandlord = () => {
                   <p>
                     <span className="label">Full Name</span>{" "}
                     <span className="separator">:</span>
-                    <span className="value">{respData?respData.name:"Loading..."}</span>
+                    <span className="value">
+                      {respData ? respData.name : "Loading..."}
+                    </span>
                   </p>
                 </div>
                 <div className="landlord-profile-email">
                   <p>
                     <span className="label">Email Address</span>{" "}
                     <span className="separator">:</span>
-                    <span className="value">{respData?respData.email:"Loading..."}</span>
+                    <span className="value">
+                      {respData ? respData.email : "Loading..."}
+                    </span>
                   </p>
                 </div>
                 <div className="landlord-profile-propCount">
                   <p>
                     <span className="label">Properties Count</span>{" "}
                     <span className="separator">:</span>
-                    <span className="value">{respData?respData.message:"Loading..."}</span>
+                    <span className="value">
+                      {respData ? respData.message : "Loading..."}
+                    </span>
                   </p>
                 </div>
 
@@ -175,54 +184,60 @@ const OtherLandlord = () => {
                   >
                     Review
                   </button>
-                  {/* <button
-                  className="landlord-profile-delete-button"
-                  onClick={handleDelete}
-                >
-                  Delete
-                </button> */}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Properties Section (Still Inside the Same Container) */}
+          {/* Properties Section */}
           <div className="landlord-profile-properties">
-            {respData?respData.Properties.map(({ _id, town, bhk, price, Images, available }) => (
-              <PropertyCard
-                key={_id}
-                image={Images[0]}
-                price={price}
-                title="Prop Card"
-                location={town}
-                bhk={bhk}
-                id={_id}
-                available={available}
-              />
-            )):"Loading..."}
+            {respData
+              ? respData.Properties.map(
+                  ({ _id, town, bhk, price, Images, available }) => (
+                    <PropertyCard
+                      key={_id}
+                      image={Images[0]}
+                      price={price}
+                      title="Prop Card"
+                      location={town}
+                      bhk={bhk}
+                      id={_id}
+                      available={available}
+                    />
+                  )
+                )
+              : "Loading..."}
           </div>
         </div>
       </div>
 
-      <section className='reviews'>
+      {/* Reviews Section */}
+      <section className="reviews">
         <h2>Reviews</h2>
-        <div className='reviews-container'>
+        <div className="reviews-container">
           {reviews.map((review, index) => (
             <div className="reviews1" key={index}>
-              <div className="reviews-user-details" onClick={redirectto(review.reviewertype, review.reviewer)}>
+              <div
+                className="reviews-user-details"
+                onClick={redirectto(review.reviewertype, review.reviewer)}
+              >
                 <div className="reviews-user-image">
                   <img src={review.reviewerimage} alt="" />
                 </div>
                 <div className="reviews-user-name">
                   <b>{review.reviewername}</b>
                   <div className="reviews-rating">
-                    <Rating name="half-rating" value={review.rating} precision={1} size="small" readOnly />
+                    <Rating
+                      name="half-rating"
+                      value={review.rating}
+                      precision={1}
+                      size="small"
+                      readOnly
+                    />
                   </div>
                 </div>
               </div>
-              <div className="reviews-comment">
-                {review.comment}
-              </div>
+              <div className="reviews-comment">{review.comment}</div>
             </div>
           ))}
           {reviews.length === 0 && <p>No reviews posted.</p>}

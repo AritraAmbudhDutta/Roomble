@@ -1,18 +1,19 @@
 import React from "react";
-
 import logo from "../../public/logo.png";
 import SignUpForm from "./SignUpForm.jsx";
 import "../css/SignUpTenant.css";
+
+// This component renders the tenant signup page, displaying the Roomble logo 
+// and embedding the SignUpForm component for user registration.
 function SignUpPage({ setID }) {
   return (
     <div className="signup-tenant-container">
-      {/* <div className="signup-tenant-logo"> */}
       <img className="signup-tenant-logo" src={logo} alt="Roomble Logo" />
-      {/* </div> */}
       <div>
         <SignUpForm setID={setID} />
       </div>
     </div>
   );
 }
+
 export default SignUpPage;

@@ -15,10 +15,10 @@ import {
 } from "@mui/material";
 import config from "../config.json";
 const PropertyDisplay = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0); // Tracks the current image index in the carousel
   const state = useContext(Basecontext);
-  const { user, setUser, fetuser } = state;
-  const [open, setOpen] = useState(false);
+  const { user, setUser, fetuser } = state; // Access user details and context functions
+  const [open, setOpen] = useState(false); // State to manage the review modal
   const [property, setProperty] = useState({
     name: "Loading...",
     city: "Loading...",
@@ -32,9 +32,9 @@ const PropertyDisplay = () => {
     description: "Loading...",
     price: "Loading...",
     reviews: ["Loading..."],
-  });
-  const [rating, setRating] = useState(0);
-  const [review, setReview] = useState("");
+  }); // State to store property details
+  const [rating, setRating] = useState(0); // State to store the rating value
+  const [review, setReview] = useState(""); // State to store the review text
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([
     {
@@ -43,14 +43,15 @@ const PropertyDisplay = () => {
       name: "Loading...",
       image: "/sample_useImage.jpg",
     },
-  ]);
+  ]); // State to store reviews of the property
 
   const params = useParams();
-  const id = params.id;
+  const id = params.id; // Extract property ID from URL parameters
   useEffect(() => {
-    fetuser();
+    fetuser(); // Fetch user details on component mount
   }, [user]);
 
+  // Fetch reviews for the property
   const fetchReviews = async () => {
     const res = await fetch(`${config.backend}/api/reviewProperty/getreviews`, {
       method: "POST",
@@ -66,6 +67,7 @@ const PropertyDisplay = () => {
   };
 
   useEffect(() => {
+    // Fetch property details from the backend
     const fetchProperty = async () => {
       try {
         const response = await fetch(
@@ -95,6 +97,7 @@ const PropertyDisplay = () => {
     fetchReviews();
   }, []);
 
+  // Handle carousel navigation
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? property.Images.length - 1 : prevIndex - 1
@@ -107,6 +110,7 @@ const PropertyDisplay = () => {
     );
   };
 
+  // Redirect to different pages based on type
   const redirectto = (type, id) => {
     if (type == "landlord") {
       return () => navigate(`/landlord/${id}`);
@@ -116,6 +120,7 @@ const PropertyDisplay = () => {
       return () => navigate(`/tenant/${id}`);
     }
   };
+  // Notify the landlord about tenant interest
   const handleNotif = async () => {
     toast.success(`Sending email`);
     const res = await fetch(`${config.backend}/api/Interested/Tenant_Prop`, {
@@ -136,6 +141,7 @@ const PropertyDisplay = () => {
       toast.error(data.message);
     }
   };
+  // Handle property listing/delisting
   const handleDelist = async () => {
     const res = await fetch(
       `${config.backend}/api/Listing_Delisting/List_Delist_Prop`,
@@ -161,6 +167,7 @@ const PropertyDisplay = () => {
       toast.error(data.message);
     }
   };
+  // Handle property deletion
   const handleDelProp = async () => {
     try {
       // console.log(Sendid);
@@ -189,14 +196,17 @@ const PropertyDisplay = () => {
       toast.error(error);
     }
   };
+  // Navigate to the edit property page
   const handleEdit = () => {
     navigate(`/edit-property/${id}`);
   };
 
+  // Open the review modal
   const handleReview = () => {
     setOpen(true);
   };
 
+  // Submit a review for the property
   const handleClick = async () => {
     const res = await fetch(`${config.backend}/api/reviewProperty/addreview`, {
       method: "POST",
@@ -242,6 +252,7 @@ const PropertyDisplay = () => {
     setOpen(false);
   };
 
+  // Open Google Maps with the property's location
   const viewonmaps = () => {
     //open google maps with the lat and lng on new tab
     window.open(

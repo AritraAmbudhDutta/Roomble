@@ -6,40 +6,43 @@ import { socket } from "../socket";
 import "react-toastify/dist/ReactToastify.css";
 
 export const Navbar = () => {
-  // Assume Basecontext provides a 'loading' state and possibly 'setLoading'
+  // Access user details and context functions from Basecontext
   const state = useContext(Basecontext);
-  const { user, setUser, fetuser, loading } = state; // loading should be managed in your BaseState
+  const { user, setUser, fetuser, loading } = state; // `loading` indicates if data is being fetched
 
   useEffect(() => {
-    // Fetch the user data on component mount
+    // Fetch the user data when the component mounts
     fetuser();
   }, []);
 
   useEffect(() => {
-    // Handle socket connection when user is updated
+    // Handle socket connection when the user is updated
     function handleConnection() {
       if (user && user._id) {
-        socket.emit("user_connected", user._id);
+        socket.emit("user_connected", user._id); // Notify the server about the connected user
       }
     }
     if (user && user._id) {
       handleConnection();
     }
     return () => {
-      socket.off("connect", handleConnection);
+      socket.off("connect", handleConnection); // Clean up the socket connection
     };
   }, [user]);
 
   return (
     <div className="navbar">
-
+      {/* Display a loading indicator if data is being fetched */}
       <div className={loading ? "loading-flex" : "loading-none"}>
         <p>Loading...</p>
       </div>
 
+      {/* Logo Section */}
       <div className="logo">
         <img src="/logo_nav.png" alt="logo" className="logo-img" />
       </div>
+
+      {/* Menu Section */}
       <div className="menu">
         {user.type === "none" ? (
           <ul>
@@ -68,6 +71,8 @@ export const Navbar = () => {
           </ul>
         )}
       </div>
+
+      {/* Account Section */}
       <div className="account-logo">
         {user.type === "none" ? (
           <>
