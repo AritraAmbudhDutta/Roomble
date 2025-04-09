@@ -1,3 +1,9 @@
+
+/**
+ * This page allows users to submit a review for another user (tenant or landlord). 
+ * It includes a rating system and a text area for entering comments.
+*/
+
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../css/Review.css';

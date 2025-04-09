@@ -1,3 +1,11 @@
+
+/**
+ * This component is responsible for displaying detailed information about a specific property.
+ * It includes features such as an image carousel, property details, amenities, reviews, and 
+ * actions like editing, deleting, reviewing, and contacting the landlord. It also allows users 
+ * to view the property location on Google Maps and express interest in the property.
+ */
+
 import React, { useState, useContext, useEffect } from "react";
 import "../css/PropertyDisplay.css";
 import { Basecontext } from "../context/base/Basecontext";

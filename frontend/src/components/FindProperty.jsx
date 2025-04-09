@@ -1,42 +1,55 @@
-import React from "react";
+
+/**
+ * This component allows users to search for properties based on various filters such as locality, price range, area, and BHK type.
+ * It fetches and displays matching properties from the backend and provides options to clear or apply filters.
+ */
+
+import React, { useState, useEffect } from "react";
 import SearchArea from "./FindPropertyComponents/SeachArea";
 import "../css/FindPropertyStyles/FindProperty.css";
 import PropertyCardTenant from "../components/FindPropertyComponents/PropertyCardTenant";
-import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import config from "../config.json";
-import { useEffect } from "react";
 
 function FindProperty() {
+  // State variables for filters and properties
   const [city, setCity] = useState("");
   const [locality, setLocality] = useState("");
   const [BHK, setBHK] = useState([]);
-  const [values, setValues] = useState([1000, 100000]); // Initial values [lower, upper]
-  const [area, setArea] = useState([500, 10000]); // Initial values [lower, upper]
+  const [values, setValues] = useState([1000, 100000]); // Price range [min, max]
+  const [area, setArea] = useState([500, 10000]); // Area range [min, max]
   const [properties, setProperties] = useState([]);
   const [error, setError] = useState("");
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
   const [lastSearchLocality, setLastSearchLocality] = useState("");
   const [filtersApllied, setFiltersApplied] = useState(false);
+
   const navigate = useNavigate();
+
+  // Filter properties based on the last searched locality
   const matchingProperties = properties.filter(
     (property) => property.town === lastSearchLocality
   );
   const otherProperties = properties.filter(
     (property) => property.town !== lastSearchLocality
   );
+
+  // Toast notification helper
   const notify = (message) => toast(message);
+
+  // Handle price slider change
   const handleSliderChange = (newValues) => {
     setValues(newValues); // `newValues` is an array like [minValue, maxValue]
   };
 
+  // Handle area slider change
   const handleAreaChange = (newArea) => {
-    setArea(newArea); // `newValues` is an array like [minValue, maxValue]
+    setArea(newArea); // `newArea` is an array like [minValue, maxValue]
   };
 
-  // In your FindProperty.jsx or similar component
+  // Handle BHK selection toggle
   const handleBHKChange = (bhk) => {
     if (BHK.includes(bhk)) {
       // Remove BHK if already selected
@@ -47,13 +60,13 @@ function FindProperty() {
     }
   };
 
+  // Apply filters and fetch properties
   const handleApplyChanges = async () => {
     try {
       if (!locality) {
         notify("Please select a locality!");
         return;
       }
-      // toast.success("Fetching Data");
 
       const response = await axios.get(
         `${config.backend}/api/Search_Routes/SearchProperties`,
@@ -64,13 +77,13 @@ function FindProperty() {
             max_price: values[1],
             min_area: area[0],
             max_area: area[1],
-            bhk: BHK.length > 0 ? BHK.join(',') : undefined,
+            bhk: BHK.length > 0 ? BHK.join(",") : undefined,
           },
         }
       );
+
       setLastSearchLocality(locality);
       setProperties(response.data);
-      console.log("Properties fetched:", response.data);
       setError("");
       setFiltersApplied(true);
     } catch (err) {
@@ -80,6 +93,8 @@ function FindProperty() {
       setSomethingwentwrong(true);
     }
   };
+
+  // Handle errors and navigate back if something went wrong
   useEffect(() => {
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
@@ -87,6 +102,7 @@ function FindProperty() {
     }
   }, [somethingwentwrong]);
 
+  // Clear all filters and reset state
   const handleClearChanges = () => {
     setCity("");
     setLocality("");
@@ -101,6 +117,7 @@ function FindProperty() {
 
   return (
     <div className="find-property-body">
+      {/* Search area for filters */}
       <div className="search-area-div">
         <SearchArea
           city={city}
@@ -120,25 +137,37 @@ function FindProperty() {
           handleClearChanges={handleClearChanges}
         />
       </div>
-  
+
+      {/* Property cards section */}
       <div className="Property-card-div">
         {/* Prompt to apply filters */}
         {!filtersApllied && (
           <div className="empty-state-container">
-            <img src="./house_when_page_empty.png" alt="No Filters Applied" className="empty-state-img" />
-            <h2 className="empty-message">Please select a locality in filters and click apply</h2>
+            <img
+              src="./house_when_page_empty.png"
+              alt="No Filters Applied"
+              className="empty-state-img"
+            />
+            <h2 className="empty-message">
+              Please select a locality in filters and click apply
+            </h2>
           </div>
-)}
+        )}
 
-  
         {/* No matches found */}
         {filtersApllied && matchingProperties.length === 0 && (
           <div className="empty-state-container">
-            <img src="./house_when_page_empty.png" alt="No match" className="empty-state-img" />
-            <h2 className="empty-message">Sorry! No property matched with your filters</h2>
+            <img
+              src="./house_when_page_empty.png"
+              alt="No match"
+              className="empty-state-img"
+            />
+            <h2 className="empty-message">
+              Sorry! No property matched with your filters
+            </h2>
           </div>
         )}
-  
+
         {/* Matching properties */}
         {matchingProperties.length > 0 && (
           <>
@@ -159,7 +188,7 @@ function FindProperty() {
             ))}
           </>
         )}
-  
+
         {/* Other recommendations */}
         {otherProperties.length > 0 && (
           <>

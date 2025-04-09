@@ -1,3 +1,10 @@
+
+/**
+ * This component renders the login page for the Roomble application. 
+ * It allows users to log in as either a tenant or a landlord, 
+ * with options to remember their credentials and navigate to the appropriate dashboard.
+ */
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../css/Login.css";
@@ -7,6 +14,7 @@ import config from '../config.json';
 import logo from "/logo.png";
 
 const Login = () => {
+  // State variables
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("tenant"); // 'tenant' or 'landlord'
@@ -15,7 +23,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-
+  // Load remembered credentials from localStorage on component mount
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedEmail");
     const savedPassword = localStorage.getItem("rememberedPassword");
@@ -29,17 +37,19 @@ const Login = () => {
     }
   }, []);
 
+  // Handle user type change (tenant or landlord)
   const handleUserTypeChange = (type) => {
     setUserType(type);
   };
 
+  // Handle login form submission
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-
+      // Send login request to the backend
       const response = await fetch(
         `${config.backend}/api/${userType}/auth/${userType}_login`,
         {
@@ -55,6 +65,7 @@ const Login = () => {
       setLoading(false);
 
       if (data.success) {
+        // Save authentication token and optionally remember credentials
         localStorage.setItem("authtoken", data.authtoken);
         if (rememberMe) {
           localStorage.setItem("rememberedEmail", email);
@@ -66,18 +77,18 @@ const Login = () => {
           localStorage.removeItem("rememberedUserType");
         }
 
+        // Navigate to the appropriate dashboard
         navigate(userType === "landlord" ? "/landlord-dashboard" : "/tenant-dashboard");
         window.location.reload();
       } else {
+        // Handle login failure
         setError(data.message || "Invalid login credentials");
         toast.error(data.message || "Invalid login credentials");
       }
     } catch (err) {
       setLoading(false);
-      setError(data.message);
-      toastify.error(data.message);
-      // setError("Network error. Please try again.");
-      // toast.error("Network error. Please try again.");
+      setError("Network error. Please try again.");
+      toast.error("Network error. Please try again.");
     }
   };
 
@@ -102,7 +113,6 @@ const Login = () => {
             <img 
               src={userType === "landlord" ? "/key.png" : "/key_white.png"} 
               style={{ width: "50px", height: "50px" }} 
-  
             />
             Tenant
           </button>
@@ -111,14 +121,14 @@ const Login = () => {
             onClick={() => handleUserTypeChange("landlord")}
           >
             <img 
-            src={userType === "landlord" ? "/white_house.png" : "/house.jpg"} 
-            style={{ width: "50px", height: "50px" }} 
-
-          />
+              src={userType === "landlord" ? "/white_house.png" : "/house.jpg"} 
+              style={{ width: "50px", height: "50px" }} 
+            />
             Landlord
           </button>
         </div>
 
+        {/* Login Form */}
         <form className="login-login-form" onSubmit={handleLogin}>
           <label htmlFor="email">Email</label>
           <input
@@ -140,6 +150,7 @@ const Login = () => {
             required
           />
 
+          {/* Remember Me and Forgot Password */}
           <div className="login-remember-forgot">
             <span className="login-remember-container">
               <input
@@ -157,19 +168,24 @@ const Login = () => {
             </Link>
           </div>
 
+          {/* Error Message */}
           {error && <p className="login-error-text">{error}</p>}
 
+          {/* Login Button */}
           <button type="submit" className="login-login-button" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
+        {/* Register Link */}
         <p className="login-register-text">
           Not Registered Yet?{" "}
           <Link to={userType === "landlord" ? "/signup-landlord" : "/signup-tenant"}>
             Create an account
           </Link>
         </p>
+
+        {/* Footer Text */}
         <p className="login-footer-text">
           With Roomble, you'll stumble on the perfect place to rumble!
         </p>

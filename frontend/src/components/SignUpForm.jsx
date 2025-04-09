@@ -1,3 +1,10 @@
+
+/**
+ * 
+ * This component handles the tenant signup process in a multi-step form. 
+ * It collects user details, validates inputs, and submits the data to the backend API.
+ */
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/SignUpTenant.css";

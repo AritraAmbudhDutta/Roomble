@@ -1,6 +1,15 @@
+
+/**
+ * This component renders a "Contact Us" page that displays a grid of team members.
+ * Each team member's card includes their name, role, contact email, and profile image.
+ * 
+ * The team member data is dynamically generated from the `teamMembers` array.
+ */
+
 import React from "react";
 import "../css/ContactUs.css";
 
+// Array containing team member details
 const teamMembers = [
   {
     name: "Aarsh Jain",
@@ -70,17 +79,32 @@ const teamMembers = [
   },
 ];
 
+// Component to display the team page
 const TeamPage = () => {
   return (
     <div className="team-container">
+      {/* Page heading */}
       <h1 className="team-heading">Contact Us</h1>
+
+      {/* Grid layout for team members */}
       <div className="team-grid">
         {teamMembers.map((member, index) => (
           <div className="team-card" key={index}>
-            <div className="team-image-wrapper"><img src={member.image} alt={member.name} className="team-image" /></div>
+            {/* Team member image */}
+            <div className="team-image-wrapper">
+              <img src={member.image} alt={member.name} className="team-image" />
+            </div>
+
+            {/* Team member name */}
             <h3 className="team-name">{member.name}</h3>
+
+            {/* Team member role */}
             <p className="team-role">{member.role}</p>
-            <a className="team-contact" href={`mailto:${member.contact}`}> <i className="fas fa-envelope"></i> {member.contact}</a>
+
+            {/* Team member contact email */}
+            <a className="team-contact" href={`mailto:${member.contact}`}>
+              <i className="fas fa-envelope"></i> {member.contact}
+            </a>
           </div>
         ))}
       </div>

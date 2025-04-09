@@ -1,29 +1,30 @@
-import React, { useEffect, useState } from 'react';
+
+/**
+ * This component allows users to edit the details of an existing property listing.
+ * It includes a form for updating property information such as photos, description, 
+ * BHK, area, rent, city, location, address, and amenities. Users can also select 
+ * the property's location on a map.
+ */
+
+import React, { useEffect, useState, useContext } from 'react';
 import DragAndDrop from './AddPropertyComponents/DragAndDrop';
 import "../css/AddPropertyStyles/AddProperty.css";
-import { useParams } from 'react-router-dom';
-import { useContext } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Basecontext } from '../context/base/Basecontext';
-import { useNavigate } from 'react-router-dom';
 import config from '../config.json';
 import FadeInAnimation from './animations/FadeInAnimation';
 import { toast } from 'react-toastify';
-import { APIProvider, Map, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
-
+import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 
 function EditProperty(property) {
-
+    // Context and state variables
     const state = useContext(Basecontext);
     const { user, setUser, fetuser } = state;
     const [somethingwentwrong, setSomethingwentwrong] = useState(false);
     const navigate = useNavigate();
     const [selectedLocation, setSelectedLocation] = useState({ lat: 19.0760, lng: 72.8777 });
-    const handleMapClick = (event) => {
-        setSelectedLocation({
-            lat: event.detail.latLng.lat,
-            lng: event.detail.latLng.lng,
-        });
-    };
+
+    // Form state and validation
     const initialFormState = {
         photos: [],
         description: "",
@@ -37,7 +38,6 @@ function EditProperty(property) {
         price: "",
         lat: 19.0760,
         lng: 72.8777,
-
     };
     const [formData, setFormData] = useState(initialFormState);
     const [images, setImages] = useState([]);
@@ -45,10 +45,12 @@ function EditProperty(property) {
     const params = useParams();
     const id = params.id;
 
+    // Update form data
     const updateFormData = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
+    // Validate form inputs
     const validateForm = () => {
         let newErrors = {};
 
@@ -64,10 +66,10 @@ function EditProperty(property) {
         return Object.keys(newErrors).length === 0;
     };
 
+    // Handle form submission
     const handleUpdate = async () => {
-
         if (!validateForm()) return;
-        
+
         const formData_final = new FormData();
         formData_final.append("description", formData.description);
         formData_final.append("bhk", formData.bhk);
@@ -86,7 +88,6 @@ function EditProperty(property) {
                 formData_final.append("image", image.file);
             }
         });
-        console.log(images);
 
         try {
             const response = await fetch(`${config.backend}/api/updates/updateProperty`, {
@@ -97,21 +98,20 @@ function EditProperty(property) {
                 body: formData_final,
             });
             const data = await response.json();
-            console.log(data);
+
             if (data.success) {
                 toast.success('Property updated successfully!');
                 navigate("/landlord-profile-page");
             } else {
                 setSomethingwentwrong(true);
             }
-        }
-        catch (error) {
+        } catch (error) {
             console.error("Error updating property:", error);
             setSomethingwentwrong(true);
         }
-        
     };
 
+    // Fetch property details on component mount
     useEffect(() => {
         const fetchProperty = async () => {
             try {
@@ -123,9 +123,9 @@ function EditProperty(property) {
                     body: JSON.stringify({ id: id }),
                 });
                 const data = await response.json();
+
                 if (data.success) {
                     setFormData(data.property);
-    
                     setImages([]);
                     setSelectedLocation({ lat: data.property.lat, lng: data.property.lng });
                 }
@@ -137,28 +137,40 @@ function EditProperty(property) {
         fetchProperty();
     }, []);
 
-      useEffect(()=>{
-        if(somethingwentwrong){
-          toast.error('Something went wrong. Please try again later.');
-          navigate(-1)
+    // Handle errors
+    useEffect(() => {
+        if (somethingwentwrong) {
+            toast.error('Something went wrong. Please try again later.');
+            navigate(-1);
         }
-      }, [somethingwentwrong]);
+    }, [somethingwentwrong]);
+
+    // Handle map click to update location
+    const handleMapClick = (event) => {
+        setSelectedLocation({
+            lat: event.detail.latLng.lat,
+            lng: event.detail.latLng.lng,
+        });
+    };
 
     return (
         <div className="add-prop-container">
+            {/* Top section */}
             <div className="add-prop-top">
                 <h4 style={{ color: "#7D141D", fontSize: "20px", fontWeight: "bold" }}>Add Property</h4>
                 <div className="input-top">
+                    {/* Photo upload */}
                     <div className={"form-item upload-container"}>
                         <FadeInAnimation>
                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                 <h4 style={{ color: "#7D141D" }}>Upload Photos *</h4>
                                 {errors.photos && <p className="addProp-form-error">{errors.photos}</p>}
                             </div>
-
                             <DragAndDrop images={images} setImages={setImages} updateFormData={updateFormData} />
                         </FadeInAnimation>
                     </div>
+
+                    {/* Description */}
                     <div className={"form-item description-container"}>
                         <FadeInAnimation>
                             <h4 style={{ color: "#7D141D" }}>Description</h4>
@@ -171,7 +183,10 @@ function EditProperty(property) {
                     </div>
                 </div>
             </div>
+
+            {/* Middle section */}
             <div className="add-prop-middle">
+                {/* BHK */}
                 <div className={"form-item bhk-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>BHK *</h4>
@@ -183,6 +198,8 @@ function EditProperty(property) {
                         {errors.bhk && <p className="addProp-form-error">{errors.bhk}</p>}
                     </FadeInAnimation>
                 </div>
+
+                {/* Area */}
                 <div className={"form-item Area-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>Area(sqft) *</h4>
@@ -194,6 +211,8 @@ function EditProperty(property) {
                         {errors.area && <p className="addProp-form-error">{errors.area}</p>}
                     </FadeInAnimation>
                 </div>
+
+                {/* Rent */}
                 <div className={"form-item Rent-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>Rent(Per Month) *</h4>
@@ -205,6 +224,8 @@ function EditProperty(property) {
                         {errors.rent && <p className="addProp-form-error">{errors.rent}</p>}
                     </FadeInAnimation>
                 </div>
+
+                {/* City */}
                 <div className={"form-item City-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>City *</h4>
@@ -218,6 +239,8 @@ function EditProperty(property) {
                         {errors.city && <p className="addProp-form-error">{errors.city}</p>}
                     </FadeInAnimation>
                 </div>
+
+                {/* Location */}
                 <div className={"form-item Location-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>Location *</h4>
@@ -241,7 +264,10 @@ function EditProperty(property) {
                     </FadeInAnimation>
                 </div>
             </div>
+
+            {/* Bottom section */}
             <div className="add-prop-bottom">
+                {/* Address */}
                 <div className={"form-item Address-container"}>
                     <FadeInAnimation>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -255,6 +281,8 @@ function EditProperty(property) {
                         />
                     </FadeInAnimation>
                 </div>
+
+                {/* Amenities */}
                 <div className={"form-item Amenities-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>Amenities</h4>
@@ -266,33 +294,30 @@ function EditProperty(property) {
                     </FadeInAnimation>
                 </div>
 
+                {/* Map for location selection */}
                 <div className={"form-item Amenities-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>Pick the location on Maps</h4>
-                            <APIProvider apiKey={import.meta.env.VITE_MAPS_API}>
-                                <div className="maps_box">
-                                    <Map
-                                        defaultCenter={selectedLocation}
-                                        defaultZoom={10}
-                                        mapId={"a2e98f7c917411dc"}
-                                        onClick={handleMapClick}
-                                    >
-                                        <AdvancedMarker position={selectedLocation} >
-                                        </AdvancedMarker>
-                                    </Map>
-                                </div>
-                                {/* <div className="p-4 bg-white shadow-md rounded-md mt-4">
-                                    <p><strong>Selected Coordinates:</strong></p>
-                                    <p>Latitude: {selectedLocation.lat}</p>
-                                    <p>Longitude: {selectedLocation.lng}</p>
-                                </div> */}
-                            </APIProvider>
+                        <APIProvider apiKey={import.meta.env.VITE_MAPS_API}>
+                            <div className="maps_box">
+                                <Map
+                                    defaultCenter={selectedLocation}
+                                    defaultZoom={10}
+                                    mapId={"a2e98f7c917411dc"}
+                                    onClick={handleMapClick}
+                                >
+                                    <AdvancedMarker position={selectedLocation} />
+                                </Map>
+                            </div>
+                        </APIProvider>
                     </FadeInAnimation>
                 </div>
+
+                {/* Submit button */}
                 <button className="Form-Submit-btn" onClick={handleUpdate}>Submit</button>
             </div>
         </div>
-    )
+    );
 }
 
-export default EditProperty
+export default EditProperty;

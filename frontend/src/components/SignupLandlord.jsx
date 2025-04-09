@@ -1,5 +1,8 @@
-// This component renders the landlord signup page, displaying the Roomble logo 
-// and embedding the SignupformLandlord component for landlord registration.
+
+/**
+ * This component renders the landlord signup page, displaying the Roomble logo 
+ * and embedding the SignupformLandlord component for landlord registration.
+*/
 
 import React from "react";
 import logo from "../../public/logo.png";

@@ -1,3 +1,11 @@
+
+/**
+ * This component provides a form for landlords to add a new property listing. 
+ * It includes fields for uploading photos, entering property details (e.g., BHK, area, rent, address, etc.), 
+ * selecting a city and location, and picking a location on a map. 
+ * The form validates user input and submits the data to the backend API.
+ */
+
 import React, { useState, useEffect } from 'react';
 import DragAndDrop from './AddPropertyComponents/DragAndDrop';
 import "../css/AddPropertyStyles/AddProperty.css";
@@ -8,6 +16,7 @@ import config from "../config.json";
 import { APIProvider, Map, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
 
 function AddProperty() {
+    // Initial state for the form
     const initialFormState = {
         photos: [],
         description: "",
@@ -19,17 +28,21 @@ function AddProperty() {
         address: "",
         amenities: "",
     };
-    const [formData, setFormData] = useState(initialFormState);
-    const [images, setImages] = useState([]);
-    const [errors, setErrors] = useState({});
-    const [somethingwentwrong, setSomethingwentwrong] = useState(false);
-    const navigate = useNavigate();
-    const notify = (message) => toast(message);
 
+    // State variables
+    const [formData, setFormData] = useState(initialFormState); // Form data
+    const [images, setImages] = useState([]); // Uploaded images
+    const [errors, setErrors] = useState({}); // Form validation errors
+    const [somethingwentwrong, setSomethingwentwrong] = useState(false); // Error flag
+    const navigate = useNavigate(); // Navigation hook
+    const notify = (message) => toast(message); // Toast notification function
+
+    // Function to update form data
     const updateFormData = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
+    // State for selected location on the map
     const [selectedLocation, setSelectedLocation] = useState({ lat: 19.0760, lng: 72.8777 }); // Default: New Delhi
 
     // Function to update location on map click
@@ -40,9 +53,11 @@ function AddProperty() {
         });
     };
 
+    // Form validation function
     const validateForm = () => {
         let newErrors = {};
 
+        // Validate required fields
         if (images.length === 0) newErrors.photos = "At least one photo is required.";
         if (!formData.bhk || isNaN(formData.bhk)) newErrors.bhk = "BHK is required and must be a number.";
         if (!formData.area || isNaN(formData.area)) newErrors.area = "Area is required and must be a number.";
@@ -51,25 +66,28 @@ function AddProperty() {
         if (!formData.city) newErrors.city = "Please select a city.";
         if (!formData.location) newErrors.location = "Please select a location.";
 
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        setErrors(newErrors); // Update errors state
+        return Object.keys(newErrors).length === 0; // Return true if no errors
     };
-      useEffect(()=>{
-        if(somethingwentwrong){
-          toast.error('Something went wrong. Please try again later.');
-          navigate(-1)
+
+    // Effect to handle error state
+    useEffect(() => {
+        if (somethingwentwrong) {
+            toast.error('Something went wrong. Please try again later.');
+            navigate(-1); // Navigate back
         }
-      }, [somethingwentwrong]);
+    }, [somethingwentwrong]);
 
+    // Function to handle form submission
     const handleSubmit = async () => {
-
-        // console.log(images)
-
+        // Validate form before submission
         if (!validateForm()) return;
+
         console.log("Final Form Data:", formData);
+
         const formDataToSend = new FormData();
 
-        // Append text fields
+        // Append text fields to FormData
         formDataToSend.append("description", formData.description);
         formDataToSend.append("bhk", formData.bhk);
         formDataToSend.append("area", formData.area);
@@ -81,15 +99,18 @@ function AddProperty() {
         formDataToSend.append("lat", selectedLocation.lat);
         formDataToSend.append("lng", selectedLocation.lng);
 
+        // Append images to FormData
         images.forEach((image) => {
             formDataToSend.append("image", image.file); // Ensures backend receives images correctly
         });
 
         try {
-            const token = localStorage.getItem("authtoken");
+            const token = localStorage.getItem("authtoken"); // Get auth token from localStorage
             if (!token) {
-                return navigate("/login");
+                return navigate("/login"); // Redirect to login if token is missing
             }
+
+            // Send POST request to backend
             const response = await fetch(`${config.backend}/api/listproperty/listProperty`, {
                 method: "POST",
                 headers: {
@@ -102,15 +123,18 @@ function AddProperty() {
             const data = await response.json();
 
             if (response.ok) {
+                // Success: Notify user and reset form
                 notify("Property added successfully!");
                 setImages([]);
                 setFormData(initialFormState);
                 setErrors({});
             } else {
+                // Error: Notify user and set error flag
                 notify(`Error: ${data.message}`);
                 setSomethingwentwrong(true);
             }
         } catch (error) {
+            // Handle network or other errors
             console.error("Error submitting property:", error);
             notify("An error occurred. Please try again.");
             setSomethingwentwrong(true);
@@ -119,19 +143,22 @@ function AddProperty() {
 
     return (
         <div className="add-prop-container">
+            {/* Top section */}
             <div className="add-prop-top">
                 <h4 style={{ color: "#7D141D", fontSize: "20px", fontWeight: "bold" }}>Add Property</h4>
                 <div className="input-top">
+                    {/* Photo upload section */}
                     <div className={"form-item upload-container"}>
                         <FadeInAnimation>
                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                 <h4 style={{ color: "#7D141D" }}>Upload Photos *</h4>
                                 {errors.photos && <p className="addProp-form-error">{errors.photos}</p>}
                             </div>
-
                             <DragAndDrop images={images} setImages={setImages} updateFormData={updateFormData} />
                         </FadeInAnimation>
                     </div>
+
+                    {/* Description section */}
                     <div className={"form-item description-container"}>
                         <FadeInAnimation>
                             <h4 style={{ color: "#7D141D" }}>Description</h4>
@@ -144,7 +171,10 @@ function AddProperty() {
                     </div>
                 </div>
             </div>
+
+            {/* Middle section */}
             <div className="add-prop-middle">
+                {/* BHK input */}
                 <div className={"form-item bhk-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>BHK *</h4>
@@ -156,6 +186,8 @@ function AddProperty() {
                         {errors.bhk && <p className="addProp-form-error">{errors.bhk}</p>}
                     </FadeInAnimation>
                 </div>
+
+                {/* Area input */}
                 <div className={"form-item Area-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>Area(sqft) *</h4>
@@ -167,6 +199,8 @@ function AddProperty() {
                         {errors.area && <p className="addProp-form-error">{errors.area}</p>}
                     </FadeInAnimation>
                 </div>
+
+                {/* Rent input */}
                 <div className={"form-item Rent-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>Rent(Per Month) *</h4>
@@ -178,6 +212,8 @@ function AddProperty() {
                         {errors.rent && <p className="addProp-form-error">{errors.rent}</p>}
                     </FadeInAnimation>
                 </div>
+
+                {/* City dropdown */}
                 <div className={"form-item City-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>City *</h4>
@@ -191,6 +227,8 @@ function AddProperty() {
                         {errors.city && <p className="addProp-form-error">{errors.city}</p>}
                     </FadeInAnimation>
                 </div>
+
+                {/* Location dropdown */}
                 <div className={"form-item Location-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>Location *</h4>
@@ -214,7 +252,10 @@ function AddProperty() {
                     </FadeInAnimation>
                 </div>
             </div>
+
+            {/* Bottom section */}
             <div className="add-prop-bottom">
+                {/* Address input */}
                 <div className={"form-item Address-container"}>
                     <FadeInAnimation>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -228,6 +269,8 @@ function AddProperty() {
                         />
                     </FadeInAnimation>
                 </div>
+
+                {/* Amenities input */}
                 <div className={"form-item Amenities-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>Amenities</h4>
@@ -239,33 +282,30 @@ function AddProperty() {
                     </FadeInAnimation>
                 </div>
 
+                {/* Map for location selection */}
                 <div className={"form-item Amenities-container"}>
                     <FadeInAnimation>
                         <h4 style={{ color: "#7D141D" }}>Pick the location on Maps</h4>
-                            <APIProvider apiKey={import.meta.env.VITE_MAPS_API}>
-                                <div className="maps_box">
-                                    <Map
-                                        defaultCenter={selectedLocation}
-                                        defaultZoom={10}
-                                        mapId={"a2e98f7c917411dc"}
-                                        onClick={handleMapClick}
-                                    >
-                                        <AdvancedMarker position={selectedLocation} >
-                                        </AdvancedMarker>
-                                    </Map>
-                                </div>
-                                {/* <div className="p-4 bg-white shadow-md rounded-md mt-4">
-                                    <p><strong>Selected Coordinates:</strong></p>
-                                    <p>Latitude: {selectedLocation.lat}</p>
-                                    <p>Longitude: {selectedLocation.lng}</p>
-                                </div> */}
-                            </APIProvider>
+                        <APIProvider apiKey={import.meta.env.VITE_MAPS_API}>
+                            <div className="maps_box">
+                                <Map
+                                    defaultCenter={selectedLocation}
+                                    defaultZoom={10}
+                                    mapId={"a2e98f7c917411dc"}
+                                    onClick={handleMapClick}
+                                >
+                                    <AdvancedMarker position={selectedLocation} />
+                                </Map>
+                            </div>
+                        </APIProvider>
                     </FadeInAnimation>
                 </div>
+
+                {/* Submit button */}
                 <button className="Form-Submit-btn" onClick={handleSubmit}>Submit</button>
             </div>
         </div>
-    )
+    );
 }
 
-export default AddProperty
+export default AddProperty;

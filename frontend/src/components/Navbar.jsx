@@ -1,3 +1,11 @@
+
+/**
+ * This component renders the navigation bar for the application. It dynamically adjusts
+ * the menu options based on the user's type (none, tenant, or landlord) and displays
+ * appropriate links. It also handles user data fetching and socket connection setup
+ * for real-time updates.
+ */
+
 import React, { useEffect, useContext } from "react";
 import "../css/Navbar.css";
 import { Basecontext } from "../context/base/Basecontext";

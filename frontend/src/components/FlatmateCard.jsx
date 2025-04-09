@@ -1,3 +1,9 @@
+
+/**
+ * This component represents a card UI for displaying information about a flatmate.
+ * It includes details such as name, location, compatibility score, and options to bookmark or view the flatmate's profile.
+ */
+
 import React, { useState, useEffect, useContext } from "react";
 import "../css/FlatMateCard.css";
 import { Basecontext } from "../context/base/Basecontext";
@@ -19,25 +25,31 @@ const FlatmateCard = ({
   onBookmarkToggle,
   help
 }) => {
+  // State to manage the bookmark status
   const [bookmarked, setBookmarked] = useState(isBookmarked);
+
+  // Access user context
   const { user } = useContext(Basecontext);
 
+  // Update the bookmarked state when the prop changes
   useEffect(() => {
     setBookmarked(isBookmarked);
   }, [isBookmarked]);
 
+  // Handle bookmark button click
   const handleBookmarkClick = async () => {
     if (help) {
-      // If help is true, use the parent's onBookmarkToggle
+      // If 'help' is true, use the parent's onBookmarkToggle function
       await onBookmarkToggle();
-      // setBookmarked(!bookmarked);
     } else {
-      // If help is false, use the local toggleBookmark
+      // If 'help' is false, use the local toggleBookmark function
       await toggleBookmark();
     }
   };
 
+  // Function to toggle bookmark state
   const toggleBookmark = async () => {
+    // Show confirmation popup
     const confirmPopup = await Swal.fire({
       title: "Toggle Bookmark?",
       text: `Are you sure you want to ${bookmarked ? "remove" : "add"} this bookmark?`,
@@ -49,22 +61,30 @@ const FlatmateCard = ({
       cancelButtonText: "No",
     });
 
+    // Exit if the user cancels the action
     if (!confirmPopup.isConfirmed) return;
 
+    // Determine the new bookmark state
     const newBookmarkState = !bookmarked;
+
+    // Retrieve the authentication token
     const token = localStorage.getItem("authtoken");
+
+    // Prepare the request body
     const requestBody = {
       action: newBookmarkState ? "bookmark" : "unmark",
       thing: "flatmate",
       id,
     };
 
+    // Check if the token is missing
     if (!token) {
       alert("Authentication token is missing!");
       return;
     }
 
     try {
+      // Send the request to the backend
       const response = await fetch(`${config.backend}/api/Bookmarking_Routes/edit_bookmarks`, {
         method: "POST",
         headers: {
@@ -76,10 +96,12 @@ const FlatmateCard = ({
 
       const data = await response.json();
 
+      // Handle errors from the response
       if (!response.ok) {
         throw new Error(data.message || "Failed to update bookmark");
       }
 
+      // Update the bookmark state
       setBookmarked(newBookmarkState);
     } catch (error) {
       console.error("Error updating bookmark:", error);
@@ -87,14 +109,17 @@ const FlatmateCard = ({
     }
   };
 
+  // Handle the "View" button click
   const handleView = () => {
     window.location.href = `/tenant/${id}`;
   };
 
+  // Calculate the compatibility score
   const score = Math.round(parseFloat(compatibilityScore) * 100) || 0;
 
   return (
     <div className="flatmate-card">
+      {/* Card Header */}
       <div className="card-header">
         <img src={image} alt={name} className="profile-pic" />
         <span className="flatmate-name">{name}</span>
@@ -103,6 +128,7 @@ const FlatmateCard = ({
         </span>
       </div>
 
+      {/* Card Body */}
       <div className="card-body">
         <p className="location-title">Preferred Location</p>
         <p className="location-text">
@@ -110,10 +136,12 @@ const FlatmateCard = ({
         </p>
       </div>
 
+      {/* Card Footer */}
       <div className="card-footer">
+        {/* Bookmark Button */}
         <button 
           className="bookmark-btn" 
-          onClick={handleBookmarkClick} // Fixed: removed the () to prevent immediate invocation
+          onClick={handleBookmarkClick}
         >
           {bookmarked ? (
             <svg width="40" height="40" viewBox="0 0 30 30" fill="#8b1e2f">
@@ -125,6 +153,8 @@ const FlatmateCard = ({
             </svg>
           )}
         </button>
+
+        {/* View Button */}
         <button className="view-btn" onClick={handleView}>View</button>
       </div>
     </div>

@@ -1,3 +1,10 @@
+
+/**
+ * This component displays the profile and properties of a landlord based on the ID provided in the URL parameters.
+ * It fetches the landlord's details, properties, and reviews from the backend and displays them in a structured layout.
+ * Users can message the landlord, leave a review, or navigate to the landlord's properties and reviews.
+ */
+
 import React, { useEffect, useState } from "react";
 import "../css/LandlordProfileStyles/LandlordProfile.css";
 import PropertyCard from "./LandlordDashboard/PropertyCard.jsx";

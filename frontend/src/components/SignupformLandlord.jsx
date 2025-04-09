@@ -1,5 +1,8 @@
-// This component handles the landlord signup process. It validates user input, 
-// sends the data to the backend API, and navigates to the OTP page upon successful registration.
+
+/**
+ * This component handles the landlord signup process. It validates user input, 
+ * sends the data to the backend API, and navigates to the OTP page upon successful registration.
+*/
 
 import { responsiveFontSizes } from "@mui/material";
 import React from "react";
