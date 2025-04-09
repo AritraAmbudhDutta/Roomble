@@ -1,21 +1,24 @@
 const express = require("express");
 const router = express.Router();
-require(`dotenv`).config(`../.env`);
+require(`dotenv`).config(`../.env`); // Load environment variables
 const jwt = require(`jsonwebtoken`);
-const SECRET_KEY = process.env.SECRET_KEY;
-const Sendmail = require("../helper_funcs/mailSender");
+const SECRET_KEY = process.env.SECRET_KEY; // Secret key for JWT
+const Sendmail = require("../helper_funcs/mailSender"); // Utility for sending emails
 const Landlord = require("../models/Landlord");
 const Tenant = require("../models/Tenant");
-const authMiddleware = require("../middlewares/checkuser");
+const authMiddleware = require("../middlewares/checkuser"); // Middleware for JWT authentication
 const { Landlord_OTP, Tenant_OTP } = require("../models/OTP_models");
 const Conversation = require("../models/Conversation");
 const Property = require("../models/Property");
 
-//expect email and accounttype
+// Route to initiate account deletion
+// Requires `email` and `accounttype` in the request body
 router.post(`/deleteInitiate`, async (req, res) => {
   try {
     const { email, accounttype } = req.body;
     let user;
+
+    // Fetch user based on account type
     if (accounttype === `tenant`) {
       user = await Tenant.findOne({ email: email });
     } else if (accounttype === `landlord`) {
@@ -33,14 +36,16 @@ router.post(`/deleteInitiate`, async (req, res) => {
         message: "No such user exists",
       });
     } else {
+      // Generate a short-lived JWT token for authentication
       const token = jwt.sign({ id: user._id, email: user.email }, SECRET_KEY, {
-        expiresIn: "5m",
+        expiresIn: "5m", // Token expires in 5 minutes
       });
 
       if (accounttype === `tenant`) {
         let ifExists = await Tenant_OTP.findOne({ email: email });
 
         if (ifExists) {
+          // Generate a new OTP and send it via email
           let new_OTP = Math.floor(100000 + Math.random() * 900000).toString();
           await Sendmail(
             email,
@@ -56,6 +61,7 @@ router.post(`/deleteInitiate`, async (req, res) => {
           });
         }
 
+        // Generate and send OTP for new requests
         let new_OTP = Math.floor(100000 + Math.random() * 900000).toString();
         await Sendmail(
           email,
@@ -84,6 +90,7 @@ router.post(`/deleteInitiate`, async (req, res) => {
         let ifExists = await Landlord_OTP.findOne({ email: email });
 
         if (ifExists) {
+          // Generate a new OTP and send it via email
           let new_OTP = Math.floor(100000 + Math.random() * 900000).toString();
           await Sendmail(
             email,
@@ -99,6 +106,7 @@ router.post(`/deleteInitiate`, async (req, res) => {
           });
         }
 
+        // Generate and send OTP for new requests
         let new_OTP = Math.floor(100000 + Math.random() * 900000).toString();
         await Sendmail(
           email,
@@ -124,28 +132,27 @@ router.post(`/deleteInitiate`, async (req, res) => {
       }
     }
   } catch (error) {
-    // console.log(error);
     return res.status(500).json({
       success: false,
-      message: "internal server error",
+      message: "Internal server error",
     });
   }
 });
 
-//send email,accounttype and Entered_OTP in body and token in header
+// Route to verify OTP and delete account
+// Requires `email`, `accounttype`, and `Entered_OTP` in the request body, and token in the header
 router.post(`/enterOTPtoDelete`, authMiddleware, async (req, res) => {
   try {
     let userEmail = req.user.email;
     let Entered_OTP = req.body.Entered_OTP;
     let accounttype = req.body.accounttype;
-    // "accounttype
+
     let userOTP;
     if (accounttype === `tenant`) {
       userOTP = await Tenant_OTP.findOne({ email: userEmail });
     } else if (accounttype === `landlord`) {
       userOTP = await Landlord_OTP.findOne({ email: userEmail });
     } else {
-      // console.log(accounttype);
       return res.status(401).json({
         success: false,
         message: "Invalid Account Type",
@@ -155,39 +162,40 @@ router.post(`/enterOTPtoDelete`, authMiddleware, async (req, res) => {
     if (!userOTP) {
       return res.status(404).json({
         success: false,
-        message: "Please request an OTP. Your OTP has been Expired/ Not sent.",
+        message: "Please request an OTP. Your OTP has expired or was not sent.",
       });
     } else if (userOTP.OTP === Entered_OTP) {
-        const deletedUser = await Tenant.findOneAndDelete({email : userEmail}) || await Landlord.findOneAndDelete({email : userEmail});
-        if(!deletedUser){
+        // Delete user account
+        const deletedUser = await Tenant.findOneAndDelete({ email: userEmail }) || await Landlord.findOneAndDelete({ email: userEmail });
+        if (!deletedUser) {
             return res.status(404).json({
-                success : false,
-                message : "User not found or already deleted",
+                success: false,
+                message: "User not found or already deleted",
             });
         }
 
         // Delete related data
         if (accounttype === `tenant`) {
-          await Conversation.deleteMany({ tenantEmail: userEmail });
+          await Conversation.deleteMany({ tenantEmail: userEmail }); // Delete tenant conversations
         } else if (accounttype === `landlord`) {
-          await Property.deleteMany({ landlordEmail: userEmail });
-          await Conversation.deleteMany({ landlordEmail: userEmail });
+          await Property.deleteMany({ landlordEmail: userEmail }); // Delete landlord properties
+          await Conversation.deleteMany({ landlordEmail: userEmail }); // Delete landlord conversations
         }
 
-        const deletedUserOTP = await Tenant_OTP.findOneAndDelete({email : userEmail}) || await Landlord_OTP.findOneAndDelete({email : userEmail});
+        // Delete OTP record
+        const deletedUserOTP = await Tenant_OTP.findOneAndDelete({ email: userEmail }) || await Landlord_OTP.findOneAndDelete({ email: userEmail });
 
         return res.status(200).json({
-            success : true,
-            message : "Account and related data deleted successfully.",
-        })
+            success: true,
+            message: "Account and related data deleted successfully.",
+        });
     } else {
       return res.status(401).json({
         success: false,
-        message: "Wrong OTP, pls try again",
+        message: "Wrong OTP, please try again",
       });
     }
   } catch (err) {
-    // console.log(err);
     return res.status(500).json({
       success: false,
       message: "Internal Server error",

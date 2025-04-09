@@ -9,20 +9,21 @@ const authMiddleware = require(`../middlewares/checkuser`);
 const Towns = require("../models/Towns");
 const SECRET_KEY = process.env.SECRET_KEY;
 
+// Function to calculate recommendation score based on locality and preferences
 const calculateRecommendationScore = (tenant, flatmate, townData) => {
   const alpha = 0.7; // Weight for locality importance
 
   let distance = townData.distances.get(flatmate.locality);
 
   if (flatmate.locality === tenant.locality) {
-      distance = 0;
-  }
-  
-  if (distance === undefined) {
-      distance = 100; // Default distance
+    distance = 0; // Same locality, distance is zero
   }
 
-  const localitySimilarity = 1 / (1 + Math.cbrt(distance));
+  if (distance === undefined) {
+    distance = 100; // Default distance if no data is available
+  }
+
+  const localitySimilarity = 1 / (1 + Math.cbrt(distance)); // Normalize distance
 
   let booleanMatches = 0;
   if (flatmate.gender === tenant.gender) booleanMatches++;
@@ -37,7 +38,7 @@ const calculateRecommendationScore = (tenant, flatmate, townData) => {
   return score;
 };
 
-//pass the authtoken and accounttype into header
+// Route to fetch bookmarks for the authenticated user
 router.get(`/get_bookmarks`, authMiddleware, async (req, res) => {
   try {
     const emailid = req.user.email;
@@ -48,26 +49,23 @@ router.get(`/get_bookmarks`, authMiddleware, async (req, res) => {
         message: "Invalid Token",
       });
     }
-    // Flatmate_bookmarks = await Tenant.find({ _id : { $in : user.bookmarks_tenants }}).select(`email name locality`);
-    // Property_bookmarks = await Property.find({ _id : { $in : user.bookmarks_property}}).select(`name town address area bhk price`);
 
-    /*If lets say some user Bookmarked a user previously but now he has deleted his account, then I simply dont return that user and remove it from this bookmarked property as well */
+    // Initialize arrays to store bookmarks
     Flatmate_bookmarks = [];
     Property_bookmarks = [];
     const townData = await Towns.findOne({ name: user.locality });
-    //Code to delete the user id that has deleted it's account is left to add
+
+    // Process tenant bookmarks
     for (let id of user.bookmarks_tenants) {
       if (!mongoose.Types.ObjectId.isValid(id)) {
-        // console.log(`!!!!INVALID ID FOUND!!!!!`);
-        // console.log(id);
         return res.status(400).json({ error: `${id} is invalid ID` });
       }
       let tenantToBookmark = await Tenant.findById(id).select(
         `email name locality city Images gender smoke veg pets`
       );
       if (tenantToBookmark) {
-        // console.log(`Your town data is ${townData}`);
         if (townData) {
+          // for debugging
           const score = calculateRecommendationScore(
             user,
             tenantToBookmark,
@@ -79,11 +77,10 @@ router.get(`/get_bookmarks`, authMiddleware, async (req, res) => {
         Flatmate_bookmarks.push(tenantToBookmark);
       }
     }
-    // console.log(Flatmate_bookmarks);
+
+    // Process property bookmarks
     for (let id of user.bookmarks_property) {
       if (!mongoose.Types.ObjectId.isValid(id)) {
-        // console.log(`!!!!INVALID ID FOUND!!!!!`);
-        // console.log(id);
         return res.status(400).json({ error: `${id} is invalid ID` });
       }
       let propertyToBookmark = await Property.findById(id).select(
@@ -101,7 +98,6 @@ router.get(`/get_bookmarks`, authMiddleware, async (req, res) => {
       PropertyBookMarks: Property_bookmarks,
     });
   } catch (error) {
-    // console.log(error);
     return res.status(500).json({
       success: false,
       message: "Internal Error in server :( really sorry.",
@@ -109,20 +105,17 @@ router.get(`/get_bookmarks`, authMiddleware, async (req, res) => {
   }
 });
 
-//Pass the thing : {flatmate or property (All lower case)},id in Body, action = {"bookmark", "unmark"} and authtoken in the header
+// Route to add or remove bookmarks
 router.post(`/edit_bookmarks`, authMiddleware, async (req, res) => {
   try {
     const userid = req.user.id;
-
     const { action, thing, id } = req.body;
-    // console.log(`Action: ${action}, Thing: ${thing}, ID: ${id}`);
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      // console.log(`!!!!INVALID ID FOUND!!!!!`);
-      // console.log(id);
       return res.status(400).json({ error: `${id} is invalid ID` });
     }
 
+    // Handle flatmate bookmark actions
     if (thing === `flatmate` && action === `bookmark`) {
       let exists = await Tenant.exists({ _id: id });
       if (exists) {
@@ -143,6 +136,7 @@ router.post(`/edit_bookmarks`, authMiddleware, async (req, res) => {
         });
       }
     } else if (thing === `property` && action === `bookmark`) {
+      // Handle property bookmark actions
       let exists = await Property.exists({ _id: id });
       if (exists) {
         await Tenant.findByIdAndUpdate(
@@ -162,6 +156,7 @@ router.post(`/edit_bookmarks`, authMiddleware, async (req, res) => {
         });
       }
     } else if (thing === `flatmate` && action === `unmark`) {
+      // Handle unmarking flatmate bookmarks
       let user = await Tenant.findById(userid);
       if (user.bookmarks_tenants.includes(id)) {
         user.bookmarks_tenants = user.bookmarks_tenants.filter(
@@ -180,13 +175,13 @@ router.post(`/edit_bookmarks`, authMiddleware, async (req, res) => {
         });
       }
     } else if (thing === `property` && action === `unmark`) {
+      // Handle unmarking property bookmarks
       let user = await Tenant.findById(userid);
-      console.log(`id ${userid}`)
-      if(user.bookmarks_property.size === 0){
+      if (user.bookmarks_property.size === 0) {
         return res.status(404).json({
-          success : false,
-          message : "This user has bookmarked 0 properties"
-        })
+          success: false,
+          message: "This user has bookmarked 0 properties",
+        });
       }
       if (user.bookmarks_property.includes(id)) {
         user.bookmarks_property = user.bookmarks_property.filter(
@@ -212,7 +207,6 @@ router.post(`/edit_bookmarks`, authMiddleware, async (req, res) => {
       });
     }
   } catch (e) {
-    console.error(e);
     return res.status(500).json({
       success: false,
       message: "Some internal Server error :( Please try again.",
@@ -220,19 +214,20 @@ router.post(`/edit_bookmarks`, authMiddleware, async (req, res) => {
   }
 });
 
-router.post('/check_bookmark', authMiddleware, async (req, res) => {
-  try{
-    const {thing, id} = req.body;
+// Route to check if a specific item is bookmarked
+router.post("/check_bookmark", authMiddleware, async (req, res) => {
+  try {
+    const { thing, id } = req.body;
     const userid = req.user.id;
     let user = await Tenant.findById(userid);
-    if(!user){
+    if (!user) {
       return res.status(404).json({
         success: false,
         bookmarked: false,
       });
     }
-    if(thing === `flatmate`){
-      if(user.bookmarks_tenants.includes(id)){
+    if (thing === `flatmate`) {
+      if (user.bookmarks_tenants.includes(id)) {
         return res.status(200).json({
           success: true,
           bookmarked: true,
@@ -242,8 +237,8 @@ router.post('/check_bookmark', authMiddleware, async (req, res) => {
         success: true,
         bookmarked: false,
       });
-    } else if(thing === `property`){
-      if(user.bookmarks_property.includes(id)){
+    } else if (thing === `property`) {
+      if (user.bookmarks_property.includes(id)) {
         return res.status(200).json({
           success: true,
           bookmarked: true,
@@ -254,13 +249,12 @@ router.post('/check_bookmark', authMiddleware, async (req, res) => {
         bookmarked: false,
       });
     }
-  } catch(e){
-    // console.log(e);
+  } catch (e) {
     return res.status(500).json({
       success: false,
       message: "Some internal Server error :( Please try again.",
     });
   }
-})
+});
 
 module.exports = router;

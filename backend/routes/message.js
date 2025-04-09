@@ -9,17 +9,20 @@ const checkuser = require('../middlewares/checkuser');
 const mongoose = require('mongoose');
 const checkUser = require('../middlewares/checkuser');
 
+// Export a function that initializes routes with socket.io and online users
 module.exports = (io, onlineUsers) => {
+    // Route to get the name and online status of a user
     router.post('/getUserNameStatus', async (req, res) => {
-        // console.log(onlineUsers);
-        try{
+        try {
             const { userID } = req.body;
 
+            // Check if the user is online
             var status = "offline";
             if (onlineUsers.has(userID)) {
                 status = "online";
             }
-            
+
+            // Fetch user details from Tenant or Landlord model
             var user = await Tenant.findById(userID);
             if (!user) {
                 user = await Landlord.findById(userID);
@@ -27,32 +30,27 @@ module.exports = (io, onlineUsers) => {
             if (!user) {
                 return res.send({ success: false });
             }
+
+            // Return user details and online status
             return res.send({ name: user.name, status: status, success: true, profilepic: user.Images });
-        }
-        catch(err){
-            // console.log(err);
+        } catch (err) {
             res.send({ success: false });
         }
-    })
+    });
 
-    router.post('/getConversations', checkUser , async (req, res) => {
-        // Get all conversations of a user
+    // Route to get all conversations of the authenticated user
+    router.post('/getConversations', checkUser, async (req, res) => {
         try {
-            const list = req.user.conversations;
-            // pass
-            // last message
-            // name of other user
-            // profile picture of other user
-            // timestamp of last message
-            // conversation_id
-
+            const list = req.user.conversations; // List of conversation IDs for the user
             const conversations = [];
+
             for (let i = 0; i < list.length; i++) {
-                // console.log(list[i])
                 const conversation = await Conversation.findById(list[i]);
                 if (!conversation) {
                     continue;
                 }
+
+                // Identify the other user in the conversation
                 const otherID = conversation.members[0].equals(req.user._id) ? conversation.members[1] : conversation.members[0];
                 var otherUser = await Tenant.findById(otherID);
                 if (!otherUser) {
@@ -61,29 +59,32 @@ module.exports = (io, onlineUsers) => {
                 if (!otherUser) {
                     continue;
                 }
+
+                // Extract the last message and its timestamp
                 const lastMessage = conversation.messages[conversation.messages.length - 1];
                 var lasttimestamp = null;
-                if (lastMessage){
+                if (lastMessage) {
                     lasttimestamp = lastMessage.timestamp;
                 }
+
+                // Add conversation details to the response
                 conversations.push({
                     conversation_id: conversation._id,
                     lastMessage: lastMessage,
                     name: otherUser.name,
                     profilePic: otherUser.Images,
                     timestamp: lasttimestamp
-                })
+                });
             }
             return res.send({ conversations, success: true });
-
         } catch (err) {
             console.log(err);
             res.send({ success: false });
         }
-    })
+    });
 
+    // Route to get a specific conversation by its ID
     router.post('/getConversation', async (req, res) => {
-        // Get conversation between two users from conversation_id
         try {
             const conversation_id = req.body.conversation_id;
             const conversation = await Conversation.findById(conversation_id);
@@ -92,68 +93,71 @@ module.exports = (io, onlineUsers) => {
                 return;
             }
             res.send({ conversation, success: true });
-
         } catch (err) {
             console.log(err);
             res.send({ success: false });
         }
-    })
+    });
 
+    // Route to send a message in a conversation
     router.post('/sendMessage', checkuser, async (req, res) => {
-        console.log("hello")
-        const {conversation_id, message} = req.body;
+        console.log("hello");
+        const { conversation_id, message } = req.body;
         const senderID = req.user._id;
-        // Find conversation
+
+        // Find the conversation by ID
         const conversation = await Conversation.findById(conversation_id);
         if (!conversation) {
             res.send({ success: false });
             return;
         }
-        //construct message object
+
+        // Construct the message object
         const newMessage = {
             senderID: senderID,
             message: message,
             timestamp: new Date()
-        }
+        };
 
-        //update conversation
+        // Update the conversation with the new message
         conversation.messages.push(newMessage);
         await conversation.save();
 
         res.send({ success: true, messages: conversation });
-        //send message to other user
+
+        // Notify the other user if they are online
         const receiverID = conversation.members[0].equals(senderID) ? conversation.members[1] : conversation.members[0];
-        // console.log("sending message to", onlineUsers.get(receiverID.toString()));
         if (onlineUsers.has(receiverID.toString())) {
             io.to(onlineUsers.get(receiverID.toString())).emit('message', { conversation_id, messages: conversation });
         }
-    })
+    });
 
-
+    // Route to create a new conversation between two users
     router.post('/createConversation', checkuser, async (req, res) => {
-        try{
-            const { user2 } = req.body;
-            const user1 = req.user._id;
-            // console.log(req.body)
+        try {
+            const { user2 } = req.body; // ID of the second user
+            const user1 = req.user._id; // ID of the authenticated user
             const user2_id = new mongoose.Types.ObjectId(user2);
 
-            if(user1.equals(user2_id)){
+            // Prevent creating a conversation with oneself
+            if (user1.equals(user2_id)) {
                 return res.send({ success: false, message: "Something went wrong" });
             }
 
-            // Check if conversation already exists
+            // Check if a conversation already exists between the two users
             const conversation = await Conversation.findOne({ members: { $all: [user1, user2_id] } });
             if (conversation) {
                 return res.send({ conversation_id: conversation._id, success: true });
             }
-            // Create new conversation
+
+            // Create a new conversation
             const newConversation = new Conversation({
                 members: [user1, user2_id],
                 messages: []
-            })
+            });
             await newConversation.save();
 
-            //add this conversation to both users
+            // Add the conversation to both users' conversation lists
             var user1Doc = await Tenant.findById(user1);
             if (!user1Doc) {
                 user1Doc = await Landlord.findById(user1);
@@ -168,16 +172,11 @@ module.exports = (io, onlineUsers) => {
             user2Doc.conversations.push(newConversation._id);
             await user2Doc.save();
 
-
             return res.send({ conversation_id: newConversation._id, success: true });
-        }
-        catch(err){
-            // console.log(err);
+        } catch (err) {
             res.send({ success: false });
         }
-
-    })
-
+    });
 
     return router;
-}
+};
