@@ -1,3 +1,8 @@
+
+/**
+ * Renders a received message component with the sender's profile picture, message text, and timestamp.
+ */
+
 import React from 'react';
 
 function RecievedMessage(props) {

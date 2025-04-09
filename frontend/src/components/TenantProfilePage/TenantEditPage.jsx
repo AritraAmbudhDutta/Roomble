@@ -1,3 +1,10 @@
+
+/**
+ * This component allows tenants to edit their profile information. It includes
+ * fields for personal details, preferences, and profile picture upload. The form
+ * data is submitted to the backend for updating the tenant's profile.
+ */
+
 import React, { useEffect, useState, useContext } from "react";
 import "../../css/TenantProfilePageStyles/TenantEditPage.css";
 import logo from "../../../public/sampleUser_img.png";
@@ -11,15 +18,21 @@ const TenantEditPage = () => {
   const navigate = useNavigate();
   const state = useContext(Basecontext);
   const { user, setUser, fetuser } = state;
-  fetuser();
+
+  // Fetch user data
+  useEffect(() => {
+    fetuser();
+  }, []);
+
   const [file, setFile] = useState(null);
   const token = localStorage.getItem("authtoken");
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
 
+  // Form data state
   const [formData, setFormData] = useState({
     name: state.user.name,
     email: state.user.email,
-    gender: state.user.gender?"Male":"Female",
+    gender: state.user.gender ? "Male" : "Female",
     city: state.user.city,
     locality: state.user.locality,
     smoke: state.user.smoke,
@@ -31,6 +44,7 @@ const TenantEditPage = () => {
     remove: "",
   });
 
+  // Handle error state
   useEffect(() => {
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
@@ -38,11 +52,12 @@ const TenantEditPage = () => {
     }
   }, [somethingwentwrong]);
 
+  // Update form data when user state changes
   useEffect(() => {
     setFormData({
       name: state.user.name,
       email: state.user.email,
-      gender: state.user.gender? "Male" : "Female",
+      gender: state.user.gender ? "Male" : "Female",
       city: state.user.city,
       locality: state.user.locality,
       smoke: state.user.smoke,
@@ -56,6 +71,7 @@ const TenantEditPage = () => {
     console.log(state.user);
   }, [user]);
 
+  // Handle input changes
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -71,6 +87,7 @@ const TenantEditPage = () => {
     });
   };
 
+  // Handle form submission
   const handleSubmit = async () => {
     const formDataCopy = new FormData();
 
@@ -87,6 +104,7 @@ const TenantEditPage = () => {
     if (file) {
       formDataCopy.append("image", file);
     }
+
     try {
       const response = await fetch(
         `${config.backend}/api/updates/updateProfile`,
@@ -100,6 +118,7 @@ const TenantEditPage = () => {
         }
       );
       const data = await response.json();
+
       if (data.success) {
         console.log("Form submitted successfully");
         navigate("/tenant-profile-page");
@@ -116,10 +135,11 @@ const TenantEditPage = () => {
 
   return (
     <div className="tenant-edit-container">
-                <div className="tenant-edit-info">
-                    <h1>Edit Profile</h1>
-                </div>
       {/* Header Section */}
+      <div className="tenant-edit-info">
+        <h1>Edit Profile</h1>
+      </div>
+
       <div className="tenant-edit-header">
         <div className="tenant-edit-profile">
           <label htmlFor="image_input">
@@ -137,7 +157,6 @@ const TenantEditPage = () => {
               setFile(e.target.files[0]);
             }}
           />
-
         </div>
         <button className="tenant-edit-btn" onClick={handleSubmit}>
           Done
@@ -166,12 +185,18 @@ const TenantEditPage = () => {
           />
 
           <label>Gender</label>
-          <select name="gender" onChange={handleInputChange} value={formData.gender=="Male"?"Male":"Female"}>
+          <select
+            name="gender"
+            onChange={handleInputChange}
+            value={formData.gender === "Male" ? "Male" : "Female"}
+          >
             <option value="Male">Male</option>
             <option value="Female">Female</option>
           </select>
 
+          {/* Choices Section */}
           <div className="tenant-edit-choices">
+            {/* Smoke/Drink */}
             <div className="tenant-edit-choices-smoke">
               <label>Do you drink/smoke?</label>
               <div className="edit-smoke-btn">
@@ -190,6 +215,7 @@ const TenantEditPage = () => {
               </div>
             </div>
 
+            {/* Food Preferences */}
             <div className="tenant-edit-choices-veg">
               <label>Food Preferences</label>
               <div className="edit-veg-btn">
@@ -208,6 +234,7 @@ const TenantEditPage = () => {
               </div>
             </div>
 
+            {/* Flatmate */}
             <div className="tenant-edit-choices-flatmate">
               <label>Are you seeking flatmates?</label>
               <div className="edit-flatmate-btn">
@@ -226,6 +253,7 @@ const TenantEditPage = () => {
               </div>
             </div>
 
+            {/* Pets */}
             <div className="tenant-edit-choices-pets">
               <label>Do you have pets?</label>
               <div className="edit-pets-btn">

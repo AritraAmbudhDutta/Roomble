@@ -1,50 +1,41 @@
+
+
+/**
+ * LandlordProfile Component
+ * 
+ * This component is responsible for displaying the profile of a landlord, including their personal details
+ * (such as name, email, and profile picture) and a list of properties they own. It also provides functionality
+ * for editing the profile, logging out, and navigating back in case of errors.
+ * 
+ */
+
 import React, { useEffect, useState } from "react";
 import "../../css/LandlordProfileStyles/LandlordProfile.css";
 import PropertyCard from "../LandlordDashboard/PropertyCard.jsx";
-import logo from "../../../public/property-img.png";
-import pfp from "../../../public/sampleUser_Img.png";
 import { useNavigate } from "react-router-dom";
 import config from "../../config.json";
 import { toast } from "react-toastify";
+
 const LandlordProfile = () => {
   const [respData, setRespData] = useState(null);
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
   const navigate = useNavigate();
+
+  // Navigate to edit page
   const handleSubmit = () => {
     navigate("/landlord-edit-page");
   };
+
+  // Handle logout
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
     window.location.reload();
   };
-  // const handleDelete = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       "http://127.0.0.1:3000/api/Deleting_routes/deleteInitiate",
-  //       {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({
-  //           email: state.user.email,
-  //           accounttype: "landlord",
-  //         }),
-  //       }
-  //     );
 
-  //     const data = await response.json();
-  //     if (data.success) {
-  //       localStorage.setItem("deleteToken", data.authtoken);
-  //       navigate("/otp-delete-page", {
-  //         state: { email: state.user.email, accountType: "landlord" },
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     alert("Could not initiate account deletion.");
-  //   }
-  // };
   const token = localStorage.getItem("authtoken");
+
+  // Fetch landlord profile data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -55,8 +46,8 @@ const LandlordProfile = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              authtoken: token, // ✅ Change from "Authorization" to "authtoken"
-              accounttype: "landlord", // ✅ Also send account type separately
+              authtoken: token, // Send auth token
+              accounttype: "landlord", // Send account type
             },
             body: JSON.stringify({ ngj: "bkjmhkn" }),
           }
@@ -72,45 +63,23 @@ const LandlordProfile = () => {
     fetchData();
   }, []);
 
-    useEffect(()=>{
-      if(somethingwentwrong){
-        toast.error('Something went wrong. Please try again later.');
-        navigate(-1)
-      }
-    }, [somethingwentwrong]);
+  // Handle error state
+  useEffect(() => {
+    if (somethingwentwrong) {
+      toast.error("Something went wrong. Please try again later.");
+      navigate(-1);
+    }
+  }, [somethingwentwrong]);
 
   if (!respData) {
     return <div className="landlord-profile-loading">Loading...</div>;
   }
-  // const handleDeleteProp = async (Sendid) => {
-  //   try {
-  //     // console.log(Sendid);
-  //     const response = await fetch(
-  //       `http://127.0.0.1:3000/api/deleteproperty/deleteProperty/${Sendid}`,
-  //       {
-  //         method: "DELETE",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           authtoken: token, // Replace with actual data
-  //         },
-  //       }
-  //     );
 
-  //     const respData = await response.json();
-
-  //     if (respData.success) {
-  //       console.log("Delete successful:", respData.message);
-  //     } else {
-  //       console.error("Delete failed:", respData.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error during delete request:", error);
-  //   }
-  // };
   console.log(respData.Images);
+
   return (
     <div className="landlord-profile-container">
-      {/* Combined Profile & Properties Section */}
+      {/* Profile Section */}
       <div className="landlord-profile-content">
         <div className="landlord-profile-header">
           <img
@@ -140,8 +109,7 @@ const LandlordProfile = () => {
                   <span className="separator">:</span>
                   <span className="value">{respData.message}</span>
                 </p>
-              </div>
-
+              </div> 
               <div className="landlord-profile-buttons">
                 <button
                   className="landlord-profile-edit-button"
@@ -155,30 +123,34 @@ const LandlordProfile = () => {
                 >
                   Logout
                 </button>
+                
                 {/* <button
                   className="landlord-profile-delete-button"
                   onClick={handleDelete}
                 >
                   Delete
                 </button> */}
+
               </div>
             </div>
           </div>
         </div>
 
-        {/* Properties Section (Still Inside the Same Container) */}
+        {/* Properties Section */}
         <div className="landlord-profile-properties">
-          {respData.Properties.map(({ _id, town, bhk, price, Images, available, city }) => (
-            <PropertyCard
-              key={_id}
-              image={Images[0]}
-              price={price}
-              location={`${town}, ${city}`}
-              bhk={bhk}
-              id={_id}
-              available={available}
-            />
-          ))}
+          {respData.Properties.map(
+            ({ _id, town, bhk, price, Images, available, city }) => (
+              <PropertyCard
+                key={_id}
+                image={Images[0]}
+                price={price}
+                location={`${town}, ${city}`}
+                bhk={bhk}
+                id={_id}
+                available={available}
+              />
+            )
+          )}
         </div>
       </div>
     </div>

@@ -1,54 +1,47 @@
-import React from "react";
-import { useState, useRef } from "react";
+
+/**
+ * This component renders the profile page for a tenant, displaying their personal details,
+ * preferences, and other relevant information. It allows the user to view their profile,
+ * edit their details, or log out of the application.
+ */
+
+import React, { useState, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaw, faLeaf, faDrumstickBite, faWineGlassAlt, faBan, faMars, faVenus, faTimes, faCheck} from "@fortawesome/free-solid-svg-icons"; // Import icons
+import {
+  faPaw,
+  faLeaf,
+  faDrumstickBite,
+  faWineGlassAlt,
+  faBan,
+  faMars,
+  faVenus,
+  faTimes,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons"; // Import icons
 import logo from "../../../public/sampleUser_img.png";
 import "../../css/TenantProfilePageStyles/TenantProfilePage.css"; // Import the CSS specific to this component
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
 import { Basecontext } from "../../context/base/Basecontext";
-import config from "../../config.json";
 
 export default function TenantProfilePage() {
   const navigate = useNavigate();
-
   const state = useContext(Basecontext);
-  const { user, setUser, fetuser } = state;  
+  const { user, setUser, fetuser } = state;
+
+  // Fetch user data
   fetuser();
 
+  // Navigate to the edit page
   const handleSubmit = () => {
     navigate("/tenant-edit-page");
   };
+
+  // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("authtoken");
     window.location.href = "/";
   };
-  // const handleDelete = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       "http://127.0.0.1:3000/api/Deleting_routes/deleteInitiate",
-  //       {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({
-  //           email: state.user.email,
-  //           accounttype: "tenant",
-  //         }),
-  //       }
-  //     );
 
-  //     const data = await response.json();
-  //     if (data.success) {
-  //       localStorage.setItem("deleteToken", data.authtoken);
-  //       navigate("/otp-delete-page", {
-  //         state: { email: state.user.email, accountType: "tenant" },
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     alert("Could not initiate account deletion.");
-  //   }
-  // };
   return (
     <div className="tenant-profile-container">
       {/* Left Column */}
@@ -72,6 +65,7 @@ export default function TenantProfilePage() {
       {/* Right Column */}
       <div className="tenant-profile-right-column">
         <div className="tenant-profile-details">
+          {/* Name */}
           <div className="tenant-profile-name">
             <p>
               <span>Name</span>
@@ -79,28 +73,39 @@ export default function TenantProfilePage() {
               <span>{state.user.name}</span>
             </p>
           </div>
+
+          {/* Email */}
           <div className="tenant-profile-mail">
             <p>
               <span>Email</span>
-              <span>:</span> <span>{state.user.email}</span>
+              <span>:</span>
+              <span>{state.user.email}</span>
             </p>
           </div>
+
+          {/* City */}
           <div className="tenant-profile-city">
             <p>
               <span>City</span>
-              <span>:</span> <span>{state.user.city}</span>
+              <span>:</span>
+              <span>{state.user.city}</span>
             </p>
           </div>
+
+          {/* Locality */}
           <div className="tenant-profile-locality">
             <p>
               <span>Locality</span>
-              <span>:</span> <span>{state.user.locality}</span>
+              <span>:</span>
+              <span>{state.user.locality}</span>
             </p>
           </div>
+
+          {/* Gender */}
           <div className="tenant-profile-gender">
-          <p>
+            <p>
               <span>Gender</span>
-              <span>:</span>{" "}
+              <span>:</span>
               <span>
                 {state.user.gender ? (
                   <>
@@ -122,10 +127,12 @@ export default function TenantProfilePage() {
               </span>
             </p>
           </div>
+
+          {/* Flatmate */}
           <div className="tenant-profile-flatmate">
-          <p>
+            <p>
               <span>Are you seeking a flatmate?</span>
-              <span>:</span>{" "}
+              <span>:</span>
               <span>
                 {state.user.flatmate ? (
                   <>
@@ -147,10 +154,12 @@ export default function TenantProfilePage() {
               </span>
             </p>
           </div>
+
+          {/* Smoke/Drink */}
           <div className="tenant-profile-smoke">
-          <p>
+            <p>
               <span>Do you drink/smoke?</span>
-              <span>:</span>{" "}
+              <span>:</span>
               <span>
                 {state.user.smoke ? (
                   <>
@@ -172,10 +181,12 @@ export default function TenantProfilePage() {
               </span>
             </p>
           </div>
+
+          {/* Food Preferences */}
           <div className="tenant-profile-veg">
-          <p>
+            <p>
               <span>Food Preferences</span>
-              <span>:</span>{" "}
+              <span>:</span>
               <span>
                 {state.user.veg ? (
                   <>
@@ -197,33 +208,36 @@ export default function TenantProfilePage() {
               </span>
             </p>
           </div>
+
+          {/* Pets */}
           <div className="tenant-profile-pets">
-          <p>
-    <span>Do you have pets?</span>
-    <span>:</span>{" "}
-    <span>
-      {state.user.pets ? (
-        <>
-          Yes{" "}
-          <FontAwesomeIcon
-            icon={faPaw}
-            style={{ color: "#7D141D", marginLeft: "5px" }}
-          />
-        </>
-      ) : (
-        <>
-          No{" "}
-          <FontAwesomeIcon
-            icon={faBan}
-            style={{ color: "#7D141D", marginLeft: "5px" }}
-          />
-        </>
-      )}
-    </span>
-  </p>
+            <p>
+              <span>Do you have pets?</span>
+              <span>:</span>
+              <span>
+                {state.user.pets ? (
+                  <>
+                    Yes{" "}
+                    <FontAwesomeIcon
+                      icon={faPaw}
+                      style={{ color: "#7D141D", marginLeft: "5px" }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    No{" "}
+                    <FontAwesomeIcon
+                      icon={faBan}
+                      style={{ color: "#7D141D", marginLeft: "5px" }}
+                    />
+                  </>
+                )}
+              </span>
+            </p>
           </div>
         </div>
 
+        {/* Buttons */}
         <div className="tenant-profile-buttons">
           <button className="tenant-profile-edit-button" onClick={handleSubmit}>
             Edit
@@ -234,12 +248,6 @@ export default function TenantProfilePage() {
           >
             Logout
           </button>
-          {/* <button
-            className="tenant-profile-delete-button"
-            onClick={handleDelete}
-          >
-            Delete
-          </button> */}
         </div>
       </div>
     </div>

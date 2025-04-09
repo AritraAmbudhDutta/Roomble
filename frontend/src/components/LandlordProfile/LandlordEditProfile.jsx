@@ -1,21 +1,33 @@
+
+/**
+ * LandlordEditProfile Component
+ * 
+ * This component allows landlords to edit their profile information, including their name and profile image.
+ * The email address is displayed but cannot be edited for security reasons. 
+ * Users can upload a new profile image and update their name, which is then sent to the backend for processing.
+ * If the update is successful, the user is redirected to their profile page.
+ */
+
 import React, { useEffect, useState, useContext } from "react";
-import "../../css/LandlordProfileStyles/LandlordEditProfile.css";
 import { Basecontext } from "../../context/base/Basecontext";
 import { useNavigate } from "react-router-dom";
 import config from "../../config.json";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import "../../css/LandlordProfileStyles/LandlordEditProfile.css"; // Importing CSS for styling
 
 const LandlordEditProfile = () => {
   const navigate = useNavigate();
-  const state = useContext(Basecontext);
+  const state = useContext(Basecontext); // Fetching context data
   const { user, setUser, fetuser } = state;
-  fetuser();
+  fetuser(); // Fetch user data
 
+  // State to store the selected file for profile image upload
   const [file, setFile] = useState(null);
-  const token = localStorage.getItem("authtoken");
-  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+  const token = localStorage.getItem("authtoken"); // Authentication token
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false); // Error state
 
+  // State to manage form data
   const [formData, setFormData] = useState({
     name: state.user.name,
     email: state.user.email,
@@ -23,6 +35,7 @@ const LandlordEditProfile = () => {
     remove: "",
   });
 
+  // Update form data when user data changes
   useEffect(() => {
     setFormData({
       name: state.user.name,
@@ -32,10 +45,12 @@ const LandlordEditProfile = () => {
     });
   }, [user]);
 
+  // Handle input changes in the form
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Prevent email editing and show an alert
   const handleEmailClick = (e) => {
     e.preventDefault();
     Swal.fire({
@@ -46,6 +61,7 @@ const LandlordEditProfile = () => {
     });
   };
 
+  // Handle errors and navigate back if something goes wrong
   useEffect(() => {
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
@@ -53,13 +69,14 @@ const LandlordEditProfile = () => {
     }
   }, [somethingwentwrong]);
 
+  // Handle form submission
   const handleSubmit = async () => {
     const formDataCopy = new FormData();
     Object.keys(formData).forEach((key) => {
       formDataCopy.append(key, formData[key]);
     });
     if (file) {
-      formDataCopy.append("image", file);
+      formDataCopy.append("image", file); // Append image file if selected
     }
     try {
       const response = await fetch(
@@ -74,23 +91,25 @@ const LandlordEditProfile = () => {
         }
       );
       const data = await response.json();
+
       if (data.success) {
-        navigate("/landlord-profile-page");
-        window.location.reload();
+        navigate("/landlord-profile-page"); // Navigate to profile page on success
+        window.location.reload(); // Reload the page
       } else {
-        setSomethingwentwrong(true);
+        setSomethingwentwrong(true); // Set error state
       }
     } catch (error) {
-      setSomethingwentwrong(true);
+      setSomethingwentwrong(true); // Handle network or server errors
     }
   };
 
   return (
     <div className="landlord-edit-container">
+      {/* Header section with profile image and user info */}
       <div className="landlord-edit-header">
         <label htmlFor="image_input" className="image-wrapper">
           <img
-            src={state.user.Images || "https://via.placeholder.com/200"}
+            src={state.user.Images || "https://via.placeholder.com/200"} // Display profile image or placeholder
             alt="Profile"
             className="landlord-edit-profile-img"
           />
@@ -100,15 +119,16 @@ const LandlordEditProfile = () => {
           id="image_input"
           accept="image/png, image/gif, image/jpeg, image/jpg"
           onChange={(e) => {
-            setFile(e.target.files[0]);
+            setFile(e.target.files[0]); // Set selected file
           }}
         />
         <div className="landlord-edit-info">
-          <h2>{state.user.name}</h2>
-          <p>{state.user.email}</p>
+          <h2>{state.user.name}</h2> 
+          <p>{state.user.email}</p> 
         </div>
       </div>
 
+      {/* Form section for editing profile */}
       <div className="landlord-edit-form">
         <div className="form-group">
           <label>Full Name</label>
@@ -117,7 +137,7 @@ const LandlordEditProfile = () => {
             name="name"
             placeholder="Enter new name"
             value={formData.name}
-            onChange={handleInputChange}
+            onChange={handleInputChange} // Handle name input change
           />
         </div>
 
@@ -127,7 +147,7 @@ const LandlordEditProfile = () => {
             type="email"
             name="email"
             value={formData.email}
-            onClick={handleEmailClick}
+            onClick={handleEmailClick} // Prevent email editing
             readOnly
           />
         </div>
@@ -141,3 +161,4 @@ const LandlordEditProfile = () => {
 };
 
 export default LandlordEditProfile;
+

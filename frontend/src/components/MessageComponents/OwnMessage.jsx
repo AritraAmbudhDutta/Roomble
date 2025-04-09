@@ -1,3 +1,9 @@
+
+/**
+ * OwnMessage component renders a styled message bubble for the current user.
+ * It displays the message text and formats the timestamp into a human-readable format.
+ */
+
 import React from "react";
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 
