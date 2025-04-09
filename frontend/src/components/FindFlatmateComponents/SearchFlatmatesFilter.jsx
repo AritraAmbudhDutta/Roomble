@@ -4,7 +4,15 @@ import "../../css/FindPropertyStyles/SearchArea.css";
 import config from "../../config.json";
 import { toast } from "react-toastify";
 
+/**
+ * SearchFlatmatesFilter Component
+ * Provides filters for searching flatmates and displays results.
+ *
+ * Props:
+ * - setFlatmates: Function to update the list of flatmates.
+ */
 function SearchFlatmatesFilter({ setFlatmates }) {
+// State variables for filters and error handling
   const [city, setCity] = useState("");
   const [locality, setLocality] = useState("");
   const [somethingWentWrong, setSomethingWentWrong] = useState(false);
@@ -17,18 +25,18 @@ function SearchFlatmatesFilter({ setFlatmates }) {
 
   const navigate = useNavigate();
 
+  // Update filters based on user input
   const handleFilterChange = (filter, value) => {
     setFilters((prevFilters) => ({ ...prevFilters, [filter]: value }));
   };
 
+  // Fetch filtered flatmates from the backend
   const handleApplyChanges = async () => {
     const token = localStorage.getItem("authtoken");
-
     const queryParams = new URLSearchParams();
+
     if (locality) queryParams.append("locality", locality);
     if (city) queryParams.append("city", city);
-
-    // Ensure all filters are appended
     if (filters.gender !== null)
       queryParams.append("gender", filters.gender ? "true" : "false");
     if (filters.smokeDrink !== null)
@@ -54,24 +62,16 @@ function SearchFlatmatesFilter({ setFlatmates }) {
 
       if (data.success) {
         setFlatmates(data.data);
-        if (data.data.length > 0) {
-          let size = 0;
-          // toast.success("Flatmates found!");
-          while(size++ < data.data.length) 
-          console.log("Name: " + data.data[size-1].name + " Compatibility Score: " + Math.round(100*data.data[size-1].recommendationScore));
-        } else {
-          toast.info("No results found.");
-        }
+        if (data.data.length === 0) toast.info("No results found.");
       } else {
-        console.error("Error:", data.message);
         setSomethingWentWrong(true);
       }
     } catch (error) {
-      console.error("Request failed:", error);
       setSomethingWentWrong(true);
     }
   };
 
+  // Reset all filters and reload the page
   const handleClearChanges = () => {
     setCity("");
     setLocality("");
@@ -82,8 +82,7 @@ function SearchFlatmatesFilter({ setFlatmates }) {
       gender: null,
     });
     setFlatmates([]);
-    
-    window.location.reload() ;
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -128,39 +127,37 @@ function SearchFlatmatesFilter({ setFlatmates }) {
         </select>
       </div>
 
-      {/* Filters */}
+      {/* Filters Section */}
       <div className="filter-options">
-          {/* Gender Filter */}
-          <div className="filter-row">
-            <span className="filter-label">Gender</span>
-            <div className="filter-choices">
-              <label className="custom-radio">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="true"
-                  checked={filters.gender === true}
-                  onChange={() => handleFilterChange("gender", true)}
-                />
-                <span className="radio-btn">Male</span> 
-              </label>
-              <label className="custom-radio">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="false"
-                  checked={filters.gender === false}
-                  onChange={() => handleFilterChange("gender", false)}
-                />
-                <span className="radio-btn">Female</span>
-              </label>
-            </div>
+        {/* Gender Filter */}
+        <div className="filter-row">
+          <span className="filter-label">Gender</span>
+          <div className="filter-choices">
+            <label className="custom-radio">
+              <input
+                type="radio"
+                name="gender"
+                value="true"
+                checked={filters.gender === true}
+                onChange={() => handleFilterChange("gender", true)}
+              />
+              <span className="radio-btn">Male</span>
+            </label>
+            <label className="custom-radio">
+              <input
+                type="radio"
+                name="gender"
+                value="false"
+                checked={filters.gender === false}
+                onChange={() => handleFilterChange("gender", false)}
+              />
+              <span className="radio-btn">Female</span>
+            </label>
           </div>
+        </div>
 
-        {[
-          { label: "Smokes/Drinks", key: "smokeDrink" },
-          { label: "Has Pets", key: "pets" },
-        ].map(({ label, key }) => (
+        {/* Additional Filters */}
+        {[{ label: "Smokes/Drinks", key: "smokeDrink" }, { label: "Has Pets", key: "pets" }].map(({ label, key }) => (
           <div key={key} className="filter-row">
             <span className="filter-label">{label}</span>
             <div className="filter-choices">
@@ -190,32 +187,33 @@ function SearchFlatmatesFilter({ setFlatmates }) {
 
         {/* Veg/Non-Veg Filter */}
         <div className="filter-row">
-            <span className="filter-label">Food Preferences</span>
-            <div className="filter-choices">
-              <label className="custom-radio">
-                <input
-                  type="radio"
-                  name="eatNonVeg"
-                  value="false"
-                  checked={filters.eatNonVeg === false}
-                  onChange={() => handleFilterChange("eatNonVeg", false)}
-                />
-                <span className="radio-btn">Veg</span>
-              </label>
-              <label className="custom-radio">
-                <input
-                  type="radio"
-                  name="eatNonVeg"
-                  value="true"
-                  checked={filters.eatNonVeg === true}
-                  onChange={() => handleFilterChange("eatNonVeg", true)}
-                />
-                <span className="radio-btn">Non-Veg</span>
-              </label>
-            </div>
+          <span className="filter-label">Food Preferences</span>
+          <div className="filter-choices">
+            <label className="custom-radio">
+              <input
+                type="radio"
+                name="eatNonVeg"
+                value="false"
+                checked={filters.eatNonVeg === false}
+                onChange={() => handleFilterChange("eatNonVeg", false)}
+              />
+              <span className="radio-btn">Veg</span>
+            </label>
+            <label className="custom-radio">
+              <input
+                type="radio"
+                name="eatNonVeg"
+                value="true"
+                checked={filters.eatNonVeg === true}
+                onChange={() => handleFilterChange("eatNonVeg", true)}
+              />
+              <span className="radio-btn">Non-Veg</span>
+            </label>
           </div>
         </div>
+      </div>
 
+      {/* Action Buttons */}
       <div className="search-prop-buttons">
         <button onClick={handleApplyChanges}>Apply</button>
         <button onClick={handleClearChanges}>Clear filters</button>

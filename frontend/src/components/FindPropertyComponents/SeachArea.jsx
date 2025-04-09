@@ -18,7 +18,7 @@ function SearchArea({
   handleAreaChange,
   handleApplyChanges,
   handleClearChanges,
-  properties = [] // default to an empty array if not provided
+  properties = [], // Default to an empty array if not provided
 }) {
   // Define BHK options with a custom value for "More"
   const bhkOptions = [
@@ -55,6 +55,8 @@ function SearchArea({
   return (
     <div className="search-prop-container">
       <h1>Filters</h1>
+
+      {/* City Filter */}
       <div className="city-search-container">
         <label>City</label>
         <select value={city} onChange={(e) => setCity(e.target.value)}>
@@ -62,6 +64,8 @@ function SearchArea({
           <option value="Mumbai">Mumbai</option>
         </select>
       </div>
+
+      {/* Locality Filter */}
       <div className="locality-search-container">
         <label>Locality</label>
         <select value={locality} onChange={(e) => setLocality(e.target.value)}>
@@ -78,6 +82,8 @@ function SearchArea({
           <option value="Goregaon">Goregaon</option>
         </select>
       </div>
+
+      {/* Price Range Filter */}
       <div className="price-range-container">
         <label>Price Range</label>
         <div className="price-range-values">
@@ -93,6 +99,8 @@ function SearchArea({
           onInput={handleSliderChange}
         />
       </div>
+
+      {/* Area Range Filter */}
       <div className="area-range-container">
         <label>Area Range</label>
         <div className="area-range-values">
@@ -108,6 +116,8 @@ function SearchArea({
           onInput={handleAreaChange}
         />
       </div>
+
+      {/* BHK Filter */}
       <div className="BHK-container">
         <label>Number of BHK</label>
         {bhkOptions.map(({ label, value }) => (
@@ -121,12 +131,15 @@ function SearchArea({
           </div>
         ))}
       </div>
+
+      {/* Action Buttons */}
       <div className="search-prop-buttons">
         <button onClick={handleApplyChanges}>Apply</button>
         <button onClick={handleClearChanges}>Clear filters</button>
       </div>
 
       {/* Example display of filtered properties */}
+      {/* Uncomment to display filtered properties */}
       {/* <div className="filtered-properties">
         <h2>Filtered Properties</h2>
         {filteredProperties.map((property) => (

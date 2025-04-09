@@ -17,13 +17,14 @@ const PropertyCardTenant = ({
   id,
   available,
 }) => {
-  const [bookmarked, setBookmarked] = useState(false);
-  const [loading, setLoading] = useState(true); // Loading state to block multiple requests
-  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false); // State to track bookmark status
+  const [loading, setLoading] = useState(true); // Prevent multiple requests
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false); // Error state
 
   // Toggle bookmark with confirmation popup
   const toggleBookmark = async () => {
     if (loading) return; // Prevent toggling while loading
+
     const actionText = bookmarked ? "remove the bookmark" : "bookmark this property";
     const confirmPopup = await Swal.fire({
       title: "Confirm Action",
@@ -35,42 +36,45 @@ const PropertyCardTenant = ({
       confirmButtonText: "Yes, confirm it!",
       cancelButtonText: "Cancel",
     });
+
     if (confirmPopup.isConfirmed) {
       setBookmarked(!bookmarked);
     }
   };
 
-  // Fetch bookmark status on mount
+  // Fetch bookmark status on component mount
   useEffect(() => {
     const fetchBookmarkStatus = async () => {
       try {
         const response = await fetch(`${config.backend}/api/BookMarking_Routes/check_bookmark`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            authtoken: localStorage.getItem('authtoken')
+            "Content-Type": "application/json",
+            authtoken: localStorage.getItem("authtoken"),
           },
-          body: JSON.stringify({ id: id, thing: "property" })
+          body: JSON.stringify({ id: id, thing: "property" }),
         });
+
         const data = await response.json();
         if (data.success) {
           setBookmarked(data.bookmarked);
-        }else{
+        } else {
           setSomethingwentwrong(true);
         }
       } catch (error) {
         console.error("Failed to fetch bookmark status:", error);
         setSomethingwentwrong(true);
       } finally {
-        setLoading(false); // Set loading to false after request completes
+        setLoading(false); // Stop loading after request completes
       }
     };
+
     fetchBookmarkStatus();
   }, [id]);
 
   // Update bookmark status when bookmarked state changes
   useEffect(() => {
-    if (!loading) { // Only send requests after initial loading
+    if (!loading) {
       const action = bookmarked ? "bookmark" : "unmark";
       fetch(`${config.backend}/api/BookMarking_Routes/edit_bookmarks`, {
         method: "POST",
@@ -85,13 +89,13 @@ const PropertyCardTenant = ({
     }
   }, [bookmarked, loading, id]);
 
-    useEffect(()=>{
-      if(somethingwentwrong){
-        toast.error('Something went wrong. Please try again later.');
-        navigate(-1)
-      }
-    }, [somethingwentwrong]);
-
+  // Handle errors and notify the user
+  useEffect(() => {
+    if (somethingwentwrong) {
+      toast.error("Something went wrong. Please try again later.");
+      navigate(-1);
+    }
+  }, [somethingwentwrong]);
 
   return (
     <div className={`property-card ${available ? "" : "delisted"}`}>
