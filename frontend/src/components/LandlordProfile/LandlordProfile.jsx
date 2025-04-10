@@ -28,7 +28,7 @@ const LandlordProfile = () => {
 
   // Handle logout
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.removeItem("authtoken");
     navigate("/login");
     window.location.reload();
   };
