@@ -40,6 +40,9 @@ function SignUpForm({ setID }) {
     successMsg: "",
   });
 
+  const [apiMessage, setApiMessage] = useState("");
+  const [apiError, setApiError] = useState(false);
+
   // Separate error states for both steps
   const [formError, setFormError] = useState({});
 
@@ -158,20 +161,20 @@ function SignUpForm({ setID }) {
       const responseData = await response.json();
 
       if (responseData.success) {
-        setFormInput((prev) => ({ ...prev, successMsg: responseData.message }));
-        setID(responseData.message); // Set the user ID for further steps
-        navigate("/otp-page-tenant"); // Navigate to the OTP page
+        setApiError(false);
+        setApiMessage(responseData.message);
+        setID(responseData.message);
+        navigate("/otp-page-tenant");
       } else {
-        setFormInput((prev) => ({ ...prev, successMsg: responseData.message }));
+        setApiError(true);
+        setApiMessage(responseData.message);
       }
     } catch (error) {
       console.error("Error sending data:", error);
-      setSomethingwentwrong(true); // Handle errors gracefully
-      setFormInput((prev) => ({
-        ...prev,
-        successMsg: "Couldn't fetch data.",
-      }));
-    }
+      setApiError(true);
+      setApiMessage("Something went wrong. Please try again later.");
+   }
+    
   };
 
   return (
@@ -293,9 +296,9 @@ function SignUpForm({ setID }) {
               <p className="signup-tenant-error">{formError.confirmPassword}</p>
             )}
 
-            <p className="signup-tenant-success-message">
+            {/* <p className="signup-tenant-success-message">
               {formInput.successMsg}
-            </p>
+            </p> */}
             <button type="submit" className="signup-tenant-button">
               Next
             </button>
@@ -629,6 +632,17 @@ function SignUpForm({ setID }) {
                 <p className="signup-tenant-error">{formError.flatmate}</p>
               )}
             </div>
+            {apiMessage && (
+              <p
+                className={
+                  apiError
+                    ? "signup-tenant-error"
+                    : "signup-tenant-success-message"
+                }
+              >
+                {apiMessage}
+              </p>
+            )}
 
             <div className="signup-navigation-buttons">
               <button
