@@ -1,7 +1,6 @@
-
 /**
  * OTPPageTenant Component
- * 
+ *
  * This component renders an OTP verification page for landlords. It allows users to input a 6-digit OTP,
  * validates the input, and submits it to the backend for verification. On successful verification, the user
  * is redirected to the login page.
@@ -12,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import "../../css/OTPPage/OTPPageLandlord.css"; // Import the CSS specific to this component
 import config from "../../config.json";
 import { toast } from "react-toastify";
+import logo from "../../../public/logo.png"; // Import the logo image
 
 export default function OTPPageTenant({ id }) {
   const navigate = useNavigate();

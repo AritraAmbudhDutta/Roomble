@@ -1,16 +1,15 @@
-
 /**
- * This component renders the login page for the Roomble application. 
- * It allows users to log in as either a tenant or a landlord, 
+ * This component renders the login page for the Roomble application.
+ * It allows users to log in as either a tenant or a landlord,
  * with options to remember their credentials and navigate to the appropriate dashboard.
  */
 
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../css/Login.css";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
-import config from '../config.json';
+import config from "../config.json";
 import logo from "/logo.png";
 
 const Login = () => {
@@ -22,7 +21,9 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  if (localStorage.getItem("authtoken")) {
+    navigate("/");
+  }
   // Load remembered credentials from localStorage on component mount
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedEmail");
@@ -78,7 +79,9 @@ const Login = () => {
         }
 
         // Navigate to the appropriate dashboard
-        navigate(userType === "landlord" ? "/landlord-dashboard" : "/tenant-dashboard");
+        navigate(
+          userType === "landlord" ? "/landlord-dashboard" : "/tenant-dashboard"
+        );
         window.location.reload();
       } else {
         // Handle login failure
@@ -107,22 +110,26 @@ const Login = () => {
         {/* Tenant / Landlord buttons */}
         <div className="login-user-type-buttons">
           <button
-            className={`login-user-btn ${userType === "tenant" ? "selected" : ""}`}
+            className={`login-user-btn ${
+              userType === "tenant" ? "selected" : ""
+            }`}
             onClick={() => handleUserTypeChange("tenant")}
           >
-            <img 
-              src={userType === "landlord" ? "/key.png" : "/key_white.png"} 
-              style={{ width: "50px", height: "50px" }} 
+            <img
+              src={userType === "landlord" ? "/key.png" : "/key_white.png"}
+              style={{ width: "50px", height: "50px" }}
             />
             Tenant
           </button>
           <button
-            className={`login-user-btn ${userType === "landlord" ? "selected" : ""}`}
+            className={`login-user-btn ${
+              userType === "landlord" ? "selected" : ""
+            }`}
             onClick={() => handleUserTypeChange("landlord")}
           >
-            <img 
-              src={userType === "landlord" ? "/white_house.png" : "/house.jpg"} 
-              style={{ width: "50px", height: "50px" }} 
+            <img
+              src={userType === "landlord" ? "/white_house.png" : "/house.jpg"}
+              style={{ width: "50px", height: "50px" }}
             />
             Landlord
           </button>
@@ -140,7 +147,9 @@ const Login = () => {
             required
           />
 
-          <label htmlFor="password" className="login-page-label">Password</label>
+          <label htmlFor="password" className="login-page-label">
+            Password
+          </label>
           <input
             type="password"
             id="login-password"
@@ -172,7 +181,11 @@ const Login = () => {
           {error && <p className="login-error-text">{error}</p>}
 
           {/* Login Button */}
-          <button type="submit" className="login-login-button" disabled={loading}>
+          <button
+            type="submit"
+            className="login-login-button"
+            disabled={loading}
+          >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
@@ -180,7 +193,9 @@ const Login = () => {
         {/* Register Link */}
         <p className="login-register-text">
           Not Registered Yet?{" "}
-          <Link to={userType === "landlord" ? "/signup-landlord" : "/signup-tenant"}>
+          <Link
+            to={userType === "landlord" ? "/signup-landlord" : "/signup-tenant"}
+          >
             Create an account
           </Link>
         </p>
