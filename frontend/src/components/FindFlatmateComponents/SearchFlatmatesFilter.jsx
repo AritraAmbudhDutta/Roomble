@@ -1,4 +1,3 @@
-
 /**
  * SearchFlatmatesFilter Component
  * Provides filters for searching flatmates and displays results.
@@ -13,9 +12,8 @@ import "../../css/FindPropertyStyles/SearchArea.css";
 import config from "../../config.json";
 import { toast } from "react-toastify";
 
-
 function SearchFlatmatesFilter({ setFlatmates }) {
-// State variables for filters and error handling
+  // State variables for filters and error handling
   const [city, setCity] = useState("");
   const [locality, setLocality] = useState("");
   const [somethingWentWrong, setSomethingWentWrong] = useState(false);
@@ -27,6 +25,13 @@ function SearchFlatmatesFilter({ setFlatmates }) {
   });
 
   const navigate = useNavigate();
+  // Redirect to login if authtoken is not present
+  useEffect(() => {
+    const token = localStorage.getItem("authtoken");
+    if (!token) {
+      navigate("/login"); // Redirect to login page
+    }
+  }, [navigate]);
 
   // Update filters based on user input
   const handleFilterChange = (filter, value) => {
@@ -51,7 +56,9 @@ function SearchFlatmatesFilter({ setFlatmates }) {
 
     try {
       const response = await fetch(
-        `${config.backend}/api/Search_Routes/SearchFlatmates?${queryParams.toString()}`,
+        `${
+          config.backend
+        }/api/Search_Routes/SearchFlatmates?${queryParams.toString()}`,
         {
           method: "GET",
           headers: {
@@ -160,7 +167,10 @@ function SearchFlatmatesFilter({ setFlatmates }) {
         </div>
 
         {/* Additional Filters */}
-        {[{ label: "Smokes/Drinks", key: "smokeDrink" }, { label: "Has Pets", key: "pets" }].map(({ label, key }) => (
+        {[
+          { label: "Smokes/Drinks", key: "smokeDrink" },
+          { label: "Has Pets", key: "pets" },
+        ].map(({ label, key }) => (
           <div key={key} className="filter-row">
             <span className="filter-label">{label}</span>
             <div className="filter-choices">

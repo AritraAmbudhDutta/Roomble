@@ -21,11 +21,12 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  if (localStorage.getItem("authtoken")) {
-    navigate("/");
-  }
+
   // Load remembered credentials from localStorage on component mount
   useEffect(() => {
+    if (localStorage.getItem("authtoken")) {
+      navigate("/");
+    }
     const savedEmail = localStorage.getItem("rememberedEmail");
     const savedPassword = localStorage.getItem("rememberedPassword");
     const savedUserType = localStorage.getItem("rememberedUserType");

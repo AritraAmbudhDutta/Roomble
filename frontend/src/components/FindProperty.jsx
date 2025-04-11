@@ -1,4 +1,3 @@
-
 /**
  * This component allows users to search for properties based on various filters such as locality, price range, area, and BHK type.
  * It fetches and displays matching properties from the backend and provides options to clear or apply filters.
@@ -96,6 +95,9 @@ function FindProperty() {
 
   // Handle errors and navigate back if something went wrong
   useEffect(() => {
+    if (localStorage.getItem("authtoken") === null) {
+      navigate("/login"); // Redirect to login if not authenticated
+    }
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
       navigate(-1);

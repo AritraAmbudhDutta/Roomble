@@ -13,11 +13,15 @@ import { useEffect } from "react";
 
 function SignUpForm({ setID }) {
   const navigate = useNavigate();
+
   const [step, setStep] = useState(1); // Tracks the current step in the signup process
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
   const [loading, setLoading] = useState(false);
   // Handle navigation and error notification if something goes wrong
   useEffect(() => {
+    if (localStorage.getItem("authtoken") !== null) {
+      navigate("/"); // Redirect to home if already logged in
+    }
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
       navigate(-1); // Navigate back to the previous page

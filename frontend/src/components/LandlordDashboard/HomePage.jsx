@@ -1,11 +1,10 @@
-
 /**
-* HomePage.jsx
-* This component represents the homepage of the landlord dashboard. 
-* It fetches and displays a list of properties owned by the landlord. 
-* If no properties are available, it shows a placeholder message. 
-* The page also handles loading states and error scenarios.
-*/
+ * HomePage.jsx
+ * This component represents the homepage of the landlord dashboard.
+ * It fetches and displays a list of properties owned by the landlord.
+ * If no properties are available, it shows a placeholder message.
+ * The page also handles loading states and error scenarios.
+ */
 import React, { useEffect, useState } from "react";
 import PropertyCard from "./PropertyCard";
 import "../../css/LandlordDashboard.css";
@@ -19,6 +18,13 @@ const HomePage = () => {
   const [error, setError] = useState(null); // State to handle errors
   const [somethingwentwrong, setSomethingwentwrong] = useState(false); // State for unexpected errors
   const navigate = useNavigate();
+  // Redirect to login if authtoken is not present
+  useEffect(() => {
+    const token = localStorage.getItem("authtoken");
+    if (!token) {
+      navigate("/login"); // Redirect to login page
+    }
+  }, [navigate]);
 
   // Fetch properties when the component mounts
   useEffect(() => {
@@ -80,7 +86,9 @@ const HomePage = () => {
       {/* Main Content */}
       {loading ? (
         // Show loading spinner
-        <div className="landlord-dashboard-loading-text">Loading properties...</div>
+        <div className="landlord-dashboard-loading-text">
+          Loading properties...
+        </div>
       ) : propertyList.length === 0 ? (
         // Show placeholder if no properties are available
         <div className="landlord-dashboard-no-properties-wrapper">
@@ -90,7 +98,9 @@ const HomePage = () => {
               alt="No properties"
               className="landlord-dashboard-empty-image"
             />
-            <h2 className="landlord-dashboard-empty-title">No Properties Yet</h2>
+            <h2 className="landlord-dashboard-empty-title">
+              No Properties Yet
+            </h2>
             <p className="landlord-dashboard-empty-subtitle">
               Looks like you haven’t added any properties. <br />
               Start listing to see them here!

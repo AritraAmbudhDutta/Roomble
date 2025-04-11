@@ -103,7 +103,7 @@ function SearchArea({
           </p>
         </div>
         <RangeSlider
-          min={1000}
+          min={0}
           max={100000}
           step={250}
           value={values}
@@ -120,7 +120,7 @@ function SearchArea({
           </p>
         </div>
         <RangeSlider
-          min={500}
+          min={0}
           max={10000}
           step={50}
           value={area}
