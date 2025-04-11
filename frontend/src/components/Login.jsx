@@ -27,16 +27,6 @@ const Login = () => {
     if (localStorage.getItem("authtoken")) {
       navigate("/");
     }
-    const savedEmail = localStorage.getItem("rememberedEmail");
-    const savedPassword = localStorage.getItem("rememberedPassword");
-    const savedUserType = localStorage.getItem("rememberedUserType");
-
-    if (savedEmail && savedPassword) {
-      setEmail(savedEmail);
-      setPassword(savedPassword);
-      setRememberMe(true);
-      setUserType(savedUserType || "tenant");
-    }
   }, []);
 
   // Handle user type change (tenant or landlord)
@@ -59,7 +49,7 @@ const Login = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({ email, password, remember_me: rememberMe }),
         }
       );
 
@@ -69,15 +59,7 @@ const Login = () => {
       if (data.success) {
         // Save authentication token and optionally remember credentials
         localStorage.setItem("authtoken", data.authtoken);
-        if (rememberMe) {
-          localStorage.setItem("rememberedEmail", email);
-          localStorage.setItem("rememberedPassword", password);
-          localStorage.setItem("rememberedUserType", userType);
-        } else {
-          localStorage.removeItem("rememberedEmail");
-          localStorage.removeItem("rememberedPassword");
-          localStorage.removeItem("rememberedUserType");
-        }
+        
 
         // Navigate to the appropriate dashboard
         navigate(
@@ -170,7 +152,7 @@ const Login = () => {
                 onChange={() => setRememberMe(!rememberMe)}
               />
               <label htmlFor="rememberMe" className="login-remember-label">
-                Remember Me
+                Remember Me for a month
               </label>
             </span>
             <Link to="/forgot-password" className="login-forgot-password">

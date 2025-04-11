@@ -172,7 +172,7 @@ router.post(`/verifyTenant/:id`, async (req, res) => {
 // Requires `email` and `password` in the request body
 router.post(`/Tenant_login`, async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, remember_me } = req.body;
 
         // Find the tenant by email
         const findTenant = await Tenant.findOne({ email });
@@ -189,8 +189,12 @@ router.post(`/Tenant_login`, async (req, res) => {
 
         if (result) {
             // Generate a JWT token for the tenant
-            const token = jwt.sign({ id: findTenant._id, email: findTenant.email }, SECRET_KEY, { expiresIn: "5h" });
-
+            let token;
+            if (remember_me) {
+                token = jwt.sign({ id: findTenant._id, email: findTenant.email }, SECRET_KEY, { expiresIn: "30d" });
+            } else {
+                token = jwt.sign({ id: findTenant._id, email: findTenant.email }, SECRET_KEY, { expiresIn: "5h" });
+            }
             res.status(200).json({
                 success: true,
                 name: findTenant.name,
