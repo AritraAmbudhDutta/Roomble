@@ -1,8 +1,7 @@
-
 /**
  * This component is responsible for displaying detailed information about a specific property.
- * It includes features such as an image carousel, property details, amenities, reviews, and 
- * actions like editing, deleting, reviewing, and contacting the landlord. It also allows users 
+ * It includes features such as an image carousel, property details, amenities, reviews, and
+ * actions like editing, deleting, reviewing, and contacting the landlord. It also allows users
  * to view the property location on Google Maps and express interest in the property.
  */
 
@@ -206,7 +205,11 @@ const PropertyDisplay = () => {
   };
   // Navigate to the edit property page
   const handleEdit = () => {
-    navigate(`/edit-property/${id}`);
+    if (user._id === property.landlord) {
+      navigate(`/edit-property/${id}`);
+    } else {
+      toast.error("You are not authorized to edit this property.");
+    }
   };
 
   // Open the review modal
@@ -382,7 +385,7 @@ const PropertyDisplay = () => {
           <Link to={`/landlord/${property.landlord}`}>View Profile</Link>
         </div> */}
 
-          {user._id === property.landlord ? (
+          {user.type === "landlord" ? (
             <div className="property-display-buttons">
               <button
                 className="landlord-profile-edit-button"

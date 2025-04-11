@@ -1,4 +1,3 @@
-
 /**
  * This component renders the profile page for a tenant, displaying their personal details,
  * preferences, and other relevant information. It allows the user to view their profile,
