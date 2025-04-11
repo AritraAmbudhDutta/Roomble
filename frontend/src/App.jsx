@@ -105,6 +105,8 @@ function App() {
         <Route path="/review/:id" element={<Review />} />
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/404" element={<Error404 />} />
+        {/* Catch-all route for non-routed paths */}
+        <Route path="*" element={<Navigate to="/404" />} />
       </Routes>
     </BaseState>
   );
