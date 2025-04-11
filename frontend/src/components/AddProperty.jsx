@@ -65,17 +65,50 @@ function AddProperty() {
     let newErrors = {};
 
     // Validate required fields
-    if (images.length === 0)
+    if (images.length === 0){
       newErrors.photos = "At least one photo is required.";
-    if (!formData.bhk || isNaN(formData.bhk))
+    }else{
+      delete newErrors.photos;
+    }
+    const BHK = Number(formData.bhk);
+    if (!formData.bhk || isNaN(formData.bhk)){
       newErrors.bhk = "BHK is required and must be a number.";
-    if (!formData.area || isNaN(formData.area))
+    }else if (!Number.isInteger(BHK) || BHK <= 0) {
+      newErrors.bhk = "BHK must be a positive integer.";
+    }else{
+      delete newErrors.bhk;
+    }
+    const area = Number(formData.area);
+    const rent = Number(formData.rent);
+    if (!formData.area || isNaN(formData.area)){
       newErrors.area = "Area is required and must be a number.";
-    if (!formData.rent || isNaN(formData.rent))
+    }else if ( area <= 0 || area > 10000) {
+      newErrors.area = "Area must be in the range of 1 to 10,000.";
+    }else{
+      delete newErrors.area;
+    }
+    if (!formData.rent || isNaN(formData.rent)){
       newErrors.rent = "Rent is required and must be a number.";
-    if (!formData.address.trim()) newErrors.address = "Address is required.";
-    if (!formData.city) newErrors.city = "Please select a city.";
-    if (!formData.location) newErrors.location = "Please select a location.";
+    } else if (rent <= 0 || rent > 100000) {
+      newErrors.rent = "Rent must be in the range of 1 to 100,000.";
+    }else{
+      delete newErrors.rent;
+    }
+    if (!formData.address.trim()){
+       newErrors.address = "Address is required."
+      }else{
+        delete newErrors.address;
+      }
+    if (!formData.city) {
+      newErrors.city = "Please select a city."
+    }else{
+      delete newErrors.city;
+    }
+    if (!formData.location){
+       newErrors.location = "Please select a location."
+    }else{
+      delete newErrors.location;
+    }
 
     setErrors(newErrors); // Update errors state
     return Object.keys(newErrors).length === 0; // Return true if no errors
