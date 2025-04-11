@@ -1,19 +1,20 @@
-
 /**
  * This component is responsible for displaying a messaging interface. It fetches and displays
  * the details of a specific conversation, including its members and messages. It also handles
  * navigation and error scenarios when something goes wrong during data fetching.
  */
 
-import React, { useEffect, useState } from 'react';
-import '../css/MessageBoxStyle/Messages.css';
-import MessageBox from './MessageComponents/MessageBox';
-import ChatBox from './MessageComponents/ChatBox';
-import { useNavigate, useParams } from 'react-router-dom';
-import config from '../config.json';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import "../css/MessageBoxStyle/Messages.css";
+import MessageBox from "./MessageComponents/MessageBox";
+import ChatBox from "./MessageComponents/ChatBox";
+import { useNavigate, useParams } from "react-router-dom";
+import config from "../config.json";
+import { toast } from "react-toastify";
 
 function Messages() {
+  const navigate = useNavigate();
+
   // State to store the current conversation ID
   const [currentConvId, setCurrentConvId] = useState(null);
 
@@ -36,14 +37,17 @@ function Messages() {
   const [currentConversations, setCurrentConversations] = useState([]);
 
   // React Router hooks
-  const navigate = useNavigate();
+
   const params = useParams();
   const id = params.id;
 
   // Effect to handle navigation and error toast when something goes wrong
   useEffect(() => {
+    if (localStorage.getItem("authtoken") === null) {
+      navigate("/login"); // Redirect to login if not authenticated
+    }
     if (somethingwentwrong) {
-      toast.error('Something went wrong. Please try again later.');
+      toast.error("Something went wrong. Please try again later.");
       navigate(-1); // Navigate back to the previous page
     }
   }, [somethingwentwrong]);
@@ -53,10 +57,10 @@ function Messages() {
     setCurrentConvId(id);
 
     fetch(`${config.backend}/messages/getConversation`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        authtoken: localStorage.getItem('authtoken'),
+        "Content-Type": "application/json",
+        authtoken: localStorage.getItem("authtoken"),
       },
       body: JSON.stringify({ conversation_id: id }),
     })

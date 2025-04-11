@@ -1,4 +1,3 @@
-
 /**
  * This component allows tenants to edit their profile information. It includes
  * fields for personal details, preferences, and profile picture upload. The form
@@ -19,10 +18,15 @@ const TenantEditPage = () => {
   const state = useContext(Basecontext);
   const { user, setUser, fetuser } = state;
 
-  // Fetch user data
+  // Redirect to login if authtoken is not present
   useEffect(() => {
-    fetuser();
-  }, []);
+    const token = localStorage.getItem("authtoken");
+    if (!token) {
+      navigate("/login"); // Redirect to login page
+    } else {
+      fetuser(); // Fetch user data if token exists
+    }
+  }, [navigate, fetuser]);
 
   const [file, setFile] = useState(null);
   const token = localStorage.getItem("authtoken");

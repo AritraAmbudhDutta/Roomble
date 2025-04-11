@@ -13,10 +13,14 @@ import { useEffect } from "react";
 
 function SignupformLandlord({ setID }) {
   const navigate = useNavigate();
+
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
   const [loading, setLoading] = useState(false);
   // Handle navigation and error notification if something goes wrong
   useEffect(() => {
+    if (localStorage.getItem("authtoken")) {
+      navigate("/"); // Redirect to the home page if already logged in
+    }
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
       navigate(-1); // Navigate back to the previous page

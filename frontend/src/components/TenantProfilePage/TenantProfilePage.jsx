@@ -20,6 +20,7 @@ import {
 import logo from "../../../public/sampleUser_img.png";
 import "../../css/TenantProfilePageStyles/TenantProfilePage.css"; // Import the CSS specific to this component
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { Basecontext } from "../../context/base/Basecontext";
 
 export default function TenantProfilePage() {
@@ -27,8 +28,15 @@ export default function TenantProfilePage() {
   const state = useContext(Basecontext);
   const { user, setUser, fetuser } = state;
 
-  // Fetch user data
-  fetuser();
+  // Redirect to login if authtoken is not present
+  useEffect(() => {
+    const token = localStorage.getItem("authtoken");
+    if (!token) {
+      navigate("/login"); // Redirect to login page
+    } else {
+      fetuser(); // Fetch user data if token exists
+    }
+  }, [navigate, fetuser]);
 
   // Navigate to the edit page
   const handleSubmit = () => {

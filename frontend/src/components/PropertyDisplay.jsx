@@ -40,9 +40,11 @@ const PropertyDisplay = () => {
     price: "Loading...",
     reviews: ["Loading..."],
   }); // State to store property details
+
   const [rating, setRating] = useState(0); // State to store the rating value
   const [review, setReview] = useState(""); // State to store the review text
   const navigate = useNavigate();
+
   const [reviews, setReviews] = useState([
     {
       rating: 0,
@@ -55,6 +57,9 @@ const PropertyDisplay = () => {
   const params = useParams();
   const id = params.id; // Extract property ID from URL parameters
   useEffect(() => {
+    if (localStorage.getItem("authtoken") === null) {
+      navigate("/login"); // Redirect to the login page if not authenticated
+    }
     fetuser(); // Fetch user details on component mount
   }, [user]);
 
