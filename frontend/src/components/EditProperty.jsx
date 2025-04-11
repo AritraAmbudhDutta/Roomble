@@ -56,20 +56,56 @@ function EditProperty(property) {
   const validateForm = () => {
     let newErrors = {};
 
-    if (images.length === 0)
+    // Validate required fields
+    if (images.length === 0){
       newErrors.photos = "At least one photo is required.";
-    if (!formData.bhk || isNaN(formData.bhk))
+    }else if(images.length > 10){
+      newErrors.photos = "You can only upload a maximum of 10 images.";
+    }else{
+      delete newErrors.photos;
+    }
+    const BHK = Number(formData.bhk);
+    if (!formData.bhk || isNaN(BHK)){
       newErrors.bhk = "BHK is required and must be a number.";
-    if (!formData.area || isNaN(formData.area))
+    }else if (!Number.isInteger(BHK) || BHK <= 0) {
+      newErrors.bhk = "BHK must be a positive integer.";
+    }else{
+      delete newErrors.bhk;
+    }
+    const area = Number(formData.area);
+    const rent = Number(formData.price);
+    if (!formData.area || isNaN(area)){
       newErrors.area = "Area is required and must be a number.";
-    if (!formData.price || isNaN(formData.price))
+    }else if ( area <= 0 || area > 10000) {
+      newErrors.area = "Area must be in the range of 1 to 10,000.";
+    }else{
+      delete newErrors.area;
+    }
+    if (!formData.price || isNaN(rent)){
       newErrors.rent = "Rent is required and must be a number.";
-    if (!formData.address.trim()) newErrors.address = "Address is required.";
-    if (!formData.city) newErrors.city = "Please select a city.";
-    if (!formData.town) newErrors.location = "Please select a location.";
+    } else if (rent <= 0 || rent > 100000) {
+      newErrors.rent = "Rent must be in the range of 1 to 100,000.";
+    }else{
+      delete newErrors.rent;
+    }
+    if (!formData.address.trim()){
+       newErrors.address = "Address is required."
+      }else{
+        delete newErrors.address;
+      }
+    if (!formData.city) {
+      newErrors.city = "city is required.";
+    }else{
+      delete newErrors.city;
+    }
+    if (!formData.town) {
+       newErrors.location = "location is required.";
+    }else{
+      delete newErrors.location;
+    }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setErrors(newErrors); // Update errors state
+    return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
   // Handle form submission
@@ -259,7 +295,22 @@ function EditProperty(property) {
             <h4 style={{ color: "#7D141D" }}>City *</h4>
             <select
               value={formData.city}
-              onChange={(e) => updateFormData("city", e.target.value)}
+              onChange={(e) => {
+                const selectedCity = e.target.value;
+                updateFormData("city", e.target.value)
+                if (selectedCity === "") {
+                  updateFormData("town", ""); // Reset locality if city is cleared
+                  setErrors((prev) => ({
+                    ...prev,
+                    location: "Please select a city before choosing locality",
+                  }));
+                } else {
+                  setErrors((prev) => ({
+                    ...prev,
+                    location: "", // Clear location error if any
+                  }));
+                }
+              }}
             >
               <option value="">Select City</option>
               <option value="Mumbai">Mumbai</option>
@@ -274,7 +325,16 @@ function EditProperty(property) {
             <h4 style={{ color: "#7D141D" }}>Location *</h4>
             <select
               value={formData.town}
-              onChange={(e) => updateFormData("location", e.target.value)}
+              onMouseDown={(e) => {
+                if (!formData.city) {
+                  e.preventDefault(); //  prevents the dropdown from opening
+                  setErrors((prev) => ({
+                    ...prev,
+                    location: "Please select a city before choosing locality",
+                  }));
+                }
+              }}
+              onChange={(e) => updateFormData("town", e.target.value)}
             >
               <option value="">Select Location</option>
               <option value="Andheri">Andheri</option>

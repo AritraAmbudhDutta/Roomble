@@ -67,11 +67,13 @@ function AddProperty() {
     // Validate required fields
     if (images.length === 0){
       newErrors.photos = "At least one photo is required.";
+    }else if(images.length > 10){
+      newErrors.photos = "You can only upload a maximum of 10 images.";
     }else{
       delete newErrors.photos;
     }
     const BHK = Number(formData.bhk);
-    if (!formData.bhk || isNaN(formData.bhk)){
+    if (!formData.bhk || isNaN(BHK)){
       newErrors.bhk = "BHK is required and must be a number.";
     }else if (!Number.isInteger(BHK) || BHK <= 0) {
       newErrors.bhk = "BHK must be a positive integer.";
@@ -80,14 +82,14 @@ function AddProperty() {
     }
     const area = Number(formData.area);
     const rent = Number(formData.rent);
-    if (!formData.area || isNaN(formData.area)){
+    if (!formData.area || isNaN(area)){
       newErrors.area = "Area is required and must be a number.";
     }else if ( area <= 0 || area > 10000) {
       newErrors.area = "Area must be in the range of 1 to 10,000.";
     }else{
       delete newErrors.area;
     }
-    if (!formData.rent || isNaN(formData.rent)){
+    if (!formData.rent || isNaN(rent)){
       newErrors.rent = "Rent is required and must be a number.";
     } else if (rent <= 0 || rent > 100000) {
       newErrors.rent = "Rent must be in the range of 1 to 100,000.";
@@ -100,12 +102,12 @@ function AddProperty() {
         delete newErrors.address;
       }
     if (!formData.city) {
-      newErrors.city = "Please select a city."
+      newErrors.city = "city is required.";
     }else{
       delete newErrors.city;
     }
     if (!formData.location){
-       newErrors.location = "Please select a location."
+       newErrors.location = "location is required.";
     }else{
       delete newErrors.location;
     }
@@ -279,7 +281,22 @@ function AddProperty() {
             <h4 style={{ color: "#7D141D" }}>City *</h4>
             <select
               value={formData.city}
-              onChange={(e) => updateFormData("city", e.target.value)}
+              onChange={(e) => {
+                const selectedCity = e.target.value;
+                updateFormData("city", e.target.value)
+                if (selectedCity === "") {
+                  updateFormData("location", ""); // Reset locality if city is cleared
+                  setErrors((prev) => ({
+                    ...prev,
+                    location: "Please select a city before choosing locality",
+                  }));
+                } else {
+                  setErrors((prev) => ({
+                    ...prev,
+                    location: "", // Clear location error if any
+                  }));
+                }
+              }}
             >
               <option value="">Select City</option>
               <option value="Mumbai">Mumbai</option>
@@ -294,6 +311,15 @@ function AddProperty() {
             <h4 style={{ color: "#7D141D" }}>Location *</h4>
             <select
               value={formData.location}
+              onMouseDown={(e) => {
+                if (!formData.city) {
+                  e.preventDefault(); //  prevents the dropdown from opening
+                  setErrors((prev) => ({
+                    ...prev,
+                    location: "Please select a city before choosing locality",
+                  }));
+                }
+              }}
               onChange={(e) => updateFormData("location", e.target.value)}
             >
               <option value="">Select Location</option>
