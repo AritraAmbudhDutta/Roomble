@@ -1,12 +1,10 @@
-
-
 /**
  * LandlordProfile Component
- * 
+ *
  * This component is responsible for displaying the profile of a landlord, including their personal details
  * (such as name, email, and profile picture) and a list of properties they own. It also provides functionality
  * for editing the profile, logging out, and navigating back in case of errors.
- * 
+ *
  */
 
 import React, { useEffect, useState } from "react";
@@ -20,6 +18,13 @@ const LandlordProfile = () => {
   const [respData, setRespData] = useState(null);
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
   const navigate = useNavigate();
+  // Redirect to login if authtoken is not present
+  useEffect(() => {
+    const token = localStorage.getItem("authtoken");
+    if (!token) {
+      navigate("/login"); // Redirect to login page
+    }
+  }, [navigate]);
 
   // Navigate to edit page
   const handleSubmit = () => {
@@ -28,7 +33,7 @@ const LandlordProfile = () => {
 
   // Handle logout
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.removeItem("authtoken");
     navigate("/login");
     window.location.reload();
   };
@@ -109,7 +114,7 @@ const LandlordProfile = () => {
                   <span className="separator">:</span>
                   <span className="value">{respData.message}</span>
                 </p>
-              </div> 
+              </div>
               <div className="landlord-profile-buttons">
                 <button
                   className="landlord-profile-edit-button"
@@ -123,14 +128,13 @@ const LandlordProfile = () => {
                 >
                   Logout
                 </button>
-                
+
                 {/* <button
                   className="landlord-profile-delete-button"
                   onClick={handleDelete}
                 >
                   Delete
                 </button> */}
-
               </div>
             </div>
           </div>

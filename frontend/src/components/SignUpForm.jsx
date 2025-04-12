@@ -1,7 +1,6 @@
-
 /**
- * 
- * This component handles the tenant signup process in a multi-step form. 
+ *
+ * This component handles the tenant signup process in a multi-step form.
  * It collects user details, validates inputs, and submits the data to the backend API.
  */
 
@@ -14,11 +13,15 @@ import { useEffect } from "react";
 
 function SignUpForm({ setID }) {
   const navigate = useNavigate();
+
   const [step, setStep] = useState(1); // Tracks the current step in the signup process
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   // Handle navigation and error notification if something goes wrong
   useEffect(() => {
+    if (localStorage.getItem("authtoken") !== null) {
+      navigate("/"); // Redirect to home if already logged in
+    }
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
       navigate(-1); // Navigate back to the previous page
@@ -150,7 +153,7 @@ function SignUpForm({ setID }) {
       flatmate: formInput.flatmate === "yes",
       gender: formInput.gender === "male",
     };
-
+    setLoading(true); // Set loading state to true
     try {
       const response = await fetch(apiURL, {
         method: "POST",
@@ -159,7 +162,7 @@ function SignUpForm({ setID }) {
       });
 
       const responseData = await response.json();
-
+      setLoading(false); // Set loading state to false
       if (responseData.success) {
         setApiError(false);
         setApiMessage(responseData.message);
@@ -170,11 +173,11 @@ function SignUpForm({ setID }) {
         setApiMessage(responseData.message);
       }
     } catch (error) {
+      setLoading(false); // Set loading state to false
       console.error("Error sending data:", error);
       setApiError(true);
       setApiMessage("Something went wrong. Please try again later.");
-   }
-    
+    }
   };
 
   return (
@@ -652,8 +655,12 @@ function SignUpForm({ setID }) {
               >
                 ← Back
               </button>
-              <button type="submit" className="signup-tenant-button">
-                Sign up
+              <button
+                type="submit"
+                className="signup-tenant-button"
+                disabled={loading}
+              >
+                {loading ? "Signing up..." : "Sign up"}
               </button>
             </div>
           </div>

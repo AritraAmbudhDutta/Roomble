@@ -33,6 +33,7 @@ import { Review } from "./components/Review.jsx";
 import { Bounce, ToastContainer } from "react-toastify";
 import { Home } from "./components/Home.jsx";
 import ContactUs from "./components/ContactUs.jsx";
+import Error404 from "./components/404NotFound.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
     "/otp-forgot",
     "/set-new-password",
     "/otp-delete-page",
+    "/404",
   ];
 
   return (
@@ -102,6 +104,9 @@ function App() {
         <Route path="/landlord/:id" element={<OtherLandlord />} />
         <Route path="/review/:id" element={<Review />} />
         <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/404" element={<Error404 />} />
+        {/* Catch-all route for non-routed paths */}
+        <Route path="*" element={<Navigate to="/404" />} />
       </Routes>
     </BaseState>
   );

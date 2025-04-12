@@ -1,9 +1,8 @@
-
 /**
  * LandlordEditProfile Component
- * 
+ *
  * This component allows landlords to edit their profile information, including their name and profile image.
- * The email address is displayed but cannot be edited for security reasons. 
+ * The email address is displayed but cannot be edited for security reasons.
  * Users can upload a new profile image and update their name, which is then sent to the backend for processing.
  * If the update is successful, the user is redirected to their profile page.
  */
@@ -18,6 +17,14 @@ import "../../css/LandlordProfileStyles/LandlordEditProfile.css"; // Importing C
 
 const LandlordEditProfile = () => {
   const navigate = useNavigate();
+  // Redirect to login if authtoken is not present
+  useEffect(() => {
+    const token = localStorage.getItem("authtoken");
+    if (!token) {
+      navigate("/login"); // Redirect to login page
+    }
+  }, [navigate]);
+
   const state = useContext(Basecontext); // Fetching context data
   const { user, setUser, fetuser } = state;
   fetuser(); // Fetch user data
@@ -123,8 +130,8 @@ const LandlordEditProfile = () => {
           }}
         />
         <div className="landlord-edit-info">
-          <h2>{state.user.name}</h2> 
-          <p>{state.user.email}</p> 
+          <h2>{state.user.name}</h2>
+          <p>{state.user.email}</p>
         </div>
       </div>
 
@@ -161,4 +168,3 @@ const LandlordEditProfile = () => {
 };
 
 export default LandlordEditProfile;
-

@@ -9,7 +9,7 @@
  * 
  */
 
-import React from "react";
+import React,{useState} from "react";
 import "../../css/FindPropertyStyles/SearchArea.css";
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
@@ -38,6 +38,8 @@ function SearchArea({
     { label: "3 BHK", value: 3 },
     { label: "More", value: "more" },
   ];
+
+  const [error,setError]= useState("");
 
   // Handler to add/remove filter options
   const handleBHKChange = (value) => {
@@ -70,7 +72,17 @@ function SearchArea({
       {/* City Filter */}
       <div className="city-search-container">
         <label>City</label>
-        <select value={city} onChange={(e) => setCity(e.target.value)}>
+        <select value={city} onChange={(e) => {
+          const selectedCity = e.target.value;
+          setCity(e.target.value);
+          if (selectedCity === "") {
+            setLocality(""); // Reset locality if city is cleared
+            setError("Please select a city first");
+          } else {
+            setLocality(""); // Reset locality if city is selected
+            setError("");
+          }
+          }}>
           <option value="">Select City</option>
           <option value="Mumbai">Mumbai</option>
         </select>
@@ -79,7 +91,14 @@ function SearchArea({
       {/* Locality Filter */}
       <div className="locality-search-container">
         <label>Locality</label>
-        <select value={locality} onChange={(e) => setLocality(e.target.value)}>
+        <select value={locality} 
+          onMouseDown={(e) => {
+            if (!city) {
+              e.preventDefault(); //  prevents the dropdown from opening
+              setError("Please select a city first");
+            }
+          }}
+          onChange={(e) => setLocality(e.target.value)}>
           <option value="">Select Locality</option>
           <option value="Andheri">Andheri</option>
           <option value="Bandra">Bandra</option>
@@ -93,6 +112,8 @@ function SearchArea({
           <option value="Goregaon">Goregaon</option>
         </select>
       </div>
+      {/* Error message for locality selection */}
+      {error && <p className="locality-error-message">{error}</p>}
 
       {/* Price Range Filter */}
       <div className="price-range-container">
@@ -103,7 +124,7 @@ function SearchArea({
           </p>
         </div>
         <RangeSlider
-          min={1000}
+          min={0}
           max={100000}
           step={250}
           value={values}
@@ -120,7 +141,7 @@ function SearchArea({
           </p>
         </div>
         <RangeSlider
-          min={500}
+          min={0}
           max={10000}
           step={50}
           value={area}

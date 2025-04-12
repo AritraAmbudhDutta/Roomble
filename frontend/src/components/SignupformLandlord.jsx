@@ -1,8 +1,7 @@
-
 /**
- * This component handles the landlord signup process. It validates user input, 
+ * This component handles the landlord signup process. It validates user input,
  * sends the data to the backend API, and navigates to the OTP page upon successful registration.
-*/
+ */
 
 import { responsiveFontSizes } from "@mui/material";
 import React from "react";
@@ -14,10 +13,14 @@ import { useEffect } from "react";
 
 function SignupformLandlord({ setID }) {
   const navigate = useNavigate();
-  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
 
+  const [somethingwentwrong, setSomethingwentwrong] = useState(false);
+  const [loading, setLoading] = useState(false);
   // Handle navigation and error notification if something goes wrong
   useEffect(() => {
+    if (localStorage.getItem("authtoken")) {
+      navigate("/"); // Redirect to the home page if already logged in
+    }
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
       navigate(-1); // Navigate back to the previous page
@@ -86,7 +89,7 @@ function SignupformLandlord({ setID }) {
       email: formInput.email,
       password: formInput.password,
     };
-
+    setLoading(true); // Set loading state to true
     try {
       const response = await fetch(apiURL, {
         method: "POST",
@@ -95,7 +98,7 @@ function SignupformLandlord({ setID }) {
       });
 
       const responseData = await response.json();
-
+      setLoading(false); // Set loading state to false
       if (responseData.success) {
         setFormInput((prev) => ({ ...prev, successMsg: responseData.message }));
         setID(responseData.message); // Set the user ID for further steps
@@ -104,6 +107,7 @@ function SignupformLandlord({ setID }) {
         setFormInput((prev) => ({ ...prev, successMsg: responseData.message }));
       }
     } catch (error) {
+      setLoading(false); // Set loading state to false
       console.error("Error sending data:", error);
       setSomethingwentwrong(true); // Handle errors gracefully
       setFormInput((prev) => ({
@@ -228,7 +232,9 @@ function SignupformLandlord({ setID }) {
 
           <p className="signup-landlord-error">{formInput.successMsg}</p>
         </div>
-        <button className="LSignup-button">Sign up</button>
+        <button className="LSignup-button" disabled={loading}>
+          {loading ? "Signing up..." : "Signup"}
+        </button>
       </form>
 
       <p className="LFooter-text-signup">

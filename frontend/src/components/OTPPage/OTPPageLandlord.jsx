@@ -1,7 +1,6 @@
-
 /**
  * OTPPageTenant Component
- * 
+ *
  * This component renders an OTP verification page for landlords. It allows users to input a 6-digit OTP,
  * validates the input, and submits it to the backend for verification. On successful verification, the user
  * is redirected to the login page.

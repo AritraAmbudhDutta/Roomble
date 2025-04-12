@@ -1,4 +1,3 @@
-
 /**
  * This component allows users to search for properties based on various filters such as locality, price range, area, and BHK type.
  * It fetches and displays matching properties from the backend and provides options to clear or apply filters.
@@ -18,8 +17,8 @@ function FindProperty() {
   const [city, setCity] = useState("");
   const [locality, setLocality] = useState("");
   const [BHK, setBHK] = useState([]);
-  const [values, setValues] = useState([1000, 100000]); // Price range [min, max]
-  const [area, setArea] = useState([500, 10000]); // Area range [min, max]
+  const [values, setValues] = useState([0, 100000]); // Price range [min, max]
+  const [area, setArea] = useState([0, 10000]); // Area range [min, max]
   const [properties, setProperties] = useState([]);
   const [error, setError] = useState("");
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);
@@ -96,6 +95,9 @@ function FindProperty() {
 
   // Handle errors and navigate back if something went wrong
   useEffect(() => {
+    if (localStorage.getItem("authtoken") === null) {
+      navigate("/login"); // Redirect to login if not authenticated
+    }
     if (somethingwentwrong) {
       toast.error("Something went wrong. Please try again later.");
       navigate(-1);

@@ -1,4 +1,3 @@
-
 /**
  * This component displays the profile and properties of a landlord based on the ID provided in the URL parameters.
  * It fetches the landlord's details, properties, and reviews from the backend and displays them in a structured layout.
@@ -36,6 +35,9 @@ const OtherLandlord = () => {
 
   // Fetch landlord details and reviews
   useEffect(() => {
+    if (localStorage.getItem("authtoken") === null) {
+      navigate("/login"); // Redirect to login if not authenticated
+    }
     const fetchData = async () => {
       try {
         const response = await fetch(
