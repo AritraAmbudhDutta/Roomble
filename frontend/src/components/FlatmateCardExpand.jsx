@@ -16,6 +16,7 @@ import useDidMountEffect from "../useDidMountEffect";
 import { Rating } from "@mui/material";
 import config from "../config.json";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const FlatmateCardExpand = () => {
   // State to manage bookmark status
@@ -178,7 +179,7 @@ const FlatmateCardExpand = () => {
     if (data.success) {
       navigate("/chat/" + data.conversation_id);
     } else {
-      console.log("Failed to create conversation");
+      toast.error("Failed to create conversation.");
     }
   };
 
