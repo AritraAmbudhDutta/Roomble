@@ -26,6 +26,10 @@ router.post('/addreview', checkUser, async (req, res) => {
 
         const user = req.user;
 
+        if(user.type == 'landlord'){
+            return res.status(400).json({ message: "Landlords cannot review properties", success: false });
+        }
+
         // Create a review object with reviewer details, rating, and comment
         const reviewObj = {
             reviewer: user._id,

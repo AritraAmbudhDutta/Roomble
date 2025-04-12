@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import "../../css/OTPPage/OTPPageLandlord.css"; // Import the CSS specific to this component
 import config from "../../config.json";
 import { toast } from "react-toastify";
+import logo from "../../../public/logo.png"; // Import the logo image
 
 export default function OTPPageTenant({ id }) {
   const navigate = useNavigate();
