@@ -487,7 +487,7 @@ function AddProperty() {
         {/* Amenities input */}
         <div className={"form-item Amenities-container"}>
           <FadeInAnimation>
-            <h4 style={{ color: "#7D141D" }}>Amenities</h4>
+            <h4 style={{ color: "#7D141D" }}>Amenities (Seperated by commas ',')</h4>
             <textarea
               value={formData.amenities}
               onChange={(e) => updateFormData("amenities", e.target.value)}
