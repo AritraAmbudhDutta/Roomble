@@ -17,8 +17,8 @@ function FindProperty() {
   const [city, setCity] = useState("");
   const [locality, setLocality] = useState("");
   const [BHK, setBHK] = useState([]);
-  const [values, setValues] = useState([1000, 100000]); // Price range [min, max]
-  const [area, setArea] = useState([500, 10000]); // Area range [min, max]
+  const [values, setValues] = useState([0, 100000]); // Price range [min, max]
+  const [area, setArea] = useState([0, 10000]); // Area range [min, max]
   const [properties, setProperties] = useState([]);
   const [error, setError] = useState("");
   const [somethingwentwrong, setSomethingwentwrong] = useState(false);

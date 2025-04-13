@@ -5,7 +5,7 @@
  * The form validates user input and submits the data to the backend API.
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import DragAndDrop from "./AddPropertyComponents/DragAndDrop";
 import "../css/AddPropertyStyles/AddProperty.css";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,7 @@ import {
   AdvancedMarker,
   useMap,
 } from "@vis.gl/react-google-maps";
+import { use } from "react";
 
 function AddProperty() {
   // Initial state for the form
@@ -60,6 +61,110 @@ function AddProperty() {
     });
   };
 
+  //validate photos
+  const validatePhotos = (imageArray) => {
+    if (imageArray.length === 0) {
+      setErrors((prev) => ({
+        ...prev,
+        photos: "At least one photo is required.",
+      }));
+    } else if (imageArray.length > 10) {
+      setErrors((prev) => ({
+        ...prev,
+        photos: "You can only upload a maximum of 10 images.",
+      }));
+    } else {
+      setErrors((prev) => {
+        const { photos, ...rest } = prev;
+        return rest;
+      });
+    }
+  };
+  
+
+  //validate BHK
+  const validateBHK= (value) => {
+    const BHK = Number(value);
+    if (!BHK || isNaN(BHK)){
+      setErrors((prev) => ({ ...prev, bhk: "BHK is required and must be a number." }));
+    }else if (!Number.isInteger(BHK) || BHK <= 0) {
+      setErrors((prev) => ({ ...prev, bhk: "BHK must be a positive integer." }));
+    }else{
+      setErrors((prev) => {
+        const { bhk, ...rest } = prev;
+        return rest;
+      });
+    }
+  }
+
+  //validate area
+  const validateArea= (value) => {
+    const area = Number(value);
+    if (!area || isNaN(area)){
+      setErrors((prev) => ({ ...prev, area: "Area is required and must be a number." }));
+    }else if ( area <= 0 || area > 10000) {
+      setErrors((prev) => ({ ...prev, area: "Area must be in the range of 1 to 10,000." }));
+    }else{
+      setErrors((prev) => {
+        const { area, ...rest } = prev;
+        return rest;
+      });
+    }
+  }
+
+  //validate rent
+  const validateRent= (value) => {
+    const rent = Number(value);
+    if (!rent || isNaN(rent)){
+      setErrors((prev) => ({ ...prev, rent: "Rent is required and must be a number." }));
+    } else if (rent <= 0 || rent > 100000) {
+      setErrors((prev) => ({ ...prev, rent: "Rent must be in the range of 1 to 100,000." }));
+    }else{
+      setErrors((prev) => {
+        const { rent, ...rest } = prev;
+        return rest;
+      });
+    }
+  }
+
+  //validate address
+  const validateAddress= (value) => {
+    if (!value.trim()){
+      setErrors((prev) => ({ ...prev, address: "Address is required." }));
+    }else{
+      setErrors((prev) => {
+        const { address, ...rest } = prev;
+        return rest;
+      });
+    }
+  }
+
+  //validate city
+  const validateCity= (value) => {
+    if (!value) {
+      setErrors((prev) => ({ ...prev, city: "City is required." }));
+    }else{
+      setErrors((prev) => {
+        const { city, ...rest } = prev;
+        return rest;
+      });
+    }
+  }
+
+  //validate location
+  const validateLocation= (value) => {
+    if (!value){
+      setErrors((prev) => ({ ...prev, location: "Location is required." }));
+    }else{
+      setErrors((prev) => {
+        const { location, ...rest } = prev;
+        return rest;
+      });
+    }
+  }
+
+
+
   // Form validation function
   const validateForm = () => {
     let newErrors = {};
@@ -67,11 +172,13 @@ function AddProperty() {
     // Validate required fields
     if (images.length === 0){
       newErrors.photos = "At least one photo is required.";
+    }else if(images.length > 10){
+      newErrors.photos = "You can only upload a maximum of 10 images.";
     }else{
       delete newErrors.photos;
     }
     const BHK = Number(formData.bhk);
-    if (!formData.bhk || isNaN(formData.bhk)){
+    if (!formData.bhk || isNaN(BHK)){
       newErrors.bhk = "BHK is required and must be a number.";
     }else if (!Number.isInteger(BHK) || BHK <= 0) {
       newErrors.bhk = "BHK must be a positive integer.";
@@ -80,14 +187,14 @@ function AddProperty() {
     }
     const area = Number(formData.area);
     const rent = Number(formData.rent);
-    if (!formData.area || isNaN(formData.area)){
+    if (!formData.area || isNaN(area)){
       newErrors.area = "Area is required and must be a number.";
     }else if ( area <= 0 || area > 10000) {
       newErrors.area = "Area must be in the range of 1 to 10,000.";
     }else{
       delete newErrors.area;
     }
-    if (!formData.rent || isNaN(formData.rent)){
+    if (!formData.rent || isNaN(rent)){
       newErrors.rent = "Rent is required and must be a number.";
     } else if (rent <= 0 || rent > 100000) {
       newErrors.rent = "Rent must be in the range of 1 to 100,000.";
@@ -100,12 +207,12 @@ function AddProperty() {
         delete newErrors.address;
       }
     if (!formData.city) {
-      newErrors.city = "Please select a city."
+      newErrors.city = "city is required.";
     }else{
       delete newErrors.city;
     }
     if (!formData.location){
-       newErrors.location = "Please select a location."
+       newErrors.location = "location is required.";
     }else{
       delete newErrors.location;
     }
@@ -191,6 +298,12 @@ function AddProperty() {
     }
   };
 
+  useEffect(() => {
+    validatePhotos(images); // Validate photos whenever images change
+  }, [images]);
+ 
+
+
   return (
     <div className="add-prop-container">
       {/* Top section */}
@@ -224,7 +337,9 @@ function AddProperty() {
               <h4 style={{ color: "#7D141D" }}>Description</h4>
               <textarea
                 value={formData.description}
-                onChange={(e) => updateFormData("description", e.target.value)}
+                onChange={(e) => {
+                  updateFormData("description", e.target.value)
+                }}
                 placeholder="Enter Description"
               />
             </FadeInAnimation>
@@ -240,7 +355,9 @@ function AddProperty() {
             <h4 style={{ color: "#7D141D" }}>BHK *</h4>
             <input
               value={formData.bhk}
-              onChange={(e) => updateFormData("bhk", e.target.value)}
+              onChange={(e) => {
+                updateFormData("bhk", e.target.value);
+                validateBHK(e.target.value);}}
               placeholder="Enter BHK"
             />
             {errors.bhk && <p className="addProp-form-error">{errors.bhk}</p>}
@@ -253,7 +370,9 @@ function AddProperty() {
             <h4 style={{ color: "#7D141D" }}>Area(sqft) *</h4>
             <input
               value={formData.area}
-              onChange={(e) => updateFormData("area", e.target.value)}
+              onChange={(e) => {updateFormData("area", e.target.value);
+                validateArea(e.target.value);
+              }}
               placeholder="Enter Area"
             />
             {errors.area && <p className="addProp-form-error">{errors.area}</p>}
@@ -266,7 +385,9 @@ function AddProperty() {
             <h4 style={{ color: "#7D141D" }}>Rent(Per Month) *</h4>
             <input
               value={formData.rent}
-              onChange={(e) => updateFormData("rent", e.target.value)}
+              onChange={(e) => {updateFormData("rent", e.target.value)
+                validateRent(e.target.value);
+              }}
               placeholder="Enter Rent"
             />
             {errors.rent && <p className="addProp-form-error">{errors.rent}</p>}
@@ -279,7 +400,23 @@ function AddProperty() {
             <h4 style={{ color: "#7D141D" }}>City *</h4>
             <select
               value={formData.city}
-              onChange={(e) => updateFormData("city", e.target.value)}
+              onChange={(e) => {
+                const selectedCity = e.target.value;
+                updateFormData("city", e.target.value)
+                if (selectedCity === "") {
+                  updateFormData("location", ""); // Reset locality if city is cleared
+                  setErrors((prev) => ({
+                    ...prev,
+                    location: "Please select a city before choosing locality",
+                  }));
+                } else {
+                  setErrors((prev) => ({
+                    ...prev,
+                    location: "", // Clear location error if any
+                  }));
+                }
+                validateCity(e.target.value);
+              }}
             >
               <option value="">Select City</option>
               <option value="Mumbai">Mumbai</option>
@@ -294,7 +431,18 @@ function AddProperty() {
             <h4 style={{ color: "#7D141D" }}>Location *</h4>
             <select
               value={formData.location}
-              onChange={(e) => updateFormData("location", e.target.value)}
+              onMouseDown={(e) => {
+                if (!formData.city) {
+                  e.preventDefault(); //  prevents the dropdown from opening
+                  setErrors((prev) => ({
+                    ...prev,
+                    location: "Please select a city before choosing locality",
+                  }));
+                }
+              }}
+              onChange={(e) => {updateFormData("location", e.target.value)
+                validateLocation(e.target.value);
+              }}
             >
               <option value="">Select Location</option>
               <option value="Andheri">Andheri</option>
@@ -328,7 +476,9 @@ function AddProperty() {
             </div>
             <textarea
               value={formData.address}
-              onChange={(e) => updateFormData("address", e.target.value)}
+              onChange={(e) => {updateFormData("address", e.target.value);
+                validateAddress(e.target.value);
+              }}
               placeholder="Enter Address"
             />
           </FadeInAnimation>

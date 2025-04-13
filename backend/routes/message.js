@@ -84,13 +84,19 @@ module.exports = (io, onlineUsers) => {
     });
 
     // Route to get a specific conversation by its ID
-    router.post('/getConversation', async (req, res) => {
+    router.post('/getConversation', checkUser, async (req, res) => {
         try {
             const conversation_id = req.body.conversation_id;
             const conversation = await Conversation.findById(conversation_id);
+
+            
             if (!conversation) {
                 res.send({ success: false });
                 return;
+            }
+            // check if user is part of the conversation
+            if (!conversation.members.includes(req.user._id)) {
+                return res.send({ success: false });
             }
             res.send({ conversation, success: true });
         } catch (err) {

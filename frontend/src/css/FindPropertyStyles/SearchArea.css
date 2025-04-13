@@ -165,3 +165,9 @@ input[type="checkbox"] {
     align-items: center;
     gap: 5px; /* Space between checkbox and text */
 }
+
+.locality-error-message{
+    color: #ff4d4d;
+    font-size: 14px;
+    margin-left: 5%;
+}
