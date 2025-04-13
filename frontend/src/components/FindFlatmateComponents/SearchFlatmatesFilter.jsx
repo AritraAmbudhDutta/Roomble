@@ -113,7 +113,13 @@ function SearchFlatmatesFilter({ setFlatmates }) {
       {/* City Filter */}
       <div className="city-search-container">
         <label>City</label>
-        <select value={city} onChange={(e) => setCity(e.target.value)}>
+        <select
+          value={city}
+          onChange={(e) => {
+            setCity(e.target.value);
+            setLocality(""); // Reset locality when city changes
+          }}
+        >
           <option value="">Select City</option>
           <option value="Mumbai">Mumbai</option>
         </select>
@@ -122,7 +128,11 @@ function SearchFlatmatesFilter({ setFlatmates }) {
       {/* Locality Filter */}
       <div className="locality-search-container">
         <label>Locality</label>
-        <select value={locality} onChange={(e) => setLocality(e.target.value)}>
+        <select
+          value={locality}
+          onChange={(e) => setLocality(e.target.value)}
+          disabled={!city} // Disable locality selection if no city is selected
+        >
           <option value="">Select Locality</option>
           <option value="Andheri">Andheri</option>
           <option value="Bandra">Bandra</option>

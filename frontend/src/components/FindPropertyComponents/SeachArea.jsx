@@ -1,18 +1,9 @@
-
-
-/**
- * SearchArea Component
- * 
- * This component provides a user interface for filtering properties based on various criteria such as city,
- * locality, price range, area range, and the number of BHKs (bedrooms, hall, kitchen).
- * It allows users to apply or clear filters and dynamically updates the filtered properties based on the selected options.
- * 
- */
-
-import React,{useState} from "react";
+import React from "react";
 import "../../css/FindPropertyStyles/SearchArea.css";
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function SearchArea({
   city,
@@ -29,9 +20,8 @@ function SearchArea({
   handleAreaChange,
   handleApplyChanges,
   handleClearChanges,
-  properties = [], // Default to an empty array if not provided
+  properties = [],
 }) {
-  // Define BHK options with a custom value for "More"
   const bhkOptions = [
     { label: "1 BHK", value: 1 },
     { label: "2 BHK", value: 2 },
@@ -39,9 +29,6 @@ function SearchArea({
     { label: "More", value: "more" },
   ];
 
-  const [error,setError]= useState("");
-
-  // Handler to add/remove filter options
   const handleBHKChange = (value) => {
     if (BHK.includes(value)) {
       setBHK(BHK.filter((bhk) => bhk !== value));
@@ -50,19 +37,26 @@ function SearchArea({
     }
   };
 
-  // Filtering logic for properties
-  const filteredProperties = properties.filter((property) => {
-    // If no BHK filters are applied, show all properties
-    if (BHK.length === 0) return true;
+  const onApplyClick = () => {
+    if (!city) {
+      toast.error("Please select a city");
+      return;
+    }
+    if (!locality) {
+      toast.error("Please select a locality");
+      return;
+    }
+    // all good — fire the parent handler
+    handleApplyChanges();
+  };
 
-    // Check if property matches any selected BHK filter
-    return BHK.some((filterValue) => {
-      if (filterValue === "more") {
-        return property.bhk >= 5;
-      } else {
-        return property.bhk === filterValue;
-      }
-    });
+  const filteredProperties = properties.filter((property) => {
+    if (BHK.length === 0) return true;
+    return BHK.some((filterValue) =>
+      filterValue === "more"
+        ? property.bhk >= 5
+        : property.bhk === filterValue
+    );
   });
 
   return (
@@ -72,17 +66,13 @@ function SearchArea({
       {/* City Filter */}
       <div className="city-search-container">
         <label>City</label>
-        <select value={city} onChange={(e) => {
-          const selectedCity = e.target.value;
-          setCity(e.target.value);
-          if (selectedCity === "") {
-            setLocality(""); // Reset locality if city is cleared
-            setError("Please select a city first");
-          } else {
-            setLocality(""); // Reset locality if city is selected
-            setError("");
-          }
-          }}>
+        <select
+          value={city}
+          onChange={(e) => {
+            setCity(e.target.value);
+            setLocality(""); // always reset locality when city changes
+          }}
+        >
           <option value="">Select City</option>
           <option value="Mumbai">Mumbai</option>
         </select>
@@ -91,14 +81,11 @@ function SearchArea({
       {/* Locality Filter */}
       <div className="locality-search-container">
         <label>Locality</label>
-        <select value={locality} 
-          onMouseDown={(e) => {
-            if (!city) {
-              e.preventDefault(); //  prevents the dropdown from opening
-              setError("Please select a city first");
-            }
-          }}
-          onChange={(e) => setLocality(e.target.value)}>
+        <select
+          value={locality}
+          disabled={!city}
+          onChange={(e) => setLocality(e.target.value)}
+        >
           <option value="">Select Locality</option>
           <option value="Andheri">Andheri</option>
           <option value="Bandra">Bandra</option>
@@ -112,16 +99,12 @@ function SearchArea({
           <option value="Goregaon">Goregaon</option>
         </select>
       </div>
-      {/* Error message for locality selection */}
-      {error && <p className="locality-error-message">{error}</p>}
 
-      {/* Price Range Filter */}
+      {/* Price Range */}
       <div className="price-range-container">
         <label>Price Range</label>
         <div className="price-range-values">
-          <p>
-            ₹{values[0]} - ₹{values[1]}
-          </p>
+          <p>₹{values[0]} - ₹{values[1]}</p>
         </div>
         <RangeSlider
           min={0}
@@ -132,13 +115,11 @@ function SearchArea({
         />
       </div>
 
-      {/* Area Range Filter */}
+      {/* Area Range */}
       <div className="area-range-container">
         <label>Area Range</label>
         <div className="area-range-values">
-          <p>
-            {area[0]} sqft - {area[1]} sqft
-          </p>
+          <p>{area[0]} sqft - {area[1]} sqft</p>
         </div>
         <RangeSlider
           min={0}
@@ -166,24 +147,15 @@ function SearchArea({
 
       {/* Action Buttons */}
       <div className="search-prop-buttons">
-        <button onClick={handleApplyChanges}>Apply</button>
+        <button onClick={onApplyClick}>Apply</button>
         <button onClick={handleClearChanges}>Clear filters</button>
       </div>
 
-      {/* Example display of filtered properties */}
-      {/* Uncomment to display filtered properties */}
-      {/* 
-      <div className="filtered-properties">
-        <h2>Filtered Properties</h2>
-        {filteredProperties.map((property) => (
-          <div key={property.id} className="property-item">
-            <p>
-              {property.name} - {property.bhk} BHK
-            </p>
-          </div>
-        ))}
-      </div> 
-      */}
+      {/* Toast container */}
+      <ToastContainer position="top-right" autoClose={3000} />
+
+      {/* Optional: Show filtered properties */}
+      {/* ... */}
     </div>
   );
 }

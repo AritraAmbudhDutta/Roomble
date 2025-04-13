@@ -32,7 +32,7 @@ const teamMembers = [
   {
     name: "Bhukya Vaishnavi",
     role: "Backend Developer",
-    contact: "bhukyav@iitk.ac.in",
+    contact: "bhukyav23@iitk.ac.in",
     image: "./vaishnavi.jpg",
   },
   {
