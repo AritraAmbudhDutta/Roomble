@@ -62,7 +62,7 @@ router.post("/updateProfile", authMiddleware, async (req, res) => {
                     message: `Only png, jpg, and jpeg formats are allowed.`
                 });
             } else {
-                // Create directory if it doesn't exist
+                // Create directory if it doesn't exist (for any account type)
                 const dir = path.join(__dirname, `../Pictures`, `${accounttype}`);
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir, { recursive: true });

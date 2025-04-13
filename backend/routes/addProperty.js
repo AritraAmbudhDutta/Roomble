@@ -79,7 +79,17 @@ router.post("/listProperty",authMiddleware, async(req,res)=>{
         
         //make a new directory for each property
         let imageData = req.files.image;
-        fs.mkdirSync(path.join(__dirname , `../Pictures` , `property` ,`${newProperty.id}`));
+        const propertyDir = path.join(__dirname, `../Pictures`, `property`, `${newProperty.id}`);
+
+        // First check parent directory
+        const parentDir = path.join(__dirname, `../Pictures`, `property`);
+        if (!fs.existsSync(parentDir)) {
+            fs.mkdirSync(parentDir, { recursive: true });
+        } 
+        // Then create the property-specific directory if needed
+        else if (!fs.existsSync(propertyDir)) {
+            fs.mkdirSync(propertyDir);
+        }
         // console.log(imageData); // for debugging
 
         // check if the number of images exceeds the maximum allowed limit
