@@ -33,7 +33,7 @@ const LandlordProfile = () => {
 
   // Handle logout
   const handleLogout = () => {
-    localStorage.removeItem("authtoken");
+    localStorage.clear();
     navigate("/login");
     window.location.reload();
   };

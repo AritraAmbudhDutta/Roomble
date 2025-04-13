@@ -45,7 +45,7 @@ export default function TenantProfilePage() {
 
   // Handle logout
   const handleLogout = () => {
-    localStorage.removeItem("authtoken");
+    localStorage.clear();
     window.location.href = "/";
   };
 

@@ -146,7 +146,6 @@ router.post(`/verifyLandlord/:id`, async (req, res) => {
 router.post(`/Landlord_login`, async (req, res) => {
     try {
         const { email, password, remember_me } = req.body;
-        const { email, password , remember_me} = req.body;
 
         // Find the landlord by email
         let user = await Landlord.findOne({ email });
@@ -162,12 +161,6 @@ router.post(`/Landlord_login`, async (req, res) => {
 
         if (result) {
             // Generate a JWT token for the landlord
-            let token;
-            if( remember_me) {
-                token = jwt.sign({ id: user._id, email: user.email }, SECRET_KEY, { expiresIn: "30d" });
-            } else {
-                token = jwt.sign({ id: user._id, email: user.email }, SECRET_KEY, { expiresIn: "5h" });
-            }
             let token;
             if(remember_me){
                 token = jwt.sign({ id: user._id, email: user.email }, SECRET_KEY, { expiresIn: "30d" });

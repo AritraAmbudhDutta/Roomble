@@ -190,19 +190,11 @@ router.post(`/Tenant_login`, async (req, res) => {
         if (result) {
             // Generate a JWT token for the tenant
             let token;
-<<<<<<< HEAD
             if(remember_me){
-=======
-            if (remember_me) {
->>>>>>> 3e74dc1ef67f065fd2a80ceeae8c638d9e951c1c
                 token = jwt.sign({ id: findTenant._id, email: findTenant.email }, SECRET_KEY, { expiresIn: "30d" });
             } else {
                 token = jwt.sign({ id: findTenant._id, email: findTenant.email }, SECRET_KEY, { expiresIn: "5h" });
             }
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e74dc1ef67f065fd2a80ceeae8c638d9e951c1c
             res.status(200).json({
                 success: true,
                 name: findTenant.name,
