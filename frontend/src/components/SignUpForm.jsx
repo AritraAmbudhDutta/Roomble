@@ -322,25 +322,25 @@ function SignUpForm({ setID }) {
               className="signup-tenant-input-box"
               name="city"
               value={formInput.city}
-              onChange={({ target }) =>
-                handleUserInput(target.name, target.value)
-              }
+              onChange={({ target }) => {
+                handleUserInput(target.name, target.value);
+                if (target.value === "") {
+                  handleUserInput("locality", ""); // Reset locality if city is cleared
+                }
+              }}
               required
             >
               <option value="">Select City</option>
               <option value="Mumbai">Mumbai</option>
             </select>
-            {formError.city && (
-              <p className="signup-tenant-error">{formError.city}</p>
-            )}
+            {formError.city && <p className="signup-tenant-error">{formError.city}</p>}
 
             <select
               className="signup-tenant-input-box"
               name="locality"
               value={formInput.locality}
-              onChange={({ target }) =>
-                handleUserInput(target.name, target.value)
-              }
+              onChange={({ target }) => handleUserInput(target.name, target.value)}
+              disabled={!formInput.city} // Disable locality dropdown if no city is selected
               required
             >
               <option value="">Select Locality</option>
@@ -355,10 +355,7 @@ function SignUpForm({ setID }) {
               <option value="Thane">Thane</option>
               <option value="Goregaon">Goregaon</option>
             </select>
-            {formError.locality && (
-              <p className="signup-tenant-error">{formError.locality}</p>
-            )}
-
+            {formError.locality && <p className="signup-tenant-error">{formError.locality}</p>}
             <div className="signup-tenant-choices">
               <div className="signup-tenant-choices-gender">
                 <label>Gender</label>
