@@ -72,27 +72,34 @@ Go to the localhost web address which must have been printed on the terminal.
 
 The Software Requirements Specification (SRS) document describes what the software will do and how it will be expected to perform. It also describes the product's functionality to fulfil all stakeholders' needs.
 
-Link to SRS: [Roomble SRS Document](https://github.com/Shlok-Jain/Roomble/blob/main/Documents/Roomble_Team7_SRS.pdf)
+Link to SRS: [Roomble SRS Document](https://github.com/Shlok-Jain/Roomble/blob/main/Doc/Roomble_Team7_SRS.pdf)
 
 ## Software Design Document(SDD)
 
 The Software Design Document (SDD) describes software created to facilitate analysis, planning, implementation, and decision-making. This explains how the software product will be built to meet a set of technical requirements.
 
-Link to SDD: [Roomble Design Document](https://github.com/Shlok-Jain/Roomble/blob/main/Documents/Design_Doc_CS253_Marauders.pdf)
+Link to SDD: [Roomble Design Document](https://github.com/Shlok-Jain/Roomble/blob/main/Doc/Design_Doc_CS253_Marauders.pdf)
 
 ## Software Implementation Document(SID)
 
 The Software Implementation Document (SID) describes how the software product is developed and deployed. This document talks about implementation details like integration, CI/CD, hosting and VCS; it provides a surface-level overview of codebases and completeness of the application.
 
-Link to SID: [Roomble Implementation Document](https://github.com/Shlok-Jain/Roomble/blob/main/Documents/Implementation_Document_Group7_Marauders.pdf)
+Link to SID: [Roomble Implementation Document](https://github.com/Shlok-Jain/Roomble/blob/main/Doc/Implementation_Document_Group7_Marauders.pdf)
 
 ## Software Test Document
 
 The Test Document outlines the strategy, scope, and results of testing conducted on a software product. It includes unit, integration, and system testing details, providing insights into test coverage, methodologies used, tools employed, and overall quality assurance efforts.
 
-Link to Test Document: [Roomble Test Document](https://github.com/Shlok-Jain/Roomble/blob/main/Documents/Test_Document_CS253_Group7_Marauders.pdf)
+Link to Test Document: [Roomble Test Document](https://github.com/Shlok-Jain/Roomble/blob/main/Doc/Test_Document_CS253_Group7_Marauders.pdf)
 
 ## Software User Manual
 
 The User Manual provides end-users with clear instructions on how to configure and use the software product. It includes step-by-step guides, feature overviews, troubleshooting tips, and usage examples to ensure a smooth user experience and effective utilization of the application.
-Link to User Manual: [Roomble User Manual](https://github.com/Shlok-Jain/Roomble/blob/main/Documents/User%20Manual%20-%20Roomble.pdf)
+
+Link to User Manual: [Roomble User Manual](https://github.com/Shlok-Jain/Roomble/blob/main/Doc/User%20Manual%20-%20Roomble.pdf)
+
+## Final Presentation
+
+The final presentation provides a succint and engaging overview of the entire project. It features the basic requirements that the web application seeks to fulfill, the brief implementation details, outline of future development plans and important lessons we learned as a team.
+
+Link to Final Presentation: [Roomble Final Presentation](https://github.com/Shlok-Jain/Roomble/blob/main/Doc/Marauders_Roomble_Final_Presentation.pdf)
